@@ -1,0 +1,6 @@
+services:
+  predict-dashboard:
+    build: .
+    ports:
+      - "18828:18828"
+    restart: unless-stopped
