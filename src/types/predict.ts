@@ -99,12 +99,38 @@ export interface PredictionsGroup {
   failed?: Prediction[]
 }
 
+export interface AccuracyEntry {
+  total: number
+  correct: number
+  accuracy: number // already_pct (e.g. 42.9 = 42.9%) — do NOT ×100
+}
+
+export interface Validation {
+  id: number
+  prediction_id: number
+  horizon: string
+  actual_change: number     // already_pct — direct display, do NOT ×100
+  is_correct: number        // 0 or 1
+  price_at_validation: number
+  validated_at: string
+  symbol: string
+  direction: string
+  trigger_event: string
+  price_at_prediction: number
+  confidence: number        // decimal_0_1 → ×100 for display
+}
+
+export interface PredictAccuracyResponse {
+  accuracy: Record<string, AccuracyEntry>
+  recent_validations: Validation[]
+}
+
 export interface PredictionOverview {
   macro: Macro
   event_kb: EventKB
   predictions: PredictionsGroup
-  accuracy: unknown
-  recent_validations: unknown[]
+  accuracy: Record<string, AccuracyEntry>
+  recent_validations: Validation[]
   macro_history: MacroSnapshot[]
 }
 
@@ -120,4 +146,64 @@ export interface Trend {
 export interface IndustryChain {
   nodes: ChainNode[]
   edges: ChainEdge[]
+}
+
+export interface OpenInterestPoint {
+  timestamp: number
+  sum_open_interest_value: number
+}
+
+export interface LongShortRatioPoint {
+  timestamp: number
+  long_account: number
+  short_account: number
+  long_short_ratio: number
+}
+
+export interface TakerVolumePoint {
+  timestamp: number
+  buy_vol: number
+  sell_vol: number
+  buy_sell_ratio: number
+}
+
+export interface MatchedEvent {
+  event_id: number
+  date: string
+  event: string
+  symbol: string
+  price_change: number    // already_pct
+  similarity: number      // decimal_0_1 → ×100 for display
+}
+
+export interface ReasoningStep {
+  step: string            // e.g. "trigger", "match", "pattern", "direction", "confidence"
+  content: string
+}
+
+export interface PredictionDetail extends Prediction {
+  trigger_event_text: string
+  matched_events: MatchedEvent[]
+  reasoning_chain: ReasoningStep[]
+  confidence_factors: Record<string, number>  // factor_name → weight (decimal_0_1)
+}
+
+export interface ReasoningGraphNode {
+  id: string
+  type: string  // 'source' | 'event' | 'match' | 'pattern' | 'chain' | 'symbol'
+  data: Record<string, unknown>
+  position: { x: number; y: number }
+}
+
+export interface ReasoningGraphEdge {
+  id: string
+  source: string
+  target: string
+  label?: string
+}
+
+export interface ReasoningGraph {
+  prediction_id: number
+  nodes: ReasoningGraphNode[]
+  edges: ReasoningGraphEdge[]
 }

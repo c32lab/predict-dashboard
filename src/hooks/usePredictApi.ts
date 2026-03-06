@@ -19,6 +19,12 @@ export function usePredictions(status = 'active', limit = 50) {
   )
 }
 
+export function usePredictAccuracy() {
+  return useSWR('predict/accuracy', () => predictApi.predictAccuracy(), {
+    refreshInterval: REFRESH_INTERVAL,
+  })
+}
+
 export function usePredictEvents(limit = 50, pattern?: string) {
   return useSWR(
     ['predict/events', limit, pattern],
@@ -47,4 +53,44 @@ export function useIndustryChain() {
   return useSWR('predict/industry-chain', () => predictApi.industryChain(), {
     refreshInterval: REFRESH_INTERVAL,
   })
+}
+
+export function useOpenInterest(symbol = 'BTC/USDT', limit = 24) {
+  return useSWR(
+    ['predict/open-interest', symbol, limit],
+    () => predictApi.openInterest(symbol, limit),
+    { refreshInterval: REFRESH_INTERVAL }
+  )
+}
+
+export function useLongShortRatio(symbol = 'BTC/USDT', limit = 24) {
+  return useSWR(
+    ['predict/long-short-ratio', symbol, limit],
+    () => predictApi.longShortRatio(symbol, limit),
+    { refreshInterval: REFRESH_INTERVAL }
+  )
+}
+
+export function useTakerVolume(symbol = 'BTC/USDT', limit = 24) {
+  return useSWR(
+    ['predict/taker-volume', symbol, limit],
+    () => predictApi.takerVolume(symbol, limit),
+    { refreshInterval: REFRESH_INTERVAL }
+  )
+}
+
+export function usePredictionDetail(id: number | null) {
+  return useSWR(
+    id != null ? `predict/predictions/${id}` : null,
+    () => predictApi.predictionDetail(id!),
+    { revalidateOnFocus: false }
+  )
+}
+
+export function useReasoningGraph(id: number | null) {
+  return useSWR(
+    id != null ? `predict/predictions/${id}/reasoning-graph` : null,
+    () => predictApi.reasoningGraph(id!),
+    { revalidateOnFocus: false }
+  )
 }

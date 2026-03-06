@@ -1,10 +1,16 @@
 import type {
   PredictionOverview,
   Prediction,
+  PredictionDetail,
   Event,
   Trend,
   IndustryChain,
   MacroSnapshot,
+  OpenInterestPoint,
+  LongShortRatioPoint,
+  TakerVolumePoint,
+  PredictAccuracyResponse,
+  ReasoningGraph,
 } from '../types/predict'
 
 const BASE = ''
@@ -22,11 +28,12 @@ export const predictApi = {
   prediction: () =>
     fetcher<PredictionOverview>(`${BASE}/api/prediction`),
 
-  predictions: (params?: { status?: string; limit?: number }) => {
+  predictions: (params?: { status?: string; limit?: number; offset?: number }) => {
     const qs = new URLSearchParams()
     if (params?.status) qs.set('status', params.status)
     if (params?.limit != null) qs.set('limit', String(params.limit))
-    return fetcher<Prediction[]>(`${BASE}/api/predictions?${qs}`)
+    if (params?.offset != null) qs.set('offset', String(params.offset))
+    return fetcher<{ predictions: Prediction[]; total: number }>(`${BASE}/api/predictions?${qs}`)
   },
 
   events: (params?: { limit?: number; pattern?: string }) => {
@@ -57,4 +64,23 @@ export const predictApi = {
 
   eventChainLinks: (event_id: number) =>
     fetcher<unknown>(`${BASE}/api/event-chain-links?event_id=${event_id}`),
+
+  predictAccuracy: () =>
+    fetcher<PredictAccuracyResponse>(`${BASE}/api/predict-accuracy`),
+
+  predictionDetail: (id: number) =>
+    fetcher<PredictionDetail>(`${BASE}/api/predictions/${id}`),
+
+  reasoningGraph: (id: number) =>
+    fetcher<ReasoningGraph>(`${BASE}/api/predictions/${id}/reasoning-graph`),
+
+  // Derivatives data from data-eng API (via /data-api proxy → localhost:8081)
+  openInterest: (symbol = 'BTC/USDT', limit = 24) =>
+    fetcher<OpenInterestPoint[]>(`/data-api/api/open-interest?symbol=${encodeURIComponent(symbol)}&limit=${limit}`),
+
+  longShortRatio: (symbol = 'BTC/USDT', limit = 24) =>
+    fetcher<LongShortRatioPoint[]>(`/data-api/api/long-short-ratio?symbol=${encodeURIComponent(symbol)}&limit=${limit}`),
+
+  takerVolume: (symbol = 'BTC/USDT', limit = 24) =>
+    fetcher<TakerVolumePoint[]>(`/data-api/api/taker-volume?symbol=${encodeURIComponent(symbol)}&limit=${limit}`),
 }
