@@ -1,4 +1,5 @@
 import { Fragment, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { DirectionBadge, StatusBadge } from './badges'
 import { formatDateTime, formatPrice } from '../../utils/format'
 import type { Prediction } from '../../types/predict'
@@ -23,7 +24,11 @@ export function PredictionTable({ predictions }: { predictions: Prediction[] }) 
         <tbody>
           {predictions.map((p) => (
             <tr key={p.id} className="border-b border-gray-800 hover:bg-gray-800/40 transition-colors">
-              <td className="py-2 px-3 font-mono text-blue-300">{p.symbol}</td>
+              <td className="py-2 px-3 font-mono">
+                <Link to={`/predictions/${p.id}`} className="text-blue-300 hover:text-blue-200 underline underline-offset-2">
+                  {p.symbol}
+                </Link>
+              </td>
               <td className="py-2 px-3">
                 <DirectionBadge direction={p.direction} />
               </td>
@@ -188,7 +193,11 @@ export function PredictionHistoryTable({ predictions }: { predictions: Predictio
                 <td className="py-2 px-3 text-gray-500 whitespace-nowrap">
                   {formatDateTime(p.created_at ?? p.timestamp)}
                 </td>
-                <td className="py-2 px-3 font-mono text-blue-300">{p.symbol}</td>
+                <td className="py-2 px-3 font-mono">
+                  <Link to={`/predictions/${p.id}`} className="text-blue-300 hover:text-blue-200 underline underline-offset-2">
+                    {p.symbol}
+                  </Link>
+                </td>
                 <td className="py-2 px-3">
                   <DirectionBadge direction={p.direction} />
                 </td>
