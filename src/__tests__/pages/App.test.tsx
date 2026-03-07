@@ -29,13 +29,13 @@ vi.mock('../../pages/BacktestPage', () => ({
 // We test App's rendered output by rendering its internal structure
 import { Routes, Route, NavLink } from 'react-router-dom'
 
+const MockPredictDashboard = () => <div data-testid="dashboard">DashboardPage</div>
+const MockAccuracyPage = () => <div data-testid="accuracy">AccuracyPage</div>
+const MockChainPage = () => <div data-testid="chain">ChainPage</div>
+
 describe('App routing', () => {
   // Test the routing logic by recreating the structure since App wraps its own BrowserRouter
   function TestApp() {
-    const PredictDashboard = () => <div data-testid="dashboard">DashboardPage</div>
-    const AccuracyPage = () => <div data-testid="accuracy">AccuracyPage</div>
-    const ChainPage = () => <div data-testid="chain">ChainPage</div>
-
     return (
       <div className="bg-gray-950 text-gray-100 min-h-screen">
         <nav className="flex gap-4 px-6 py-3 bg-gray-900 border-b border-gray-800">
@@ -45,9 +45,9 @@ describe('App routing', () => {
           <NavLink to="/backtest" className={() => 'text-gray-400'}>Backtest</NavLink>
         </nav>
         <Routes>
-          <Route path="/" element={<PredictDashboard />} />
-          <Route path="/accuracy" element={<AccuracyPage />} />
-          <Route path="/chain" element={<ChainPage />} />
+          <Route path="/" element={<MockPredictDashboard />} />
+          <Route path="/accuracy" element={<MockAccuracyPage />} />
+          <Route path="/chain" element={<MockChainPage />} />
         </Routes>
       </div>
     )

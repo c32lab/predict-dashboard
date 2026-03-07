@@ -15,7 +15,7 @@ const REGIME_COLORS: Record<string, string> = { bull: '#22c55e', bear: '#ef4444'
 const tooltipStyle = { backgroundColor: '#111827', border: '1px solid #374151', borderRadius: 8 }
 
 function fmt(v: unknown): string {
-  return `${Number(v) ?? 0}%`
+  return `${Number(v) || 0}%`
 }
 
 // ─── KPI Card ───
@@ -276,7 +276,7 @@ function SweepSection({ sweep }: { sweep: BaselineResults['parameter_sweep'] }) 
           <ZAxis type="number" dataKey="z" name="Composite" range={[40, 400]} />
           <Tooltip
             contentStyle={tooltipStyle}
-            formatter={(value: unknown, name?: string) => [`${Number(value) ?? 0}${name?.includes('Composite') ? '' : '%'}`, name ?? '']}
+            formatter={(value: unknown, name?: string) => [`${Number(value) || 0}${name?.includes('Composite') ? '' : '%'}`, name ?? '']}
             labelFormatter={() => ''}
           />
           <Scatter data={scatterData}>
