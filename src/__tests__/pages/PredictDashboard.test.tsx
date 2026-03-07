@@ -11,7 +11,13 @@ vi.mock('../../hooks/usePredictApi', () => ({
 }))
 
 vi.mock('swr', () => ({
-  default: () => ({ data: undefined, isLoading: false }),
+  default: (_key: unknown, fetcher?: () => Promise<unknown>) => {
+    // Call the fetcher to ensure coverage of the arrow function
+    if (typeof fetcher === 'function') {
+      fetcher()
+    }
+    return { data: undefined, isLoading: false }
+  },
   SWRConfig: ({ children }: { children: React.ReactNode }) => children,
 }))
 

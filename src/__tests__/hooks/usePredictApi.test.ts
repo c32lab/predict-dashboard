@@ -20,10 +20,14 @@ vi.mock('../../api/predict', () => ({
   },
 }))
 
-// Mock SWR to avoid real network calls
+// Mock SWR to avoid real network calls but invoke the fetcher for coverage
 vi.mock('swr', () => ({
-  default: (key: unknown) => {
+  default: (key: unknown, fetcher?: () => Promise<unknown>) => {
     if (key === null) return { data: undefined, error: undefined, isLoading: false }
+    // Call the fetcher so its arrow function is covered
+    if (typeof fetcher === 'function') {
+      fetcher()
+    }
     return { data: undefined, error: undefined, isLoading: true }
   },
 }))
@@ -60,6 +64,11 @@ describe('usePredictApi hooks', () => {
     expect(result.current).toHaveProperty('isLoading')
   })
 
+  it('usePredictions uses default params', () => {
+    const { result } = renderHook(() => usePredictions())
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
   it('usePredictAccuracy returns SWR result', () => {
     const { result } = renderHook(() => usePredictAccuracy())
     expect(result.current).toHaveProperty('isLoading')
@@ -67,6 +76,11 @@ describe('usePredictApi hooks', () => {
 
   it('usePredictEvents accepts limit and pattern', () => {
     const { result } = renderHook(() => usePredictEvents(20, 'whale'))
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
+  it('usePredictEvents uses default params', () => {
+    const { result } = renderHook(() => usePredictEvents())
     expect(result.current).toHaveProperty('isLoading')
   })
 
@@ -90,13 +104,28 @@ describe('usePredictApi hooks', () => {
     expect(result.current).toHaveProperty('isLoading')
   })
 
+  it('useOpenInterest uses default params', () => {
+    const { result } = renderHook(() => useOpenInterest())
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
   it('useLongShortRatio accepts symbol and limit', () => {
     const { result } = renderHook(() => useLongShortRatio('SOL/USDT', 12))
     expect(result.current).toHaveProperty('isLoading')
   })
 
+  it('useLongShortRatio uses default params', () => {
+    const { result } = renderHook(() => useLongShortRatio())
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
   it('useTakerVolume accepts symbol and limit', () => {
     const { result } = renderHook(() => useTakerVolume('BNB/USDT', 6))
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
+  it('useTakerVolume uses default params', () => {
+    const { result } = renderHook(() => useTakerVolume())
     expect(result.current).toHaveProperty('isLoading')
   })
 

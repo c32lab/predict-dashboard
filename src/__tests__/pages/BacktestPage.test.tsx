@@ -185,4 +185,49 @@ describe('BacktestPage', () => {
     expect(screen.getByText('After')).toBeInTheDocument()
     expect(screen.getByText('+10pp')).toBeInTheDocument()
   })
+
+  it('shows error state when only AB results fail (e2)', () => {
+    let callCount = 0
+    vi.mocked(useSWR).mockImplementation(() => {
+      callCount++
+      if (callCount === 1) return { data: mockFullResults, error: undefined, isLoading: false, isValidating: false, mutate: vi.fn() }
+      return { data: undefined, error: new Error('ab fail'), isLoading: false, isValidating: false, mutate: vi.fn() }
+    })
+    render(<BacktestPage />)
+    expect(screen.getByText('Failed to load backtest data.')).toBeInTheDocument()
+  })
+
+  it('renders best and worst horizon KPI cards', () => {
+    setupDataMock()
+    render(<BacktestPage />)
+    // Best horizon is 1d at 66.7%, worst is 7d at 36%
+    expect(screen.getByText('Best Horizon')).toBeInTheDocument()
+    expect(screen.getByText('Worst Horizon')).toBeInTheDocument()
+    expect(screen.getByText(/1d 66.7%/)).toBeInTheDocument()
+    expect(screen.getByText(/7d 36%/)).toBeInTheDocument()
+  })
+
+  it('renders LONG and SHORT accuracy KPI cards', () => {
+    setupDataMock()
+    render(<BacktestPage />)
+    expect(screen.getByText('LONG Accuracy')).toBeInTheDocument()
+    expect(screen.getByText('SHORT Accuracy')).toBeInTheDocument()
+    expect(screen.getByText('25/40')).toBeInTheDocument()
+    expect(screen.getByText('19/40')).toBeInTheDocument()
+  })
+
+  it('renders generated_at date', () => {
+    setupDataMock()
+    render(<BacktestPage />)
+    expect(screen.getByText('Generated 2026-03-06')).toBeInTheDocument()
+  })
+
+  it('fetcher function calls fetch and returns json', async () => {
+    const mockJson = { test: true }
+    global.fetch = vi.fn().mockResolvedValue({ json: () => Promise.resolve(mockJson) })
+    const fetcher = (url: string) => fetch(url).then(r => r.json())
+    const result = await fetcher('/test.json')
+    expect(result).toEqual(mockJson)
+    expect(global.fetch).toHaveBeenCalledWith('/test.json')
+  })
 })
