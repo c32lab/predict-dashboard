@@ -27,7 +27,7 @@ vi.mock('../../pages/BacktestPage', () => ({
 
 // Need to import App fresh - but App uses BrowserRouter internally and lazy()
 // We test App's rendered output by rendering its internal structure
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
+import { Routes, Route, NavLink } from 'react-router-dom'
 
 describe('App routing', () => {
   // Test the routing logic by recreating the structure since App wraps its own BrowserRouter

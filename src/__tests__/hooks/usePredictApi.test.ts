@@ -22,7 +22,7 @@ vi.mock('../../api/predict', () => ({
 
 // Mock SWR to avoid real network calls
 vi.mock('swr', () => ({
-  default: (key: unknown, fetcher: (() => Promise<unknown>) | null) => {
+  default: (key: unknown, _fetcher: (() => Promise<unknown>) | null) => {
     if (key === null) return { data: undefined, error: undefined, isLoading: false }
     return { data: undefined, error: undefined, isLoading: true }
   },

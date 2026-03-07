@@ -22,6 +22,8 @@ describe('AccuracyPage', () => {
       data: undefined,
       error: undefined,
       isLoading: true,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePredictAccuracy>)
     render(<AccuracyPage />)
     expect(screen.getByText('Loading accuracy data...')).toBeInTheDocument()
@@ -32,6 +34,8 @@ describe('AccuracyPage', () => {
       data: undefined,
       error: new Error('Network error'),
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePredictAccuracy>)
     render(<AccuracyPage />)
     expect(screen.getByText(/Failed to load/)).toBeInTheDocument()
@@ -43,6 +47,8 @@ describe('AccuracyPage', () => {
       data: undefined,
       error: undefined,
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePredictAccuracy>)
     const { container } = render(<AccuracyPage />)
     expect(container.innerHTML).toBe('')
@@ -56,7 +62,9 @@ describe('AccuracyPage', () => {
       },
       error: undefined,
       isLoading: false,
-    } as ReturnType<typeof usePredictAccuracy>)
+      mutate: vi.fn(),
+      isValidating: false,
+    } as unknown as ReturnType<typeof usePredictAccuracy>)
     render(<AccuracyPage />)
     expect(screen.getByText('Prediction Accuracy')).toBeInTheDocument()
     expect(screen.getByTestId('accuracy-section')).toBeInTheDocument()

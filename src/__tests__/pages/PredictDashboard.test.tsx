@@ -53,6 +53,8 @@ describe('PredictDashboard', () => {
       data: undefined,
       error: undefined,
       isLoading: true,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePrediction>)
     renderPage()
     expect(screen.getByText(/Loading predictions/)).toBeInTheDocument()
@@ -63,6 +65,8 @@ describe('PredictDashboard', () => {
       data: undefined,
       error: new Error('API down'),
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePrediction>)
     renderPage()
     expect(screen.getByText(/Failed to load/)).toBeInTheDocument()
@@ -74,6 +78,8 @@ describe('PredictDashboard', () => {
       data: undefined,
       error: undefined,
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePrediction>)
     const { container } = renderPage()
     expect(container.querySelector('[data-testid="health-header"]')).toBeNull()
@@ -91,6 +97,8 @@ describe('PredictDashboard', () => {
       },
       error: undefined,
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePrediction>)
     renderPage()
     expect(screen.getByTestId('health-header')).toBeInTheDocument()

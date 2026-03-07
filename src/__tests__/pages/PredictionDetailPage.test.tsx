@@ -31,6 +31,8 @@ describe('PredictionDetailPage', () => {
       data: undefined,
       error: undefined,
       isLoading: true,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePredictionDetail>)
     const { container } = renderWithRoute('1')
     expect(container.querySelector('.animate-pulse')).toBeTruthy()
@@ -41,6 +43,8 @@ describe('PredictionDetailPage', () => {
       data: undefined,
       error: new Error('Not found'),
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePredictionDetail>)
     renderWithRoute('1')
     expect(screen.getByText(/加载失败/)).toBeInTheDocument()
@@ -52,6 +56,8 @@ describe('PredictionDetailPage', () => {
       data: undefined,
       error: undefined,
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePredictionDetail>)
     const { container } = renderWithRoute('1')
     // Should be empty except router wrapper
@@ -83,6 +89,8 @@ describe('PredictionDetailPage', () => {
       },
       error: undefined,
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePredictionDetail>)
     renderWithRoute('1')
     expect(screen.getByText('BTC/USDT')).toBeInTheDocument()
@@ -103,8 +111,8 @@ describe('PredictionDetailPage', () => {
         price_at_prediction: 65000,
         macro_score: 7,
         fear_greed: 45,
-        expected_impact: null,
-        expected_horizon: null,
+        expected_impact: null as unknown as number,
+        expected_horizon: null as unknown as string,
         created_at: '2026-03-06T09:00:00Z',
         timestamp: '2026-03-06T09:00:00Z',
         trigger_event: '',
@@ -121,6 +129,8 @@ describe('PredictionDetailPage', () => {
       },
       error: undefined,
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof usePredictionDetail>)
     renderWithRoute('1')
     expect(screen.getByText('Matched Events')).toBeInTheDocument()

@@ -20,6 +20,8 @@ describe('ChainPage', () => {
       data: undefined,
       error: undefined,
       isLoading: true,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof useIndustryChain>)
     render(<ChainPage />)
     expect(screen.getByText('Loading industry chain...')).toBeInTheDocument()
@@ -30,6 +32,8 @@ describe('ChainPage', () => {
       data: undefined,
       error: new Error('Failed'),
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof useIndustryChain>)
     render(<ChainPage />)
     expect(screen.getByText(/Failed to load/)).toBeInTheDocument()
@@ -40,6 +44,8 @@ describe('ChainPage', () => {
       data: undefined,
       error: undefined,
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof useIndustryChain>)
     const { container } = render(<ChainPage />)
     expect(container.innerHTML).toBe('')
@@ -50,6 +56,8 @@ describe('ChainPage', () => {
       data: { nodes: [{ id: '1', name: 'BTC', type: 'core', labels: [] }], edges: [] },
       error: undefined,
       isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
     } as ReturnType<typeof useIndustryChain>)
     render(<ChainPage />)
     expect(screen.getByText('Industry Chain')).toBeInTheDocument()
