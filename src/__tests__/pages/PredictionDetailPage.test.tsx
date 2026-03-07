@@ -47,7 +47,7 @@ describe('PredictionDetailPage', () => {
       isValidating: false,
     } as ReturnType<typeof usePredictionDetail>)
     renderWithRoute('1')
-    expect(screen.getByText(/加载失败/)).toBeInTheDocument()
+    expect(screen.getByText(/Failed to load/)).toBeInTheDocument()
     expect(screen.getByText(/Not found/)).toBeInTheDocument()
   })
 

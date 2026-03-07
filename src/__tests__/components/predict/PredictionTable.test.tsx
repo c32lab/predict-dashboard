@@ -1,7 +1,8 @@
 import { describe, it, expect, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
 import { MemoryRouter } from 'react-router-dom'
-import { PredictionTable, PredictionHistoryTable } from '../../../components/predict/PredictionTable'
+import { PredictionTable } from '../../../components/predict/PredictionTable'
+import { PredictionHistoryTable } from '../../../components/predict/PredictionHistoryTable'
 import type { Prediction } from '../../../types/predict'
 
 // Mock the hooks used by DetailPanel
@@ -99,7 +100,7 @@ describe('PredictionHistoryTable', () => {
 
   it('renders prediction rows with status badge', () => {
     renderWithRouter(<PredictionHistoryTable predictions={[makePrediction({ status: 'active' })]} />)
-    expect(screen.getByText(/监控中/)).toBeInTheDocument()
+    expect(screen.getByText(/Active/)).toBeInTheDocument()
   })
 
   it('sorts predictions by created_at descending', () => {

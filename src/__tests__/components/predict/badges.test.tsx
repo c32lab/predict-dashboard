@@ -33,42 +33,42 @@ describe('DirectionBadge', () => {
 describe('StatusBadge', () => {
   it('renders active status', () => {
     render(<StatusBadge status="active" />)
-    const badge = screen.getByText(/监控中/)
+    const badge = screen.getByText(/Active/)
     expect(badge).toBeInTheDocument()
     expect(badge.className).toContain('bg-blue-900')
   })
 
   it('renders validating status', () => {
     render(<StatusBadge status="validating" />)
-    const badge = screen.getByText(/验证中/)
+    const badge = screen.getByText(/Validating/)
     expect(badge).toBeInTheDocument()
     expect(badge.className).toContain('bg-yellow-900')
   })
 
   it('renders validated status', () => {
     render(<StatusBadge status="validated" />)
-    const badge = screen.getByText(/已验证/)
+    const badge = screen.getByText(/Validated/)
     expect(badge).toBeInTheDocument()
     expect(badge.className).toContain('bg-green-900')
   })
 
   it('renders expired status', () => {
     render(<StatusBadge status="expired" />)
-    const badge = screen.getByText(/已过期/)
+    const badge = screen.getByText(/Expired/)
     expect(badge).toBeInTheDocument()
     expect(badge.className).toContain('bg-gray-700')
   })
 
   it('renders failed status', () => {
     render(<StatusBadge status="failed" />)
-    const badge = screen.getByText(/失败/)
+    const badge = screen.getByText(/Failed/)
     expect(badge).toBeInTheDocument()
     expect(badge.className).toContain('bg-red-900')
   })
 
   it('renders completed status', () => {
     render(<StatusBadge status="completed" />)
-    const badge = screen.getByText(/已完成/)
+    const badge = screen.getByText(/Completed/)
     expect(badge).toBeInTheDocument()
     expect(badge.className).toContain('bg-green-900')
   })
@@ -82,13 +82,13 @@ describe('StatusBadge', () => {
 
   it('is case-insensitive', () => {
     render(<StatusBadge status="ACTIVE" />)
-    const badge = screen.getByText(/监控中/)
+    const badge = screen.getByText(/Active/)
     expect(badge).toBeInTheDocument()
   })
 
   it('has title attribute with tooltip', () => {
     render(<StatusBadge status="active" />)
-    const badge = screen.getByText(/监控中/)
-    expect(badge).toHaveAttribute('title', '预测已发出，等待市场验证')
+    const badge = screen.getByText(/Active/)
+    expect(badge).toHaveAttribute('title', 'Prediction issued, awaiting market validation')
   })
 })

@@ -1,6 +1,7 @@
 export { DirectionBadge, StatusBadge } from './badges'
 export { MacroCard } from './MacroCard'
-export { PredictionTable, PredictionHistoryTable } from './PredictionTable'
+export { PredictionTable } from './PredictionTable'
+export { PredictionHistoryTable } from './PredictionHistoryTable'
 export { EventTable } from './EventTable'
 export { PatternCard } from './PatternCard'
 export { MacroHistoryChart } from './MacroHistoryChart'
