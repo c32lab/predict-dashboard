@@ -2,9 +2,9 @@ import { useState } from 'react'
 import useSWR from 'swr'
 import {
   BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer,
-  ScatterChart, Scatter, ZAxis, Cell,
+  ScatterChart, Scatter, ZAxis, Cell, LabelList,
 } from 'recharts'
-import type { BaselineResults, ABResults } from '../types/backtest'
+import type { BaselineResults, ABResults, FullResults, AccuracyBucket } from '../types/backtest'
 
 const fetcher = (url: string) => fetch(url).then(r => r.json())
 
@@ -40,7 +40,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 export default function BacktestPage() {
-  const { data: baseline, error: e1 } = useSWR<BaselineResults>('/backtest-baseline-results.json', fetcher)
+  const { data: baseline, error: e1 } = useSWR<FullResults>('/backtest-full-results.json', fetcher)
   const { data: ab, error: e2 } = useSWR<ABResults>('/backtest-ab-results.json', fetcher)
 
   if (e1 || e2) return <div className="p-8 text-red-400">Failed to load backtest data.</div>
@@ -81,6 +81,21 @@ export default function BacktestPage() {
 
       {/* E. Findings & Suggestions */}
       <FindingsSection findings={baseline.findings} suggestions={baseline.suggestions} />
+
+      {/* F. Pattern Accuracy Heatmap */}
+      <PatternHeatmapSection patterns={pb.by_trigger_pattern} />
+
+      {/* G. Confusion Matrix */}
+      <ConfusionMatrixSection cm={pb.confusion_matrix} />
+
+      {/* H. Confidence Bucket Analysis */}
+      <ConfidenceBucketSection buckets={pb.by_confidence_bucket} />
+
+      {/* I. Multi-Symbol Comparison */}
+      <SymbolComparisonSection symbols={baseline.multi_symbol_conduction.by_symbol} />
+
+      {/* J. Before/After Comparison */}
+      <BeforeAfterSection data={baseline.before_after_comparison} />
     </div>
   )
 }
@@ -329,5 +344,190 @@ function FindingsSection({ findings, suggestions }: { findings: string[]; sugges
         </ul>
       </Section>
     </div>
+  )
+}
+
+// ═══════════════════════════════════════
+// F. Pattern Accuracy Heatmap
+// ═══════════════════════════════════════
+function patternColor(pct: number) {
+  if (pct >= 70) return 'bg-green-900 text-green-200'
+  if (pct >= 50) return 'bg-green-950 text-green-300'
+  return 'bg-red-900/60 text-red-200'
+}
+
+function PatternHeatmapSection({ patterns }: { patterns: Record<string, AccuracyBucket> }) {
+  const sorted = Object.entries(patterns).sort((a, b) => b[1].accuracy_pct - a[1].accuracy_pct)
+  return (
+    <Section title="Pattern Accuracy Heatmap">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+        {sorted.map(([pattern, s]) => (
+          <div key={pattern} className={`rounded-lg p-3 ${patternColor(s.accuracy_pct)}`}>
+            <div className="font-mono text-sm">{pattern}</div>
+            <div className="flex justify-between mt-1 text-xs">
+              <span>{s.correct}/{s.total}</span>
+              <span className="font-bold">{s.accuracy_pct}%</span>
+            </div>
+          </div>
+        ))}
+      </div>
+    </Section>
+  )
+}
+
+// ═══════════════════════════════════════
+// G. Confusion Matrix
+// ═══════════════════════════════════════
+function ConfusionMatrixSection({ cm }: { cm: FullResults['prediction_backtest']['confusion_matrix'] }) {
+  return (
+    <Section title="Confusion Matrix">
+      <div className="grid grid-cols-2 gap-3 max-w-md">
+        <div className="bg-green-900/40 border border-green-800 rounded-lg p-4 text-center">
+          <div className="text-xs text-gray-400">True Positive</div>
+          <div className="text-2xl font-bold text-green-300">{cm.TP}</div>
+        </div>
+        <div className="bg-red-900/40 border border-red-800 rounded-lg p-4 text-center">
+          <div className="text-xs text-gray-400">False Positive</div>
+          <div className="text-2xl font-bold text-red-300">{cm.FP}</div>
+        </div>
+        <div className="bg-red-900/40 border border-red-800 rounded-lg p-4 text-center">
+          <div className="text-xs text-gray-400">False Negative</div>
+          <div className="text-2xl font-bold text-red-300">{cm.FN}</div>
+        </div>
+        <div className="bg-green-900/40 border border-green-800 rounded-lg p-4 text-center">
+          <div className="text-xs text-gray-400">True Negative</div>
+          <div className="text-2xl font-bold text-green-300">{cm.TN}</div>
+        </div>
+      </div>
+      <div className="flex gap-6 mt-4 text-sm text-gray-300">
+        <span>Precision: <strong>{cm.precision_pct}%</strong></span>
+        <span>Recall: <strong>{cm.recall_pct}%</strong></span>
+        <span>F1: <strong>{cm.f1}</strong></span>
+        <span>Accuracy: <strong>{cm.accuracy_pct}%</strong></span>
+      </div>
+    </Section>
+  )
+}
+
+// ═══════════════════════════════════════
+// H. Confidence Bucket Analysis
+// ═══════════════════════════════════════
+function ConfidenceBucketSection({ buckets }: { buckets: Record<string, AccuracyBucket> }) {
+  const chartData = Object.entries(buckets).map(([bucket, s]) => ({
+    bucket,
+    accuracy: s.accuracy_pct,
+    total: s.total,
+  }))
+
+  return (
+    <Section title="Confidence Bucket Analysis">
+      <ResponsiveContainer width="100%" height={280}>
+        <BarChart data={chartData} barCategoryGap="30%">
+          <XAxis dataKey="bucket" stroke="#9ca3af" />
+          <YAxis stroke="#9ca3af" domain={[0, 100]} tickFormatter={v => `${v}%`} />
+          <Tooltip
+            contentStyle={tooltipStyle}
+            formatter={(value: unknown) => fmt(value)}
+            labelFormatter={(label: unknown) => `Confidence: ${String(label ?? '')}`}
+          />
+          <Bar dataKey="accuracy" fill="#8b5cf6" radius={[4, 4, 0, 0]}>
+            <LabelList dataKey="total" position="top" fill="#9ca3af" fontSize={11} formatter={(v: unknown) => `n=${v}`} />
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+    </Section>
+  )
+}
+
+// ═══════════════════════════════════════
+// I. Multi-Symbol Comparison
+// ═══════════════════════════════════════
+function SymbolComparisonSection({ symbols }: { symbols: FullResults['multi_symbol_conduction']['by_symbol'] }) {
+  const sorted = Object.entries(symbols).sort((a, b) => b[1].overall_accuracy_pct - a[1].overall_accuracy_pct)
+  const horizonKeys = sorted.length > 0 ? Object.keys(sorted[0][1].horizons) : []
+
+  const chartData = sorted.map(([symbol, s]) => {
+    const row: Record<string, string | number> = { symbol }
+    for (const h of horizonKeys) {
+      row[h] = s.horizons[h]?.accuracy_pct ?? 0
+    }
+    return row
+  })
+
+  return (
+    <Section title="Multi-Symbol Comparison">
+      <ResponsiveContainer width="100%" height={Math.max(200, sorted.length * 50)}>
+        <BarChart data={chartData} layout="vertical" barCategoryGap="20%">
+          <XAxis type="number" stroke="#9ca3af" domain={[0, 100]} tickFormatter={v => `${v}%`} />
+          <YAxis type="category" dataKey="symbol" stroke="#9ca3af" width={90} />
+          <Tooltip contentStyle={tooltipStyle} formatter={(value: unknown) => fmt(value)} />
+          <Legend />
+          {horizonKeys.map(h => (
+            <Bar key={h} dataKey={h} fill={HORIZON_COLORS[h as keyof typeof HORIZON_COLORS] ?? '#6b7280'} radius={[0, 4, 4, 0]} />
+          ))}
+        </BarChart>
+      </ResponsiveContainer>
+    </Section>
+  )
+}
+
+// ═══════════════════════════════════════
+// J. Before/After Comparison
+// ═══════════════════════════════════════
+function BeforeAfterSection({ data }: { data: FullResults['before_after_comparison'] }) {
+  const { before, after, delta } = data
+  const deltaColor = delta.accuracy_change_pp >= 0 ? 'text-green-400' : 'text-red-400'
+  const deltaSign = delta.accuracy_change_pp >= 0 ? '+' : ''
+
+  return (
+    <Section title="Before / After Comparison">
+      <div className="grid grid-cols-3 gap-4">
+        {/* Before card */}
+        <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
+          <h3 className="text-sm font-semibold text-gray-300 mb-3">Before</h3>
+          <div className="text-2xl font-bold">{before.overall_accuracy_pct}%</div>
+          <div className="text-xs text-gray-400">{before.overall_correct}/{before.overall_total} correct</div>
+          <div className="text-xs text-gray-500 mt-1">{before.total_predictions} predictions</div>
+          <div className="mt-3 space-y-1">
+            {Object.entries(before.by_horizon).map(([h, s]) => (
+              <div key={h} className="flex justify-between text-sm text-gray-400">
+                <span>{h}</span>
+                <span>{s.accuracy_pct}% ({s.correct}/{s.total})</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Delta card */}
+        <div className="flex flex-col items-center justify-center bg-gray-800/30 border border-gray-700 rounded-xl p-4">
+          <div className="text-xs text-gray-500 mb-2">Accuracy Change</div>
+          <div className={`text-3xl font-bold ${deltaColor}`}>
+            {deltaSign}{delta.accuracy_change_pp}pp
+          </div>
+          <div className="text-xs text-gray-500 mt-3">
+            {delta.predictions_removed} predictions removed
+          </div>
+          <div className="text-xs text-gray-500">
+            {delta.validations_removed} validations removed
+          </div>
+        </div>
+
+        {/* After card */}
+        <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
+          <h3 className="text-sm font-semibold text-gray-300 mb-3">After</h3>
+          <div className="text-2xl font-bold">{after.overall_accuracy_pct}%</div>
+          <div className="text-xs text-gray-400">{after.overall_correct}/{after.overall_total} correct</div>
+          <div className="text-xs text-gray-500 mt-1">{after.total_predictions} predictions</div>
+          <div className="mt-3 space-y-1">
+            {Object.entries(after.by_horizon).map(([h, s]) => (
+              <div key={h} className="flex justify-between text-sm text-gray-400">
+                <span>{h}</span>
+                <span>{s.accuracy_pct}% ({s.correct}/{s.total})</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </Section>
   )
 }
