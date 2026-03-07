@@ -6,6 +6,7 @@ const PredictDashboard = lazy(() => import('./pages/PredictDashboard'))
 const PredictionDetailPage = lazy(() => import('./pages/PredictionDetailPage'))
 const AccuracyPage = lazy(() => import('./pages/AccuracyPage'))
 const ChainPage = lazy(() => import('./pages/ChainPage'))
+const BacktestPage = lazy(() => import('./pages/BacktestPage'))
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? 'text-blue-400 font-bold' : 'text-gray-400 hover:text-gray-200'
@@ -32,6 +33,7 @@ function App() {
             <NavLink to="/" end className={navLinkClass}>Dashboard</NavLink>
             <NavLink to="/accuracy" className={navLinkClass}>Accuracy</NavLink>
             <NavLink to="/chain" className={navLinkClass}>Chain</NavLink>
+            <NavLink to="/backtest" className={navLinkClass}>回测分析</NavLink>
           </nav>
           <Suspense fallback={<Loading />}>
             <Routes>
@@ -39,6 +41,7 @@ function App() {
               <Route path="/predictions/:id" element={<PredictionDetailPage />} />
               <Route path="/accuracy" element={<AccuracyPage />} />
               <Route path="/chain" element={<ChainPage />} />
+              <Route path="/backtest" element={<BacktestPage />} />
             </Routes>
           </Suspense>
         </div>
