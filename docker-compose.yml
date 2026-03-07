@@ -4,3 +4,10 @@ services:
     ports:
       - "18828:18828"
     restart: unless-stopped
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:18828/"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
