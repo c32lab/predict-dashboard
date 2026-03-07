@@ -10,8 +10,12 @@ vi.mock('recharts', async () => {
     BarChart: ({ children, data }: { children: React.ReactNode; data: unknown[] }) => <div data-testid="bar-chart" data-point-count={data.length}>{children}</div>,
     Bar: ({ dataKey, name }: { dataKey: string; name: string }) => <div data-testid={`bar-${dataKey}`}>{name}</div>,
     XAxis: () => <div data-testid="x-axis" />,
-    YAxis: () => <div data-testid="y-axis" />,
-    Tooltip: () => <div data-testid="tooltip" />,
+    YAxis: ({ tickFormatter }: { tickFormatter?: (v: number) => string }) => <div data-testid="y-axis" data-fmt={tickFormatter?.(50)} />,
+    Tooltip: ({ formatter }: { formatter?: (v: number | undefined, name?: string) => unknown }) => {
+      formatter?.(55.5, 'Long %')
+      formatter?.(undefined, undefined)
+      return <div data-testid="tooltip" />
+    },
   }
 })
 

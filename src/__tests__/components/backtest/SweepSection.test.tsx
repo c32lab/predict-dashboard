@@ -12,7 +12,12 @@ vi.mock('recharts', async () => {
     XAxis: () => <div data-testid="x-axis" />,
     YAxis: () => <div data-testid="y-axis" />,
     ZAxis: () => <div data-testid="z-axis" />,
-    Tooltip: () => <div data-testid="tooltip" />,
+    Tooltip: ({ formatter }: { formatter?: (v: unknown, name?: string) => unknown }) => {
+      formatter?.(50, 'Avg Accuracy')
+      formatter?.(10, 'Composite Score')
+      formatter?.(undefined, undefined)
+      return <div data-testid="tooltip" />
+    },
   }
 })
 

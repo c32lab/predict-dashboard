@@ -7,11 +7,16 @@ vi.mock('recharts', async () => {
     ...actual,
     ResponsiveContainer: ({ children }: { children: React.ReactNode }) => <div data-testid="responsive-container">{children}</div>,
     BarChart: ({ children, data }: { children: React.ReactNode; data: unknown[] }) => <div data-testid="bar-chart" data-count={data.length}>{children}</div>,
-    Bar: ({ dataKey }: { dataKey: string }) => <div data-testid={`bar-${dataKey}`} />,
+    Bar: ({ dataKey, children }: { dataKey: string; children?: React.ReactNode }) => <div data-testid={`bar-${dataKey}`}>{children}</div>,
     XAxis: () => <div data-testid="x-axis" />,
-    YAxis: () => <div data-testid="y-axis" />,
-    Tooltip: () => <div data-testid="tooltip" />,
-    LabelList: () => <div data-testid="label-list" />,
+    YAxis: ({ tickFormatter }: { tickFormatter?: (v: number) => string }) => <div data-testid="y-axis" data-fmt={tickFormatter?.(50)} />,
+    Tooltip: ({ formatter, labelFormatter }: { formatter?: (v: unknown) => unknown; labelFormatter?: (l: unknown) => string }) => {
+      formatter?.(75)
+      labelFormatter?.(null)
+      labelFormatter?.('0.7-0.8')
+      return <div data-testid="tooltip" />
+    },
+    LabelList: ({ formatter }: { formatter?: (v: unknown) => string }) => <div data-testid="label-list" data-fmt={formatter?.(20)} />,
   }
 })
 

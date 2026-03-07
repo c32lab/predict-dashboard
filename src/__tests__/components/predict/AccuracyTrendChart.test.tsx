@@ -7,6 +7,12 @@ vi.mock('recharts', async () => {
   return {
     ...actual,
     ResponsiveContainer: ({ children }: { children: React.ReactNode }) => children,
+    YAxis: ({ tickFormatter }: { tickFormatter?: (v: number) => string }) => <div data-testid="y-axis" data-fmt={tickFormatter?.(50)} />,
+    Tooltip: ({ formatter }: { formatter?: (v: number | undefined, name?: string) => unknown }) => {
+      formatter?.(70.5, 'BTC/USDT')
+      formatter?.(undefined, undefined)
+      return <div data-testid="tooltip" />
+    },
   }
 })
 

@@ -249,4 +249,27 @@ describe('BacktestPage', () => {
     expect(screen.getByText('LONG Accuracy')).toBeInTheDocument()
     expect(screen.getByText('SHORT Accuracy')).toBeInTheDocument()
   })
+
+  it('covers both branches of best/worst horizon reduce', () => {
+    const modifiedResults = {
+      ...mockFullResults,
+      prediction_backtest: {
+        ...mockFullResults.prediction_backtest,
+        by_horizon: {
+          '1d': { correct: 9, total: 25, accuracy_pct: 36 },
+          '3d': { correct: 15, total: 25, accuracy_pct: 60 },
+          '7d': { correct: 20, total: 30, accuracy_pct: 66.7 },
+        },
+      },
+    }
+    let callCount = 0
+    vi.mocked(useSWR).mockImplementation(() => {
+      callCount++
+      if (callCount % 2 === 1) return { data: modifiedResults, error: undefined, isLoading: false, isValidating: false, mutate: vi.fn() }
+      return { data: mockABResults, error: undefined, isLoading: false, isValidating: false, mutate: vi.fn() }
+    })
+    render(<BacktestPage />)
+    expect(screen.getByText(/7d 66.7%/)).toBeInTheDocument()
+    expect(screen.getByText(/1d 36%/)).toBeInTheDocument()
+  })
 })

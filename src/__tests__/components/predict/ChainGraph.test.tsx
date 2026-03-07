@@ -11,7 +11,11 @@ vi.mock('@xyflow/react', () => ({
   ),
   Background: () => <div data-testid="rf-background" />,
   Controls: () => <div data-testid="rf-controls" />,
-  MiniMap: () => <div data-testid="rf-minimap" />,
+  MiniMap: ({ nodeColor }: { nodeColor?: (n: { id: string }) => string }) => {
+    const color1 = nodeColor?.({ id: 'n1' })
+    const color2 = nodeColor?.({ id: 'nonexistent' })
+    return <div data-testid="rf-minimap" data-color1={color1} data-color2={color2} />
+  },
   BackgroundVariant: { Dots: 'dots' },
 }))
 
