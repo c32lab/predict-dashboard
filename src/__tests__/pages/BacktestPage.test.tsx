@@ -224,11 +224,11 @@ describe('BacktestPage', () => {
 
   it('fetcher function calls fetch and returns json', async () => {
     const mockJson = { test: true }
-    global.fetch = vi.fn().mockResolvedValue({ json: () => Promise.resolve(mockJson) })
+    globalThis.fetch = vi.fn().mockResolvedValue({ json: () => Promise.resolve(mockJson) }) as typeof fetch
     const fetcher = (url: string) => fetch(url).then(r => r.json())
     const result = await fetcher('/test.json')
     expect(result).toEqual(mockJson)
-    expect(global.fetch).toHaveBeenCalledWith('/test.json')
+    expect(globalThis.fetch).toHaveBeenCalledWith('/test.json')
   })
 
   it('renders KPI cards when LONG/SHORT direction data is missing', () => {

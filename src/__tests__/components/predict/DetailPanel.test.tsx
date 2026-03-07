@@ -124,9 +124,9 @@ describe('DetailPanel', () => {
       error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
     } as ReturnType<typeof usePredictionDetail>)
     vi.mocked(useReasoningGraph).mockReturnValue({
-      data: { nodes: [{ id: '1', label: 'trigger', type: 'trigger' }], edges: [] },
+      data: { prediction_id: 1, nodes: [{ id: '1', label: 'trigger', type: 'trigger' }], edges: [] },
       isLoading: false, error: undefined, mutate: vi.fn(), isValidating: false,
-    } as ReturnType<typeof useReasoningGraph>)
+    } as unknown as ReturnType<typeof useReasoningGraph>)
     render(<DetailPanel id={1} reasoning="" />)
     expect(screen.getByText('Graph')).toBeInTheDocument()
   })
@@ -156,9 +156,9 @@ describe('DetailPanel', () => {
       error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
     } as ReturnType<typeof usePredictionDetail>)
     vi.mocked(useReasoningGraph).mockReturnValue({
-      data: { nodes: [], edges: [] },
+      data: { prediction_id: 1, nodes: [], edges: [] },
       isLoading: false, error: undefined, mutate: vi.fn(), isValidating: false,
-    } as ReturnType<typeof useReasoningGraph>)
+    } as unknown as ReturnType<typeof useReasoningGraph>)
     render(<DetailPanel id={1} reasoning="" />)
     expect(screen.getByText('No reasoning chain data')).toBeInTheDocument()
   })
