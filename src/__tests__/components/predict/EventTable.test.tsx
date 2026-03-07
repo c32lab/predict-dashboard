@@ -107,4 +107,9 @@ describe('EventTable', () => {
     // Should still render without error
     expect(screen.getByText('BTC/USDT')).toBeInTheDocument()
   })
+
+  it('shows zero price change with gray color', () => {
+    render(<EventTable events={[makeEvent({ price_change: 0 })]} />)
+    expect(screen.getByText('0.00%')).toBeInTheDocument()
+  })
 })

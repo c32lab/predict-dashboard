@@ -47,4 +47,14 @@ describe('DerivativesOverviewSection', () => {
     expect(screen.getByText('BTC')).toBeInTheDocument()
     expect(screen.getByText('ETH')).toBeInTheDocument()
   })
+
+  it('switches symbol on button click', async () => {
+    const { default: userEvent } = await import('@testing-library/user-event')
+    const user = userEvent.setup()
+    render(<DerivativesOverviewSection />)
+    const ethBtn = screen.getByText('ETH')
+    await user.click(ethBtn)
+    // After clicking, ETH button should become active
+    expect(ethBtn.className).toContain('bg-blue-700')
+  })
 })

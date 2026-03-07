@@ -59,4 +59,34 @@ describe('DetailHeaderCard', () => {
     render(<DetailHeaderCard data={makeDetail({ reasoning: '' })} />)
     expect(screen.queryByText('Reasoning')).not.toBeInTheDocument()
   })
+
+  it('shows dash for null price_at_prediction', () => {
+    render(<DetailHeaderCard data={makeDetail({ price_at_prediction: null as unknown as number })} />)
+    const dashes = screen.getAllByText('—')
+    expect(dashes.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('shows dash for null macro_score', () => {
+    render(<DetailHeaderCard data={makeDetail({ macro_score: null as unknown as number })} />)
+    const dashes = screen.getAllByText('—')
+    expect(dashes.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('shows dash for null fear_greed', () => {
+    render(<DetailHeaderCard data={makeDetail({ fear_greed: null as unknown as number })} />)
+    const dashes = screen.getAllByText('—')
+    expect(dashes.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('shows dash for null expected_impact', () => {
+    render(<DetailHeaderCard data={makeDetail({ expected_impact: null as unknown as number })} />)
+    const dashes = screen.getAllByText('—')
+    expect(dashes.length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('shows dash for null expected_horizon', () => {
+    render(<DetailHeaderCard data={makeDetail({ expected_horizon: null as unknown as string })} />)
+    const dashes = screen.getAllByText('—')
+    expect(dashes.length).toBeGreaterThanOrEqual(1)
+  })
 })

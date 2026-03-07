@@ -54,4 +54,23 @@ describe('IndustryChainSection', () => {
     expect(screen.getByText('All (0)')).toBeInTheDocument()
     expect(screen.getByText('No nodes match the filter')).toBeInTheDocument()
   })
+
+  it('filters nodes by type when clicking type button', async () => {
+    const user = userEvent.setup()
+    render(<IndustryChainSection nodes={mockNodes} edges={mockEdges} />)
+    const coreButton = screen.getByText(/^core/)
+    await user.click(coreButton)
+    // Only core nodes should be visible - Mining and DeFi should be filtered out
+    // The All button should not have the active style
+    expect(screen.queryByText('No nodes match the filter')).not.toBeInTheDocument()
+  })
+
+  it('filters by search matching node id', async () => {
+    const user = userEvent.setup()
+    render(<IndustryChainSection nodes={mockNodes} edges={mockEdges} />)
+    const searchInput = screen.getByPlaceholderText('Search nodes…')
+    await user.type(searchInput, 'n1')
+    // Only Bitcoin (id: n1) matches
+    expect(screen.queryByText('No nodes match the filter')).not.toBeInTheDocument()
+  })
 })

@@ -118,4 +118,21 @@ describe('AccuracyAndValidationsSection', () => {
     const pctEl = screen.getByText('66.7%')
     expect(pctEl.className).toContain('text-green-400')
   })
+
+  it('filters chart symbols when a specific symbol is selected', async () => {
+    const user = userEvent.setup()
+    const validations = [
+      makeValidation({ id: 1, symbol: 'BTC/USDT', validated_at: '2026-03-06T10:00:00Z' }),
+      makeValidation({ id: 2, symbol: 'ETH/USDT', validated_at: '2026-03-06T10:00:00Z' }),
+    ]
+    render(
+      <AccuracyAndValidationsSection accuracy={{}} validations={validations} />
+    )
+    const select = screen.getByRole('combobox')
+    await user.selectOptions(select, 'ETH/USDT')
+    // After filtering to ETH, accuracy should be computed for 1 validation
+    const totalSection = screen.getByText('predictions')
+    const totalValue = totalSection.parentElement?.querySelector('.text-3xl, .text-4xl')
+    expect(totalValue?.textContent).toBe('1')
+  })
 })

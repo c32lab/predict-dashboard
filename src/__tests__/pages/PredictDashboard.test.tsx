@@ -43,7 +43,16 @@ vi.mock('../../components/SectionErrorBoundary', () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
 
-import { usePrediction } from '../../hooks/usePredictApi'
+vi.mock('../../components/predict/dashboard', () => ({
+  MacroOverviewSection: ({ macro }: { macro: unknown }) => <div>Macro Overview {macro ? 'loaded' : ''}</div>,
+  ActivePredictionsSection: () => <div>Active Predictions</div>,
+  EventLibrarySection: () => <div>Event Library</div>,
+  PatternsAndChartSection: () => <div>PatternsChart</div>,
+  PredictionHistorySection: () => <div>PredictionHistory</div>,
+  TrendDiscoverySection: () => <div>TrendDiscovery</div>,
+}))
+
+import { usePrediction, useTrends } from '../../hooks/usePredictApi'
 import PredictDashboard from '../../pages/PredictDashboard'
 
 describe('PredictDashboard', () => {
@@ -111,5 +120,44 @@ describe('PredictDashboard', () => {
     expect(screen.getByText(/Macro Overview/)).toBeInTheDocument()
     expect(screen.getByText(/Active Predictions/)).toBeInTheDocument()
     expect(screen.getByText(/Event Library/)).toBeInTheDocument()
+  })
+
+  it('handles trendsData as object with trends property', () => {
+    vi.mocked(useTrends).mockReturnValue({
+      data: { trends: [{ id: 1, topic: 'BTC Rally' }] } as unknown as ReturnType<typeof useTrends>['data'],
+      isLoading: false,
+      error: undefined,
+      mutate: vi.fn(),
+      isValidating: false,
+    } as ReturnType<typeof useTrends>)
+    vi.mocked(usePrediction).mockReturnValue({
+      data: {
+        macro: { score: 7, fear_greed: 45, fear_greed_trend: 'neutral', etf_flow_1d: 0, etf_flow_5d: 0, volume_ratio: 1, funding_rate: 0, funding_rate_avg: 0, fear_greed_prev: 50, reasons: [] },
+        event_kb: { events: [], patterns: [] },
+        predictions: { active: [] },
+        accuracy: {},
+        recent_validations: [],
+        macro_history: [],
+      },
+      error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePrediction>)
+    renderPage()
+    expect(screen.getByTestId('health-header')).toBeInTheDocument()
+  })
+
+  it('handles missing predictions and event_kb gracefully', () => {
+    vi.mocked(usePrediction).mockReturnValue({
+      data: {
+        macro: { score: 7, fear_greed: 45, fear_greed_trend: 'neutral', etf_flow_1d: 0, etf_flow_5d: 0, volume_ratio: 1, funding_rate: 0, funding_rate_avg: 0, fear_greed_prev: 50, reasons: [] },
+        event_kb: undefined,
+        predictions: undefined,
+        accuracy: undefined,
+        recent_validations: undefined,
+        macro_history: [],
+      } as unknown as ReturnType<typeof usePrediction>['data'],
+      error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePrediction>)
+    renderPage()
+    expect(screen.getByTestId('health-header')).toBeInTheDocument()
   })
 })

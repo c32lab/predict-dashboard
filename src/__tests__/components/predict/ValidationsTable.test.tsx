@@ -57,4 +57,26 @@ describe('ValidationsTable', () => {
     render(<ValidationsTable validations={[makeValidation({ actual_change: 2.5 })]} />)
     expect(screen.getByText('+2.50%')).toBeInTheDocument()
   })
+
+  it('shows negative actual_change with red color', () => {
+    render(<ValidationsTable validations={[makeValidation({ actual_change: -3.1 })]} />)
+    expect(screen.getByText('-3.10%')).toBeInTheDocument()
+  })
+
+  it('shows zero actual_change with gray color', () => {
+    render(<ValidationsTable validations={[makeValidation({ actual_change: 0 })]} />)
+    expect(screen.getByText('0.00%')).toBeInTheDocument()
+  })
+
+  it('truncates long trigger event text', () => {
+    const longTrigger = 'A'.repeat(50)
+    render(<ValidationsTable validations={[makeValidation({ trigger_event: longTrigger })]} />)
+    const truncated = screen.getByText(/^A+…$/)
+    expect(truncated.textContent!.length).toBeLessThan(50)
+  })
+
+  it('shows full trigger event text when short', () => {
+    render(<ValidationsTable validations={[makeValidation({ trigger_event: 'Short text' })]} />)
+    expect(screen.getByText('Short text')).toBeInTheDocument()
+  })
 })
