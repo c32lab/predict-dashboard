@@ -20,7 +20,7 @@ React + Vite + Tailwind + Recharts + SWR frontend dashboard for the crypto predi
 npm run dev    # Vite dev server on :18828
 npm run build  # tsc -b + vite build
 npm run lint   # ESLint
-npx vitest run # Run all tests (179 tests)
+npx vitest run # Run all tests (415 tests / 50 files)
 ```
 
 ## Configuration
@@ -46,7 +46,12 @@ No path rewrite — `/api/*` forwards directly to `:18801/api/*`.
 ```
 src/
 ├── api/          # API client (predict.ts)
-├── components/   # Shared components (predict/ subdirectory)
+├── components/
+│   ├── accuracy/          # AccuracyPage sub-components
+│   ├── backtest/          # BacktestPage sub-components
+│   └── predict/
+│       ├── dashboard/     # PredictDashboard sub-components
+│       └── detail/        # PredictionDetailPage sub-components
 ├── hooks/        # SWR hooks (usePredictApi.ts)
 ├── pages/        # Page components
 ├── types/        # TypeScript type definitions
@@ -65,10 +70,18 @@ Dark theme: `bg-gray-950` (page background), `bg-gray-900` (cards), `border-gray
 - `price_change` / `avg_impact` / `expected_impact` → already percentage, **never ×100**
 - `funding_rate` → tiny decimal, frontend ×100
 
+## Recharts Tooltip Defensive Typing
+Recharts Tooltip `labelFormatter` / `formatter` callback params may be `undefined` or `ReactNode`, not `string`. Always add defensive casts:
+```typescript
+// ✅ Correct
+labelFormatter={(ts: unknown) => formatDateTime(String(ts ?? ''))}
+formatter={(value: unknown, name: unknown) => [`${Number(value ?? 0).toFixed(2)}%`, String(name ?? '')]}
+```
+
 ## Testing
 - Framework: Vitest + @testing-library/react
 - SWR hook mocks must include all required `SWRResponse` properties: `data`, `error`, `isLoading`, `mutate`, `isValidating`
-- Run `npx vitest run` — all tests must pass
+- Run `npx vitest run` — all tests must pass (415 tests / 50 files)
 - Run `npx tsc --noEmit` before committing — must have 0 errors
 
 ## Commit Conventions
@@ -81,4 +94,4 @@ Dark theme: `bg-gray-950` (page background), `bg-gray-900` (cards), `border-gray
 - Do not change ports in vite.config.ts (dev: 18828, API proxy: 18801)
 - Do not introduce new CSS frameworks (already using Tailwind)
 - Do not use `sudo npm`
-- Do not run multiple CC sessions on this repo simultaneously
+- One repo, one CC at a time — no parallel CC sessions on same repo
