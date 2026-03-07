@@ -84,6 +84,16 @@ formatter={(value: unknown, name: unknown) => [`${Number(value ?? 0).toFixed(2)}
 - Run `npx vitest run` — all tests must pass (415 tests / 50 files)
 - Run `npx tsc --noEmit` before committing — must have 0 errors
 
+## E2E Testing
+- Framework: Playwright (chromium only)
+- Config: `playwright.config.ts`
+- Test directory: `e2e/`
+- Run: `npm run test:e2e` or `npx playwright test`
+- Interactive UI: `npm run test:e2e:ui`
+- Tests verify pages load without crashing, navigation works, and key UI elements render
+- Tests are resilient to backend API being unavailable (graceful degradation)
+- webServer config auto-starts `npm run dev` on port 18828
+
 ## Commit Conventions
 - Prefixes: feat / fix / docs / config / chore / refactor / test
 - `git add` with specific file names, never `git add -A`
