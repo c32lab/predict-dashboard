@@ -7,6 +7,7 @@ import {
   ConfidenceFactorsSection,
   ReasoningGraphSection,
 } from '../components/predict/detail'
+import SectionErrorBoundary from '../components/SectionErrorBoundary'
 
 function Skeleton() {
   return (
@@ -48,11 +49,21 @@ export default function PredictionDetailPage() {
         &larr; Back
       </Link>
 
-      <DetailHeaderCard data={data} />
-      <MatchedEventsSection events={data.matched_events} />
-      <ReasoningChainSection chain={data.reasoning_chain} />
-      <ConfidenceFactorsSection factors={data.confidence_factors} />
-      <ReasoningGraphSection graphData={graphData} isLoading={graphLoading} />
+      <SectionErrorBoundary title="Prediction Header">
+        <DetailHeaderCard data={data} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Matched Events">
+        <MatchedEventsSection events={data.matched_events} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Reasoning Chain">
+        <ReasoningChainSection chain={data.reasoning_chain} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Confidence Factors">
+        <ConfidenceFactorsSection factors={data.confidence_factors} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Reasoning Graph">
+        <ReasoningGraphSection graphData={graphData} isLoading={graphLoading} />
+      </SectionErrorBoundary>
     </div>
   )
 }

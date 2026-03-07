@@ -1,5 +1,6 @@
 import { useIndustryChain } from '../hooks/usePredictApi'
 import { IndustryChainSection } from '../components/predict/IndustryChainSection'
+import SectionErrorBoundary from '../components/SectionErrorBoundary'
 
 export default function ChainPage() {
   const { data, error, isLoading } = useIndustryChain()
@@ -25,7 +26,9 @@ export default function ChainPage() {
   return (
     <div className="p-2 sm:p-4 lg:p-6 space-y-6">
       <h1 className="text-lg font-semibold text-gray-100">Industry Chain</h1>
-      <IndustryChainSection nodes={data.nodes ?? []} edges={data.edges ?? []} />
+      <SectionErrorBoundary title="Industry Chain">
+        <IndustryChainSection nodes={data.nodes ?? []} edges={data.edges ?? []} />
+      </SectionErrorBoundary>
     </div>
   )
 }

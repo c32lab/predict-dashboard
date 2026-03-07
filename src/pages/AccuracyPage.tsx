@@ -1,5 +1,6 @@
 import { usePredictAccuracy } from '../hooks/usePredictApi'
 import { AccuracyAndValidationsSection } from '../components/predict/AccuracyAndValidationsSection'
+import SectionErrorBoundary from '../components/SectionErrorBoundary'
 
 export default function AccuracyPage() {
   const { data, error, isLoading } = usePredictAccuracy()
@@ -28,10 +29,12 @@ export default function AccuracyPage() {
         <h1 className="text-lg font-semibold text-gray-100">Prediction Accuracy</h1>
         <p className="text-sm text-gray-500 mt-1">Track prediction accuracy trends and recent validation results.</p>
       </div>
-      <AccuracyAndValidationsSection
-        accuracy={data.accuracy ?? {}}
-        validations={data.recent_validations ?? []}
-      />
+      <SectionErrorBoundary title="Accuracy & Validations">
+        <AccuracyAndValidationsSection
+          accuracy={data.accuracy ?? {}}
+          validations={data.recent_validations ?? []}
+        />
+      </SectionErrorBoundary>
     </div>
   )
 }
