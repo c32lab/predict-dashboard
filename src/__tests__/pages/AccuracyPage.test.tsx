@@ -69,4 +69,31 @@ describe('AccuracyPage', () => {
     expect(screen.getByText('Prediction Accuracy')).toBeInTheDocument()
     expect(screen.getByTestId('accuracy-section')).toBeInTheDocument()
   })
+
+  it('renders with null accuracy and validations (fallback to defaults)', () => {
+    vi.mocked(usePredictAccuracy).mockReturnValue({
+      data: {
+        accuracy: null as unknown as Record<string, unknown>,
+        recent_validations: null as unknown as unknown[],
+      },
+      error: undefined,
+      isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
+    } as unknown as ReturnType<typeof usePredictAccuracy>)
+    render(<AccuracyPage />)
+    expect(screen.getByTestId('accuracy-section')).toBeInTheDocument()
+  })
+
+  it('shows error without .message property', () => {
+    vi.mocked(usePredictAccuracy).mockReturnValue({
+      data: undefined,
+      error: 'raw string error',
+      isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
+    } as unknown as ReturnType<typeof usePredictAccuracy>)
+    render(<AccuracyPage />)
+    expect(screen.getByText(/raw string error/)).toBeInTheDocument()
+  })
 })

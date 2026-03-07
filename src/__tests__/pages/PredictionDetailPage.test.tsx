@@ -140,4 +140,16 @@ describe('PredictionDetailPage', () => {
     expect(screen.getByText('85.0%')).toBeInTheDocument() // similarity × 100
     expect(screen.getByText('+2.50%')).toBeInTheDocument()
   })
+
+  it('shows error without .message property', () => {
+    vi.mocked(usePredictionDetail).mockReturnValue({
+      data: undefined,
+      error: 'plain string error',
+      isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
+    } as unknown as ReturnType<typeof usePredictionDetail>)
+    renderWithRoute('1')
+    expect(screen.getByText(/plain string error/)).toBeInTheDocument()
+  })
 })

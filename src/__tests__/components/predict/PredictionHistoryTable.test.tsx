@@ -169,4 +169,11 @@ describe('PredictionHistoryTable', () => {
     )
     expect(screen.getByText('$65,432.10')).toBeInTheDocument()
   })
+
+  it('renders with null reasoning (fallback to empty string)', () => {
+    renderWithRouter(
+      <PredictionHistoryTable predictions={[makePrediction({ reasoning: null as unknown as string })]} />
+    )
+    expect(screen.getByText('BTC/USDT')).toBeInTheDocument()
+  })
 })

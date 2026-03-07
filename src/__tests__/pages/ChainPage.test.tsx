@@ -63,4 +63,28 @@ describe('ChainPage', () => {
     expect(screen.getByText('Industry Chain')).toBeInTheDocument()
     expect(screen.getByTestId('chain-section')).toBeInTheDocument()
   })
+
+  it('renders with null nodes and edges (fallback to empty arrays)', () => {
+    vi.mocked(useIndustryChain).mockReturnValue({
+      data: { nodes: null as unknown as never[], edges: null as unknown as never[] },
+      error: undefined,
+      isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
+    } as ReturnType<typeof useIndustryChain>)
+    render(<ChainPage />)
+    expect(screen.getByTestId('chain-section')).toBeInTheDocument()
+  })
+
+  it('shows error without .message property', () => {
+    vi.mocked(useIndustryChain).mockReturnValue({
+      data: undefined,
+      error: 'plain error string',
+      isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
+    } as unknown as ReturnType<typeof useIndustryChain>)
+    render(<ChainPage />)
+    expect(screen.getByText(/plain error string/)).toBeInTheDocument()
+  })
 })

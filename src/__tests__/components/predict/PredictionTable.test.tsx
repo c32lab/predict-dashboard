@@ -85,6 +85,12 @@ describe('PredictionTable', () => {
     expect(screen.getByText('BTC/USDT')).toBeInTheDocument()
     expect(screen.getByText('ETH/USDT')).toBeInTheDocument()
   })
+
+  it('shows dash for null price_at_prediction', () => {
+    renderWithRouter(<PredictionTable predictions={[makePrediction({ price_at_prediction: null as unknown as number })]} />)
+    const dashes = screen.getAllByText('—')
+    expect(dashes.length).toBeGreaterThanOrEqual(1)
+  })
 })
 
 describe('PredictionHistoryTable', () => {

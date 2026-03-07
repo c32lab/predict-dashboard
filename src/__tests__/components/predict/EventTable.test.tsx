@@ -112,4 +112,21 @@ describe('EventTable', () => {
     render(<EventTable events={[makeEvent({ price_change: 0 })]} />)
     expect(screen.getByText('0.00%')).toBeInTheDocument()
   })
+
+  it('renders null tags with fallback to empty array', () => {
+    render(<EventTable events={[makeEvent({ tags: null as unknown as string[] })]} />)
+    expect(screen.getByText('BTC/USDT')).toBeInTheDocument()
+  })
+
+  it('shows dash when no url and no source', () => {
+    render(<EventTable events={[makeEvent({ url: '', source: '' })]} />)
+    expect(screen.getByText('—')).toBeInTheDocument()
+  })
+
+  it('shows "link" fallback when url present but source is empty', () => {
+    render(<EventTable events={[makeEvent({ url: 'https://example.com', source: '' })]} />)
+    const link = screen.getByText('link')
+    expect(link.tagName).toBe('A')
+    expect(link).toHaveAttribute('href', 'https://example.com')
+  })
 })

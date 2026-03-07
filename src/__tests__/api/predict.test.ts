@@ -81,6 +81,22 @@ describe('predictApi', () => {
       expect(url).toContain('limit=20')
       expect(url).toContain('pattern=whale')
     })
+
+    it('handles no params', async () => {
+      mockOkResponse([])
+      await predictApi.events()
+      const url = mockFetch.mock.calls[0][0] as string
+      expect(url).not.toContain('limit=')
+      expect(url).not.toContain('pattern=')
+    })
+
+    it('handles only limit param', async () => {
+      mockOkResponse([])
+      await predictApi.events({ limit: 5 })
+      const url = mockFetch.mock.calls[0][0] as string
+      expect(url).toContain('limit=5')
+      expect(url).not.toContain('pattern=')
+    })
   })
 
   describe('macroHistory', () => {
@@ -107,6 +123,24 @@ describe('predictApi', () => {
       expect(url).toContain('limit=10')
       expect(url).toContain('min_events=3')
       expect(url).toContain('window_hours=48')
+    })
+
+    it('handles no params', async () => {
+      mockOkResponse([])
+      await predictApi.trends()
+      const url = mockFetch.mock.calls[0][0] as string
+      expect(url).not.toContain('limit=')
+      expect(url).not.toContain('min_events=')
+      expect(url).not.toContain('window_hours=')
+    })
+
+    it('handles partial params', async () => {
+      mockOkResponse([])
+      await predictApi.trends({ limit: 5 })
+      const url = mockFetch.mock.calls[0][0] as string
+      expect(url).toContain('limit=5')
+      expect(url).not.toContain('min_events=')
+      expect(url).not.toContain('window_hours=')
     })
   })
 

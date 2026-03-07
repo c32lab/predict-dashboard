@@ -230,4 +230,23 @@ describe('BacktestPage', () => {
     expect(result).toEqual(mockJson)
     expect(global.fetch).toHaveBeenCalledWith('/test.json')
   })
+
+  it('renders KPI cards when LONG/SHORT direction data is missing', () => {
+    const modifiedResults = {
+      ...mockFullResults,
+      prediction_backtest: {
+        ...mockFullResults.prediction_backtest,
+        by_direction: {},
+      },
+    }
+    let callCount = 0
+    vi.mocked(useSWR).mockImplementation(() => {
+      callCount++
+      if (callCount % 2 === 1) return { data: modifiedResults, error: undefined, isLoading: false, isValidating: false, mutate: vi.fn() }
+      return { data: mockABResults, error: undefined, isLoading: false, isValidating: false, mutate: vi.fn() }
+    })
+    render(<BacktestPage />)
+    expect(screen.getByText('LONG Accuracy')).toBeInTheDocument()
+    expect(screen.getByText('SHORT Accuracy')).toBeInTheDocument()
+  })
 })

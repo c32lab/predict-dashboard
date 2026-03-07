@@ -89,4 +89,9 @@ describe('DetailHeaderCard', () => {
     const dashes = screen.getAllByText('—')
     expect(dashes.length).toBeGreaterThanOrEqual(1)
   })
+
+  it('falls back to timestamp when created_at is null', () => {
+    render(<DetailHeaderCard data={makeDetail({ created_at: null as unknown as string, timestamp: '2026-01-15T08:30:00Z' })} />)
+    expect(screen.getByText(/01-15/)).toBeInTheDocument()
+  })
 })

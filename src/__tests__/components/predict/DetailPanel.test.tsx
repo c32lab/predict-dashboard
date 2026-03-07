@@ -130,4 +130,36 @@ describe('DetailPanel', () => {
     render(<DetailPanel id={1} reasoning="" />)
     expect(screen.getByText('Graph')).toBeInTheDocument()
   })
+
+  it('shows error without .message property (string error)', () => {
+    vi.mocked(usePredictionDetail).mockReturnValue({
+      data: undefined,
+      error: 'raw error string',
+      isLoading: false,
+      mutate: vi.fn(),
+      isValidating: false,
+    } as unknown as ReturnType<typeof usePredictionDetail>)
+    render(<DetailPanel id={1} reasoning="" />)
+    expect(screen.getByText(/raw error string/)).toBeInTheDocument()
+  })
+
+  it('shows "No reasoning chain data" when graphData has empty nodes', () => {
+    vi.mocked(usePredictionDetail).mockReturnValue({
+      data: {
+        id: 1, symbol: 'BTC/USDT', direction: 'LONG', confidence: 0.8,
+        trigger_event: '', trigger_pattern: '', trigger_event_text: '',
+        expected_impact: 3, expected_horizon: '1d', price_at_prediction: 65000,
+        macro_score: 7, fear_greed: 45, reasoning: '', status: 'active',
+        created_at: '2026-03-06T10:00:00Z', timestamp: '2026-03-06T10:00:00Z',
+        matched_events: [], reasoning_chain: [], confidence_factors: {},
+      },
+      error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionDetail>)
+    vi.mocked(useReasoningGraph).mockReturnValue({
+      data: { nodes: [], edges: [] },
+      isLoading: false, error: undefined, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof useReasoningGraph>)
+    render(<DetailPanel id={1} reasoning="" />)
+    expect(screen.getByText('No reasoning chain data')).toBeInTheDocument()
+  })
 })
