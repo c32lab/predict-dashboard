@@ -1,15 +1,13 @@
-import { BrowserRouter, Routes, Route, NavLink } from 'react-router-dom'
+import { BrowserRouter, Routes, Route } from 'react-router-dom'
 import { lazy, Suspense } from 'react'
 import { SWRConfig } from 'swr'
+import NavBar from './components/layout/NavBar'
 
 const PredictDashboard = lazy(() => import('./pages/PredictDashboard'))
 const PredictionDetailPage = lazy(() => import('./pages/PredictionDetailPage'))
 const AccuracyPage = lazy(() => import('./pages/AccuracyPage'))
 const ChainPage = lazy(() => import('./pages/ChainPage'))
 const BacktestPage = lazy(() => import('./pages/BacktestPage'))
-
-const navLinkClass = ({ isActive }: { isActive: boolean }) =>
-  isActive ? 'text-blue-400 font-bold' : 'text-gray-400 hover:text-gray-200'
 
 function Loading() {
   return (
@@ -29,12 +27,7 @@ function App() {
         errorRetryInterval: 5000,
       }}>
         <div className="bg-gray-950 text-gray-100 min-h-screen">
-          <nav className="flex gap-4 px-6 py-3 bg-gray-900 border-b border-gray-800">
-            <NavLink to="/" end className={navLinkClass}>Dashboard</NavLink>
-            <NavLink to="/accuracy" className={navLinkClass}>Accuracy</NavLink>
-            <NavLink to="/chain" className={navLinkClass}>Chain</NavLink>
-            <NavLink to="/backtest" className={navLinkClass}>回测分析</NavLink>
-          </nav>
+          <NavBar />
           <Suspense fallback={<Loading />}>
             <Routes>
               <Route path="/" element={<PredictDashboard />} />

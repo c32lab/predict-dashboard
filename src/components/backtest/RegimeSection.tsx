@@ -28,7 +28,7 @@ export function RegimeSection({ regimes }: { regimes: BaselineResults['decay_mod
         </BarChart>
       </ResponsiveContainer>
 
-      <div className="grid grid-cols-3 gap-4 mt-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
         {Object.entries(regimes).map(([regime, data]) => (
           <div key={regime} className="rounded-lg border border-gray-800 p-3">
             <div className="flex items-center gap-2 mb-2">

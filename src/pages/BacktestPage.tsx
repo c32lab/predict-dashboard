@@ -31,11 +31,11 @@ export default function BacktestPage() {
   const worst = horizonEntries.reduce((a, b) => b[1].accuracy_pct < a[1].accuracy_pct ? b : a)
 
   return (
-    <div className="p-6 space-y-6 max-w-7xl mx-auto">
+    <div className="p-2 sm:p-4 lg:p-6 space-y-6 max-w-7xl mx-auto">
       <h1 className="text-2xl font-bold">Backtest Results</h1>
       <p className="text-xs text-gray-500">Generated {baseline.generated_at}</p>
 
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
         <KpiCard label="Total Predictions" value={String(pb.total_predictions)} />
         <KpiCard label="Overall Accuracy" value={`${pb.overall_accuracy_pct}%`} sub={`${pb.overall_correct}/${pb.overall_total}`} />
         <KpiCard label="Best Horizon" value={`${best[0]} ${best[1].accuracy_pct}%`} sub={`${best[1].correct}/${best[1].total}`} />

@@ -8,7 +8,7 @@ export function BeforeAfterSection({ data }: { data: FullResults['before_after_c
 
   return (
     <Section title="Before / After Comparison">
-      <div className="grid grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Before card */}
         <div className="bg-gray-800/50 border border-gray-700 rounded-xl p-4">
           <h3 className="text-sm font-semibold text-gray-300 mb-3">Before</h3>
