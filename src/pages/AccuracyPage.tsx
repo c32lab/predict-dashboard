@@ -7,9 +7,11 @@ import { QualityReportPanel } from '../components/accuracy/QualityReportPanel'
 import { AccuracyHistoryChart } from '../components/accuracy/AccuracyHistoryChart'
 import { DirectionRadarChart } from '../components/accuracy/DirectionRadarChart'
 import { RollingAccuracyChart } from '../components/accuracy/RollingAccuracyChart'
+import { HorizonComparisonCard } from '../components/accuracy/HorizonComparisonCard'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 import { PageSkeleton } from '../components/PageSkeleton'
 import { EmptyState } from '../components/EmptyState'
+import { formatDateTime } from '../utils/format'
 
 export default function AccuracyPage() {
   const { accuracy: data, error, isLoading } = useAccuracyDetail()
@@ -30,12 +32,28 @@ export default function AccuracyPage() {
 
   const validations = data.recent_validations ?? []
 
+  // Derive last-updated from most recent validation timestamp
+  const lastUpdated = validations.length > 0
+    ? validations.reduce((latest, v) =>
+        v.validated_at > latest ? v.validated_at : latest, validations[0].validated_at)
+    : null
+
   return (
     <div className="p-2 sm:p-4 lg:p-6 space-y-6 max-w-6xl mx-auto">
-      <div>
-        <h1 className="text-lg font-semibold text-gray-100">Prediction Accuracy</h1>
-        <p className="text-sm text-gray-500 mt-1">Track prediction accuracy trends and recent validation results.</p>
+      <div className="flex items-center justify-between">
+        <div>
+          <h1 className="text-lg font-semibold text-gray-100">Prediction Accuracy</h1>
+          <p className="text-sm text-gray-500 mt-1">Track prediction accuracy trends and recent validation results.</p>
+        </div>
+        {lastUpdated && (
+          <span className="text-xs text-gray-500">
+            Updated {formatDateTime(lastUpdated)}
+          </span>
+        )}
       </div>
+      <SectionErrorBoundary title="Horizon Comparison">
+        <HorizonComparisonCard accuracy={data.accuracy ?? {}} />
+      </SectionErrorBoundary>
       <SectionErrorBoundary title="Accuracy & Validations">
         <AccuracyAndValidationsSection
           accuracy={data.accuracy ?? {}}
