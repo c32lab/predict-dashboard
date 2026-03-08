@@ -76,6 +76,40 @@ export function AccuracyAndValidationsSection({
             symbols={symbols}
           />
           <AccuracyStats total={total} correct={correct} accuracyPct={accuracyPct} />
+
+          {/* LONG vs SHORT accuracy cards */}
+          {(() => {
+            const longVals = filtered.filter((v) => v.direction === 'LONG')
+            const shortVals = filtered.filter((v) => v.direction === 'SHORT')
+            const longTotal = longVals.length
+            const shortTotal = shortVals.length
+            const longCorrect = longVals.filter((v) => v.is_correct === 1).length
+            const shortCorrect = shortVals.filter((v) => v.is_correct === 1).length
+            const longAcc = longTotal > 0 ? (longCorrect / longTotal) * 100 : 0
+            const shortAcc = shortTotal > 0 ? (shortCorrect / shortTotal) * 100 : 0
+
+            if (longTotal === 0 && shortTotal === 0) return null
+
+            return (
+              <div className="grid grid-cols-2 gap-3">
+                <div className="bg-gray-800/60 border border-green-900/40 rounded-lg p-3 text-center">
+                  <span className="text-xs text-gray-500 uppercase tracking-wider">LONG Accuracy</span>
+                  <p className={`text-2xl font-bold font-mono mt-1 ${longAcc >= 50 ? 'text-green-400' : 'text-yellow-400'}`}>
+                    {longAcc.toFixed(1)}%
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">{longCorrect}/{longTotal} correct</p>
+                </div>
+                <div className="bg-gray-800/60 border border-red-900/40 rounded-lg p-3 text-center">
+                  <span className="text-xs text-gray-500 uppercase tracking-wider">SHORT Accuracy</span>
+                  <p className={`text-2xl font-bold font-mono mt-1 ${shortAcc >= 50 ? 'text-green-400' : 'text-yellow-400'}`}>
+                    {shortAcc.toFixed(1)}%
+                  </p>
+                  <p className="text-xs text-gray-500 mt-0.5">{shortCorrect}/{shortTotal} correct</p>
+                </div>
+              </div>
+            )
+          })()}
+
           <AccuracyTrendChart trendData={trendData} chartSymbols={chartSymbols} />
         </div>
       </section>

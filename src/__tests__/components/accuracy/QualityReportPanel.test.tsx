@@ -3,9 +3,10 @@ import { render, screen } from '@testing-library/react'
 
 vi.mock('../../../hooks/usePredictApi', () => ({
   useQualityReport: vi.fn(),
+  useAccuracyHistory: vi.fn(),
 }))
 
-import { useQualityReport } from '../../../hooks/usePredictApi'
+import { useQualityReport, useAccuracyHistory } from '../../../hooks/usePredictApi'
 import { QualityReportPanel } from '../../../components/accuracy/QualityReportPanel'
 
 function mockReturn(overrides: Partial<ReturnType<typeof useQualityReport>>) {
@@ -17,6 +18,13 @@ function mockReturn(overrides: Partial<ReturnType<typeof useQualityReport>>) {
     mutate: vi.fn(),
     ...overrides,
   } as ReturnType<typeof useQualityReport>)
+  vi.mocked(useAccuracyHistory).mockReturnValue({
+    data: undefined,
+    error: undefined,
+    isLoading: false,
+    isValidating: false,
+    mutate: vi.fn(),
+  } as ReturnType<typeof useAccuracyHistory>)
 }
 
 describe('QualityReportPanel', () => {

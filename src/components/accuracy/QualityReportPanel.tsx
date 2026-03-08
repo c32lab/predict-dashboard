@@ -13,7 +13,7 @@ import {
   Line,
   ReferenceLine,
 } from 'recharts'
-import { useQualityReport } from '../../hooks/usePredictApi'
+import { useQualityReport, useAccuracyHistory } from '../../hooks/usePredictApi'
 
 function accuracyColor(accuracy: number): string {
   if (accuracy >= 60) return '#22c55e'
@@ -23,6 +23,17 @@ function accuracyColor(accuracy: number): string {
 
 export function QualityReportPanel() {
   const { data, isLoading, error } = useQualityReport()
+  const { data: historyData } = useAccuracyHistory()
+
+  const directionBreakdown = useMemo(() => {
+    if (!historyData?.by_direction) return []
+    return Object.entries(historyData.by_direction).map(([dir, v]) => ({
+      direction: dir,
+      accuracy: v.accuracy,
+      total: v.total,
+      correct: v.correct,
+    }))
+  }, [historyData])
 
   const confidenceBars = useMemo(() => {
     if (!data?.confidence_distribution) return []
@@ -242,6 +253,31 @@ export function QualityReportPanel() {
           </div>
         )}
       </div>
+
+      {/* Direction Accuracy Breakdown */}
+      {directionBreakdown.length > 0 && (
+        <div>
+          <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-2">Accuracy by Direction</h4>
+          <div className="grid grid-cols-2 gap-3">
+            {directionBreakdown.map((d) => (
+              <div
+                key={d.direction}
+                className={`bg-gray-800/60 border rounded-lg p-3 text-center ${
+                  d.direction === 'LONG' ? 'border-green-900/40' : 'border-red-900/40'
+                }`}
+              >
+                <span className={`text-sm font-semibold ${
+                  d.direction === 'LONG' ? 'text-green-400' : 'text-red-400'
+                }`}>{d.direction}</span>
+                <p className="text-2xl font-bold font-mono mt-1" style={{ color: accuracyColor(d.accuracy) }}>
+                  {d.accuracy.toFixed(1)}%
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">{d.correct}/{d.total} correct</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
 
       {/* Overall Accuracy Table */}
       {horizonRows.length > 0 && (

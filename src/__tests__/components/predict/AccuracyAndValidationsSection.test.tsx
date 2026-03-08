@@ -50,8 +50,12 @@ describe('AccuracyAndValidationsSection', () => {
     render(
       <AccuracyAndValidationsSection accuracy={{}} validations={validations} />
     )
-    expect(screen.getByText('3')).toBeInTheDocument() // total
-    expect(screen.getByText('66.7%')).toBeInTheDocument() // accuracy
+    // Total stat card shows "3" with "predictions" label
+    const totalSection = screen.getByText('predictions')
+    const totalValue = totalSection.parentElement?.querySelector('.text-3xl, .text-4xl')
+    expect(totalValue?.textContent).toBe('3')
+    // Overall accuracy shown
+    expect(screen.getAllByText('66.7%').length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders validation rows with direction badges', () => {
@@ -115,8 +119,9 @@ describe('AccuracyAndValidationsSection', () => {
     render(
       <AccuracyAndValidationsSection accuracy={{}} validations={validations} />
     )
-    const pctEl = screen.getByText('66.7%')
-    expect(pctEl.className).toContain('text-green-400')
+    const pctEls = screen.getAllByText('66.7%')
+    // At least one of the accuracy displays should have green color
+    expect(pctEls.some((el) => el.className.includes('text-green-400'))).toBe(true)
   })
 
   it('filters chart symbols when a specific symbol is selected', async () => {

@@ -3,58 +3,10 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
+import { usePredictions, usePredictionExplain } from '../hooks/usePredictApi'
+import type { Prediction, ExplainReasoningChain } from '../types/predict'
 
-// --- Mock data (TODO: replace with real API calls to predict /explain and /review endpoints) ---
-
-interface MockPrediction {
-  id: number
-  symbol: string
-  direction: 'LONG' | 'SHORT'
-  confidence: number
-  outcome: 'Correct' | 'Wrong'
-  date: string
-}
-
-const MOCK_PREDICTIONS: MockPrediction[] = [
-  { id: 101, symbol: 'BTC', direction: 'LONG', confidence: 82, outcome: 'Correct', date: '2026-03-08' },
-  { id: 102, symbol: 'ETH', direction: 'SHORT', confidence: 65, outcome: 'Wrong', date: '2026-03-08' },
-  { id: 103, symbol: 'SOL', direction: 'LONG', confidence: 74, outcome: 'Correct', date: '2026-03-07' },
-  { id: 104, symbol: 'BTC', direction: 'SHORT', confidence: 58, outcome: 'Wrong', date: '2026-03-07' },
-  { id: 105, symbol: 'ETH', direction: 'LONG', confidence: 91, outcome: 'Correct', date: '2026-03-06' },
-  { id: 106, symbol: 'SOL', direction: 'SHORT', confidence: 45, outcome: 'Wrong', date: '2026-03-06' },
-  { id: 107, symbol: 'BTC', direction: 'LONG', confidence: 88, outcome: 'Correct', date: '2026-03-05' },
-  { id: 108, symbol: 'ETH', direction: 'LONG', confidence: 72, outcome: 'Correct', date: '2026-03-05' },
-]
-
-interface ReasoningStep {
-  step: number
-  label: string
-  detail: string
-}
-
-const MOCK_REASONING: Record<number, ReasoningStep[]> = {
-  101: [
-    { step: 1, label: 'Trigger Event', detail: 'Macro CPI data release signaled cooling inflation' },
-    { step: 2, label: 'Pattern Match', detail: 'Historical: BTC rallies 70% of the time after CPI miss' },
-    { step: 3, label: 'Direction Logic', detail: 'Bullish macro + strong on-chain accumulation → LONG' },
-    { step: 4, label: 'Confidence Calculation', detail: 'Pattern strength 0.78 × signal alignment 1.05 = 82%' },
-  ],
-  102: [
-    { step: 1, label: 'Trigger Event', detail: 'ETH gas fees spiked indicating network congestion' },
-    { step: 2, label: 'Pattern Match', detail: 'Gas spikes preceded sell-offs in 60% of cases' },
-    { step: 3, label: 'Direction Logic', detail: 'Network stress + whale transfers to exchanges → SHORT' },
-    { step: 4, label: 'Confidence Calculation', detail: 'Pattern strength 0.55 × signal alignment 1.18 = 65%' },
-  ],
-}
-
-const DEFAULT_REASONING: ReasoningStep[] = [
-  { step: 1, label: 'Trigger Event', detail: 'Market event detected (mock)' },
-  { step: 2, label: 'Pattern Match', detail: 'Historical pattern identified (mock)' },
-  { step: 3, label: 'Direction Logic', detail: 'Direction determined from signals (mock)' },
-  { step: 4, label: 'Confidence Calculation', detail: 'Confidence score computed (mock)' },
-]
-
-// TODO: replace with real /review attribution data
+// TODO: replace with real /review attribution data when API exists
 const MOCK_ATTRIBUTION = [
   { factor: 'Macro Events', correct: 18, wrong: 4 },
   { factor: 'On-chain Data', correct: 14, wrong: 6 },
@@ -63,7 +15,7 @@ const MOCK_ATTRIBUTION = [
   { factor: 'Whale Tracking', correct: 12, wrong: 5 },
 ]
 
-// TODO: replace with real /review lessons data
+// TODO: replace with real /review lessons data when API exists
 const MOCK_LESSONS = {
   workingPatterns: [
     'Macro CPI/PPI releases combined with on-chain accumulation signals',
@@ -94,11 +46,21 @@ function PredictionReviewTable({
   predictions,
   selectedId,
   onSelect,
+  isLoading,
 }: {
-  predictions: MockPrediction[]
+  predictions: Prediction[]
   selectedId: number | null
   onSelect: (id: number) => void
+  isLoading: boolean
 }) {
+  if (isLoading) {
+    return <div className="text-sm text-gray-500 text-center py-6">Loading predictions...</div>
+  }
+
+  if (predictions.length === 0) {
+    return <div className="text-sm text-gray-500 text-center py-6">No validated predictions found.</div>
+  }
+
   return (
     <div className="overflow-x-auto">
       <table className="w-full text-sm">
@@ -108,7 +70,7 @@ function PredictionReviewTable({
             <th className="text-left py-2 px-3">Symbol</th>
             <th className="text-left py-2 px-3">Direction</th>
             <th className="text-right py-2 px-3">Confidence</th>
-            <th className="text-left py-2 px-3">Outcome</th>
+            <th className="text-left py-2 px-3">Status</th>
             <th className="text-left py-2 px-3">Date</th>
           </tr>
         </thead>
@@ -128,17 +90,17 @@ function PredictionReviewTable({
                   {p.direction}
                 </span>
               </td>
-              <td className="py-2 px-3 text-right">{p.confidence}%</td>
+              <td className="py-2 px-3 text-right">{(p.confidence * 100).toFixed(0)}%</td>
               <td className="py-2 px-3">
                 <span className={`inline-block px-2 py-0.5 rounded text-xs font-medium ${
-                  p.outcome === 'Correct'
+                  p.status === 'validated'
                     ? 'bg-green-900/50 text-green-400'
-                    : 'bg-red-900/50 text-red-400'
+                    : 'bg-gray-700/50 text-gray-400'
                 }`}>
-                  {p.outcome}
+                  {p.status}
                 </span>
               </td>
-              <td className="py-2 px-3 text-gray-400">{p.date}</td>
+              <td className="py-2 px-3 text-gray-400">{p.timestamp?.slice(0, 10) ?? p.created_at?.slice(0, 10)}</td>
             </tr>
           ))}
         </tbody>
@@ -147,20 +109,53 @@ function PredictionReviewTable({
   )
 }
 
-function ReasoningChainViewer({ predictionId }: { predictionId: number | null }) {
-  const steps = predictionId
-    ? (MOCK_REASONING[predictionId] ?? DEFAULT_REASONING)
-    : null
+function chainSteps(chain: ExplainReasoningChain) {
+  const steps: Array<{ step: number; label: string; detail: string }> = []
+  if (chain.trigger) {
+    steps.push({ step: 1, label: 'Trigger Event', detail: `${chain.trigger.event} (${chain.trigger.source})` })
+  }
+  if (chain.classification) {
+    steps.push({ step: 2, label: 'Pattern Match', detail: `${chain.classification.pattern} — ${chain.classification.category} (score: ${(chain.classification.confidence_score * 100).toFixed(0)}%)` })
+  }
+  if (chain.historical_matches?.length > 0) {
+    const best = chain.historical_matches[0]
+    steps.push({ step: 3, label: 'Historical Match', detail: `${best.event} (${best.date}, sim=${(best.similarity * 100).toFixed(0)}%, ${best.outcome.direction} ${best.outcome.price_change_pct.toFixed(1)}%)` })
+  }
+  if (chain.direction_decision) {
+    steps.push({ step: 4, label: 'Direction Logic', detail: `${chain.direction_decision.direction} — confidence ${(chain.direction_decision.confidence * 100).toFixed(0)}%` })
+  }
+  return steps
+}
 
-  if (!predictionId || !steps) {
+function ReasoningChainViewer({ predictionId }: { predictionId: number | null }) {
+  const { data, isLoading, error } = usePredictionExplain(predictionId)
+
+  if (!predictionId) {
     return (
       <p className="text-gray-500 text-sm">Click a prediction above to view its reasoning chain.</p>
     )
   }
 
+  if (isLoading) {
+    return <div className="text-sm text-gray-500 py-4">Loading reasoning...</div>
+  }
+
+  if (error) {
+    return <div className="text-sm text-red-400 py-4">Failed to load reasoning: {String(error?.message ?? error)}</div>
+  }
+
+  if (!data?.reasoning_chain) {
+    return <p className="text-gray-500 text-sm">No reasoning data available.</p>
+  }
+
+  const steps = chainSteps(data.reasoning_chain)
+
   return (
     <div className="space-y-3">
       <p className="text-xs text-gray-500">Reasoning chain for prediction #{predictionId}</p>
+      {data.summary && (
+        <p className="text-sm text-gray-300 bg-gray-800/50 rounded p-2">{data.summary}</p>
+      )}
       <div className="space-y-0">
         {steps.map((s, i) => (
           <div key={s.step} className="flex items-start gap-3">
@@ -182,6 +177,7 @@ function ReasoningChainViewer({ predictionId }: { predictionId: number | null })
 }
 
 function PerformanceAttributionChart() {
+  // TODO: replace with real API data when attribution endpoint exists
   const data = MOCK_ATTRIBUTION
 
   return (
@@ -220,6 +216,7 @@ function PerformanceAttributionChart() {
 }
 
 function LessonsLearnedCards() {
+  // TODO: replace with real API data when lessons endpoint exists
   const sections = [
     { title: 'Patterns that work', items: MOCK_LESSONS.workingPatterns, color: 'green' },
     { title: 'Patterns that fail', items: MOCK_LESSONS.failingPatterns, color: 'red' },
@@ -258,9 +255,12 @@ function LessonsLearnedCards() {
 
 export default function ReviewOverviewPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null)
+  const { data: predictionsData, isLoading } = usePredictions('validated', 20)
 
-  // TODO: replace with real API hook when /review endpoint is live
-  const predictions = useMemo(() => MOCK_PREDICTIONS, [])
+  const predictions = useMemo(
+    () => predictionsData?.predictions ?? [],
+    [predictionsData]
+  )
 
   return (
     <div className="p-2 sm:p-4 lg:p-6 space-y-6 max-w-6xl mx-auto">
@@ -279,6 +279,7 @@ export default function ReviewOverviewPage() {
             predictions={predictions}
             selectedId={selectedId}
             onSelect={setSelectedId}
+            isLoading={isLoading}
           />
         </div>
       </SectionErrorBoundary>
