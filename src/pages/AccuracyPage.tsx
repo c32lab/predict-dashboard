@@ -1,5 +1,8 @@
 import { usePredictAccuracy } from '../hooks/usePredictApi'
 import { AccuracyAndValidationsSection } from '../components/predict/AccuracyAndValidationsSection'
+import { AccuracyTrendChart } from '../components/accuracy/AccuracyTrendChart'
+import { SymbolAccuracyBreakdown } from '../components/accuracy/SymbolAccuracyBreakdown'
+import { ConfidenceAccuracyScatter } from '../components/accuracy/ConfidenceAccuracyScatter'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 
 export default function AccuracyPage() {
@@ -23,6 +26,8 @@ export default function AccuracyPage() {
 
   if (!data) return null
 
+  const validations = data.recent_validations ?? []
+
   return (
     <div className="p-2 sm:p-4 lg:p-6 space-y-6 max-w-6xl mx-auto">
       <div>
@@ -32,8 +37,28 @@ export default function AccuracyPage() {
       <SectionErrorBoundary title="Accuracy & Validations">
         <AccuracyAndValidationsSection
           accuracy={data.accuracy ?? {}}
-          validations={data.recent_validations ?? []}
+          validations={validations}
         />
+      </SectionErrorBoundary>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <SectionErrorBoundary title="Accuracy Trend">
+          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+            <AccuracyTrendChart validations={validations} />
+          </div>
+        </SectionErrorBoundary>
+
+        <SectionErrorBoundary title="Symbol Breakdown">
+          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+            <SymbolAccuracyBreakdown validations={validations} />
+          </div>
+        </SectionErrorBoundary>
+      </div>
+
+      <SectionErrorBoundary title="Confidence Analysis">
+        <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+          <ConfidenceAccuracyScatter validations={validations} />
+        </div>
       </SectionErrorBoundary>
     </div>
   )

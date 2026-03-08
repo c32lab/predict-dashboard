@@ -1,3 +1,6 @@
 export { AccuracyFilterBar } from './AccuracyFilterBar'
 export { AccuracyStats } from './AccuracyStats'
+export { AccuracyTrendChart } from './AccuracyTrendChart'
+export { SymbolAccuracyBreakdown } from './SymbolAccuracyBreakdown'
+export { ConfidenceAccuracyScatter } from './ConfidenceAccuracyScatter'
 export { getSymbolColor, SYMBOL_COLORS } from './constants'
