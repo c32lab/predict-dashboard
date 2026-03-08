@@ -1,7 +1,14 @@
 import type { ReasoningStep } from '../../../types/predict'
 
 export function ReasoningChainSection({ chain }: { chain: ReasoningStep[] }) {
-  if (!chain || chain.length === 0) return null
+  if (!chain || chain.length === 0) {
+    return (
+      <section className="bg-gray-900 rounded-xl border border-gray-800 p-4">
+        <h2 className="text-sm font-semibold text-gray-200">Reasoning Chain</h2>
+        <p className="text-gray-500 text-sm mt-2">No reasoning chain available</p>
+      </section>
+    )
+  }
 
   return (
     <section className="bg-gray-900 rounded-xl border border-gray-800">

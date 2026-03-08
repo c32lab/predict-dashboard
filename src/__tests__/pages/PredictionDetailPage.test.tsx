@@ -53,7 +53,7 @@ describe('PredictionDetailPage', () => {
     expect(screen.getByText(/Not found/)).toBeInTheDocument()
   })
 
-  it('returns null when no data', () => {
+  it('shows empty state when no data', () => {
     vi.mocked(usePredictionDetail).mockReturnValue({
       data: undefined,
       error: undefined,
@@ -61,9 +61,8 @@ describe('PredictionDetailPage', () => {
       mutate: vi.fn(),
       isValidating: false,
     } as ReturnType<typeof usePredictionDetail>)
-    const { container } = renderWithRoute('1')
-    // Should be empty except router wrapper
-    expect(container.textContent).toBe('')
+    renderWithRoute('1')
+    expect(screen.getByText('Prediction not found')).toBeInTheDocument()
   })
 
   it('renders prediction detail with data', () => {

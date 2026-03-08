@@ -8,6 +8,8 @@ import {
 } from '../hooks/usePredictApi'
 import { predictApi } from '../api/predict'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { EmptyState } from '../components/EmptyState'
 import type { Trend } from '../types/predict'
 import {
   AccuracyAndValidationsSection,
@@ -29,7 +31,7 @@ const PAGE_SIZE = 20
 
 export default function PredictDashboard() {
   const { data, error, isLoading } = usePrediction()
-  const { data: healthData } = usePredictHealth()
+  const { data: healthData, isLoading: healthLoading } = usePredictHealth()
   const [histPage, setHistPage] = useState(0)
   const { data: allPredictionsData, isLoading: histLoading } = useSWR(
     `predict/predictions/all?page=${histPage}`,
@@ -42,11 +44,7 @@ export default function PredictDashboard() {
   const { data: trendsData, isLoading: trendsLoading } = useTrends()
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64 text-gray-500 text-sm">
-        Loading predictions…
-      </div>
-    )
+    return <PageSkeleton />
   }
 
   if (error) {
@@ -57,7 +55,7 @@ export default function PredictDashboard() {
     )
   }
 
-  if (!data) return null
+  if (!data) return <EmptyState message="No prediction data available" />
 
   const { macro, event_kb, predictions, macro_history, accuracy, recent_validations } = data
   const activeList = predictions?.active ?? []
@@ -69,7 +67,7 @@ export default function PredictDashboard() {
     <div className="p-2 sm:p-4 lg:p-6 space-y-4 sm:space-y-6">
       <SectionErrorBoundary title="Predict Health">
         <PredictHealthHeader
-          serviceOk={healthData?.status === 'ok'}
+          serviceOk={healthLoading ? null : healthData?.status === 'ok'}
           activeCount={activeList.length}
           eventCount={events.length}
           macroScore={macro?.score ?? null}

@@ -16,14 +16,14 @@ function makeEvent(overrides: Partial<MatchedEvent> = {}): MatchedEvent {
 }
 
 describe('MatchedEventsSection', () => {
-  it('returns null for empty events', () => {
-    const { container } = render(<MatchedEventsSection events={[]} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state for empty events', () => {
+    render(<MatchedEventsSection events={[]} />)
+    expect(screen.getByText('No matched events found')).toBeInTheDocument()
   })
 
-  it('returns null for undefined events', () => {
-    const { container } = render(<MatchedEventsSection events={undefined as unknown as MatchedEvent[]} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state for undefined events', () => {
+    render(<MatchedEventsSection events={undefined as unknown as MatchedEvent[]} />)
+    expect(screen.getByText('No matched events found')).toBeInTheDocument()
   })
 
   it('renders heading with event count', () => {

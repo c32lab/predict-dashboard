@@ -3,14 +3,14 @@ import { render, screen } from '@testing-library/react'
 import { ConfidenceFactorsSection } from '../../../../components/predict/detail/ConfidenceFactorsSection'
 
 describe('ConfidenceFactorsSection', () => {
-  it('renders nothing when factors is empty', () => {
-    const { container } = render(<ConfidenceFactorsSection factors={{}} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state when factors is empty', () => {
+    render(<ConfidenceFactorsSection factors={{}} />)
+    expect(screen.getByText('No confidence factors available')).toBeInTheDocument()
   })
 
-  it('renders nothing when factors is null-ish', () => {
-    const { container } = render(<ConfidenceFactorsSection factors={null as unknown as Record<string, number>} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state when factors is null-ish', () => {
+    render(<ConfidenceFactorsSection factors={null as unknown as Record<string, number>} />)
+    expect(screen.getByText('No confidence factors available')).toBeInTheDocument()
   })
 
   it('renders section heading', () => {

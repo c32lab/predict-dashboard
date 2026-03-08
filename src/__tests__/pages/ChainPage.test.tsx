@@ -23,8 +23,8 @@ describe('ChainPage', () => {
       mutate: vi.fn(),
       isValidating: false,
     } as ReturnType<typeof useIndustryChain>)
-    render(<ChainPage />)
-    expect(screen.getByText('Loading industry chain...')).toBeInTheDocument()
+    const { container } = render(<ChainPage />)
+    expect(container.querySelector('.animate-pulse')).toBeTruthy()
   })
 
   it('shows error state', () => {
@@ -39,7 +39,7 @@ describe('ChainPage', () => {
     expect(screen.getByText(/Failed to load/)).toBeInTheDocument()
   })
 
-  it('returns null when no data', () => {
+  it('shows empty state when no data', () => {
     vi.mocked(useIndustryChain).mockReturnValue({
       data: undefined,
       error: undefined,
@@ -47,8 +47,8 @@ describe('ChainPage', () => {
       mutate: vi.fn(),
       isValidating: false,
     } as ReturnType<typeof useIndustryChain>)
-    const { container } = render(<ChainPage />)
-    expect(container.innerHTML).toBe('')
+    render(<ChainPage />)
+    expect(screen.getByText('No industry chain data available')).toBeInTheDocument()
   })
 
   it('renders chain section with data', () => {
@@ -64,7 +64,7 @@ describe('ChainPage', () => {
     expect(screen.getByTestId('chain-section')).toBeInTheDocument()
   })
 
-  it('renders with null nodes and edges (fallback to empty arrays)', () => {
+  it('renders empty state with null nodes and edges', () => {
     vi.mocked(useIndustryChain).mockReturnValue({
       data: { nodes: null as unknown as never[], edges: null as unknown as never[] },
       error: undefined,
@@ -73,7 +73,7 @@ describe('ChainPage', () => {
       isValidating: false,
     } as ReturnType<typeof useIndustryChain>)
     render(<ChainPage />)
-    expect(screen.getByTestId('chain-section')).toBeInTheDocument()
+    expect(screen.getByText('No chain nodes found')).toBeInTheDocument()
   })
 
   it('shows error without .message property', () => {

@@ -1,16 +1,14 @@
 import { useIndustryChain } from '../hooks/usePredictApi'
 import { IndustryChainSection } from '../components/predict/IndustryChainSection'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { EmptyState } from '../components/EmptyState'
 
 export default function ChainPage() {
   const { data, error, isLoading } = useIndustryChain()
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64 text-gray-500 text-sm">
-        Loading industry chain...
-      </div>
-    )
+    return <PageSkeleton />
   }
 
   if (error) {
@@ -21,13 +19,25 @@ export default function ChainPage() {
     )
   }
 
-  if (!data) return null
+  if (!data) return <EmptyState message="No industry chain data available" />
+
+  const nodes = data.nodes ?? []
+  const edges = data.edges ?? []
+
+  if (nodes.length === 0) {
+    return (
+      <div className="p-2 sm:p-4 lg:p-6 space-y-6">
+        <h1 className="text-lg font-semibold text-gray-100">Industry Chain</h1>
+        <EmptyState message="No chain nodes found" />
+      </div>
+    )
+  }
 
   return (
     <div className="p-2 sm:p-4 lg:p-6 space-y-6">
       <h1 className="text-lg font-semibold text-gray-100">Industry Chain</h1>
       <SectionErrorBoundary title="Industry Chain">
-        <IndustryChainSection nodes={data.nodes ?? []} edges={data.edges ?? []} />
+        <IndustryChainSection nodes={nodes} edges={edges} />
       </SectionErrorBoundary>
     </div>
   )

@@ -119,8 +119,8 @@ describe('BacktestPage', () => {
       isValidating: false,
       mutate: vi.fn(),
     })
-    render(<BacktestPage />)
-    expect(screen.getByText('Loading backtest data...')).toBeInTheDocument()
+    const { container } = render(<BacktestPage />)
+    expect(container.querySelector('.animate-pulse')).toBeTruthy()
   })
 
   it('shows error state', () => {

@@ -10,6 +10,7 @@ import {
   ReviewPanel,
 } from '../components/predict/detail'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
+import { EmptyState } from '../components/EmptyState'
 
 function Skeleton() {
   return (
@@ -27,7 +28,7 @@ export default function PredictionDetailPage() {
   const numId = id ? Number(id) : null
   const { data, error, isLoading } = usePredictionDetail(numId)
   const { data: graphData, isLoading: graphLoading } = useReasoningGraph(numId)
-  const { data: explainData, error: explainError } = usePredictionExplain(numId)
+  const { data: explainData, error: explainError, isLoading: explainLoading } = usePredictionExplain(numId)
   const { data: reviewData } = usePredictionReview(numId)
 
   if (isLoading) return <Skeleton />
@@ -45,7 +46,16 @@ export default function PredictionDetailPage() {
     )
   }
 
-  if (!data) return null
+  if (!data) {
+    return (
+      <div className="p-6">
+        <Link to="/" className="text-blue-400 hover:text-blue-300 text-sm mb-4 inline-block">
+          &larr; Back
+        </Link>
+        <EmptyState message="Prediction not found" />
+      </div>
+    )
+  }
 
   return (
     <div className="p-2 sm:p-4 lg:p-6 space-y-6 max-w-5xl mx-auto">
@@ -78,9 +88,14 @@ export default function PredictionDetailPage() {
         <ReasoningGraphSection graphData={graphData} isLoading={graphLoading} />
       </SectionErrorBoundary>
 
-      {/* AI Explanation — show "not available" on 404, render panel on success */}
+      {/* AI Explanation — show skeleton while loading, "not available" on 404, render panel on success */}
       <SectionErrorBoundary title="AI Explanation">
-        {explainData ? (
+        {explainLoading ? (
+          <section className="bg-gray-900 rounded-xl border border-gray-800 p-4 space-y-3 animate-pulse">
+            <div className="h-5 bg-gray-800 rounded w-40" />
+            <div className="h-20 bg-gray-800 rounded" />
+          </section>
+        ) : explainData ? (
           <ExplainPanel data={explainData} />
         ) : explainError ? (
           <section className="bg-gray-900 rounded-xl border border-gray-800 p-4">

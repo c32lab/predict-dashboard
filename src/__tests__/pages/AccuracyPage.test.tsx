@@ -47,8 +47,8 @@ function mockReturn(overrides: Partial<AccuracyDetailReturn>) {
 describe('AccuracyPage', () => {
   it('shows loading state', () => {
     mockReturn({ isLoading: true })
-    render(<AccuracyPage />)
-    expect(screen.getByText('Loading accuracy data...')).toBeInTheDocument()
+    const { container } = render(<AccuracyPage />)
+    expect(container.querySelector('.animate-pulse')).toBeTruthy()
   })
 
   it('shows error state', () => {
@@ -58,10 +58,10 @@ describe('AccuracyPage', () => {
     expect(screen.getByText(/Network error/)).toBeInTheDocument()
   })
 
-  it('returns null when no data', () => {
+  it('shows empty state when no data', () => {
     mockReturn({})
-    const { container } = render(<AccuracyPage />)
-    expect(container.innerHTML).toBe('')
+    render(<AccuracyPage />)
+    expect(screen.getByText('No accuracy data available')).toBeInTheDocument()
   })
 
   it('renders accuracy section with data', () => {

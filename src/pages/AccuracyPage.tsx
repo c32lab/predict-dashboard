@@ -8,16 +8,14 @@ import { AccuracyHistoryChart } from '../components/accuracy/AccuracyHistoryChar
 import { DirectionRadarChart } from '../components/accuracy/DirectionRadarChart'
 import { RollingAccuracyChart } from '../components/accuracy/RollingAccuracyChart'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
+import { PageSkeleton } from '../components/PageSkeleton'
+import { EmptyState } from '../components/EmptyState'
 
 export default function AccuracyPage() {
   const { accuracy: data, error, isLoading } = useAccuracyDetail()
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center h-64 text-gray-500 text-sm">
-        Loading accuracy data...
-      </div>
-    )
+    return <PageSkeleton />
   }
 
   if (error) {
@@ -28,7 +26,7 @@ export default function AccuracyPage() {
     )
   }
 
-  if (!data) return null
+  if (!data) return <EmptyState message="No accuracy data available" />
 
   const validations = data.recent_validations ?? []
 

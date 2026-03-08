@@ -2,7 +2,14 @@ import { formatDateTime } from '../../../utils/format'
 import type { MatchedEvent } from '../../../types/predict'
 
 export function MatchedEventsSection({ events }: { events: MatchedEvent[] }) {
-  if (!events || events.length === 0) return null
+  if (!events || events.length === 0) {
+    return (
+      <section className="bg-gray-900 rounded-xl border border-gray-800 p-4">
+        <h2 className="text-sm font-semibold text-gray-200">Matched Events</h2>
+        <p className="text-gray-500 text-sm mt-2">No matched events found</p>
+      </section>
+    )
+  }
 
   return (
     <section className="bg-gray-900 rounded-xl border border-gray-800">

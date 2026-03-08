@@ -153,14 +153,14 @@ describe('DetailHeaderCard', () => {
 // ---------- MatchedEventsSection ----------
 
 describe('MatchedEventsSection', () => {
-  it('returns null for empty events', () => {
-    const { container } = render(<MatchedEventsSection events={[]} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state for empty events', () => {
+    render(<MatchedEventsSection events={[]} />)
+    expect(screen.getByText('No matched events found')).toBeInTheDocument()
   })
 
-  it('returns null for undefined events', () => {
-    const { container } = render(<MatchedEventsSection events={undefined as unknown as MatchedEvent[]} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state for undefined events', () => {
+    render(<MatchedEventsSection events={undefined as unknown as MatchedEvent[]} />)
+    expect(screen.getByText('No matched events found')).toBeInTheDocument()
   })
 
   it('renders header with event count', () => {
@@ -197,14 +197,14 @@ describe('MatchedEventsSection', () => {
 // ---------- ReasoningChainSection ----------
 
 describe('ReasoningChainSection', () => {
-  it('returns null for empty chain', () => {
-    const { container } = render(<ReasoningChainSection chain={[]} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state for empty chain', () => {
+    render(<ReasoningChainSection chain={[]} />)
+    expect(screen.getByText('No reasoning chain available')).toBeInTheDocument()
   })
 
-  it('returns null for undefined chain', () => {
-    const { container } = render(<ReasoningChainSection chain={undefined as unknown as ReasoningStep[]} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state for undefined chain', () => {
+    render(<ReasoningChainSection chain={undefined as unknown as ReasoningStep[]} />)
+    expect(screen.getByText('No reasoning chain available')).toBeInTheDocument()
   })
 
   it('renders header', () => {
@@ -231,14 +231,14 @@ describe('ReasoningChainSection', () => {
 // ---------- ConfidenceFactorsSection ----------
 
 describe('ConfidenceFactorsSection', () => {
-  it('returns null for empty factors', () => {
-    const { container } = render(<ConfidenceFactorsSection factors={{}} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state for empty factors', () => {
+    render(<ConfidenceFactorsSection factors={{}} />)
+    expect(screen.getByText('No confidence factors available')).toBeInTheDocument()
   })
 
-  it('returns null for undefined factors', () => {
-    const { container } = render(<ConfidenceFactorsSection factors={undefined as unknown as Record<string, number>} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state for undefined factors', () => {
+    render(<ConfidenceFactorsSection factors={undefined as unknown as Record<string, number>} />)
+    expect(screen.getByText('No confidence factors available')).toBeInTheDocument()
   })
 
   it('renders header', () => {

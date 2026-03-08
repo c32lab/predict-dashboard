@@ -79,8 +79,8 @@ describe('PredictDashboard', () => {
       mutate: vi.fn(),
       isValidating: false,
     } as ReturnType<typeof usePrediction>)
-    renderPage()
-    expect(screen.getByText(/Loading predictions/)).toBeInTheDocument()
+    const { container } = renderPage()
+    expect(container.querySelector('.animate-pulse')).toBeTruthy()
   })
 
   it('shows error state', () => {
@@ -96,7 +96,7 @@ describe('PredictDashboard', () => {
     expect(screen.getByText(/API down/)).toBeInTheDocument()
   })
 
-  it('returns null when no data', () => {
+  it('shows empty state when no data', () => {
     vi.mocked(usePrediction).mockReturnValue({
       data: undefined,
       error: undefined,
@@ -104,8 +104,8 @@ describe('PredictDashboard', () => {
       mutate: vi.fn(),
       isValidating: false,
     } as ReturnType<typeof usePrediction>)
-    const { container } = renderPage()
-    expect(container.querySelector('[data-testid="health-header"]')).toBeNull()
+    renderPage()
+    expect(screen.getByText('No prediction data available')).toBeInTheDocument()
   })
 
   it('renders dashboard sections with data', () => {

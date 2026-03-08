@@ -12,14 +12,14 @@ const mockChain: ReasoningStep[] = [
 ]
 
 describe('ReasoningChainSection', () => {
-  it('renders nothing when chain is empty', () => {
-    const { container } = render(<ReasoningChainSection chain={[]} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state when chain is empty', () => {
+    render(<ReasoningChainSection chain={[]} />)
+    expect(screen.getByText('No reasoning chain available')).toBeInTheDocument()
   })
 
-  it('renders nothing when chain is null-ish', () => {
-    const { container } = render(<ReasoningChainSection chain={null as unknown as ReasoningStep[]} />)
-    expect(container.innerHTML).toBe('')
+  it('shows empty state when chain is null-ish', () => {
+    render(<ReasoningChainSection chain={null as unknown as ReasoningStep[]} />)
+    expect(screen.getByText('No reasoning chain available')).toBeInTheDocument()
   })
 
   it('renders section heading', () => {

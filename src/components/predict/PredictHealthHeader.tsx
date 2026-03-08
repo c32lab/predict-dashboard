@@ -1,7 +1,7 @@
 import type { PredictAccuracyResponse } from '../../types/predict'
 
 interface Props {
-  serviceOk: boolean
+  serviceOk: boolean | null
   activeCount: number
   eventCount: number
   macroScore: number | null
@@ -21,11 +21,11 @@ export function PredictHealthHeader({ serviceOk, activeCount, eventCount, macroS
     <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
       {/* Service Status */}
       <div className="bg-gray-900 rounded-xl border border-gray-800 p-3 flex items-center gap-2">
-        <span className={`inline-block w-2 h-2 rounded-full ${serviceOk ? 'bg-green-400' : 'bg-red-400'}`} />
+        <span className={`inline-block w-2 h-2 rounded-full ${serviceOk === null ? 'bg-gray-500 animate-pulse' : serviceOk ? 'bg-green-400' : 'bg-red-400'}`} />
         <div className="flex flex-col">
           <span className="text-xs text-gray-500 uppercase tracking-wide">Service</span>
-          <span className={`text-sm font-semibold ${serviceOk ? 'text-green-400' : 'text-red-400'}`}>
-            {serviceOk ? 'Online' : 'Down'}
+          <span className={`text-sm font-semibold ${serviceOk === null ? 'text-gray-500' : serviceOk ? 'text-green-400' : 'text-red-400'}`}>
+            {serviceOk === null ? 'Checking...' : serviceOk ? 'Online' : 'Down'}
           </span>
         </div>
       </div>
