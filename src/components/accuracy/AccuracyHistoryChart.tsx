@@ -125,7 +125,7 @@ export function AccuracyHistoryChart() {
       {patternRows.length > 0 && (
         <div>
           <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-2">Accuracy by Pattern</h4>
-          <div className="overflow-auto max-h-48">
+          <div className="overflow-x-auto max-h-48 overflow-y-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-gray-500 text-xs">

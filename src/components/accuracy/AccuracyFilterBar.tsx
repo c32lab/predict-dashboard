@@ -28,7 +28,7 @@ export function AccuracyFilterBar({
           <button
             key={r}
             onClick={() => onTimeRangeChange(r)}
-            className={`px-3 py-1 rounded text-xs font-medium transition-colors ${
+            className={`px-3 py-1.5 min-h-[44px] flex items-center rounded text-xs font-medium transition-colors ${
               timeRange === r
                 ? 'bg-blue-700 text-blue-100'
                 : 'bg-gray-800 text-gray-400 hover:bg-gray-700'

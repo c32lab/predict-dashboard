@@ -44,7 +44,7 @@ export function PredictionHistorySection({
             <button
               onClick={() => onPageChange(Math.max(0, page - 1))}
               disabled={page === 0}
-              className="px-3 py-1 text-xs rounded border border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="px-3 py-2 min-h-[44px] text-xs rounded border border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               Prev
             </button>
@@ -54,7 +54,7 @@ export function PredictionHistorySection({
             <button
               onClick={() => onPageChange(Math.min(totalPages - 1, page + 1))}
               disabled={page >= totalPages - 1}
-              className="px-3 py-1 text-xs rounded border border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
+              className="px-3 py-2 min-h-[44px] text-xs rounded border border-gray-700 text-gray-400 hover:text-gray-200 hover:border-gray-500 disabled:opacity-30 disabled:cursor-not-allowed transition-colors"
             >
               Next
             </button>

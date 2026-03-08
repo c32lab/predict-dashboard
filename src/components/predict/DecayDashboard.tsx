@@ -113,7 +113,7 @@ export function DecayDashboard() {
       <h3 className="text-sm font-semibold text-gray-200">Decay Dashboard</h3>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="bg-gray-800 rounded-lg p-3 text-center">
           <div className="text-xs text-gray-500 mb-1">Net Impact</div>
           <div className={`text-lg font-semibold ${impactColor}`}>
@@ -220,7 +220,7 @@ export function DecayDashboard() {
       {sortedDetails.length > 0 && (
         <div>
           <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-2">Active Decay Events</h4>
-          <div className="overflow-auto max-h-64">
+          <div className="overflow-x-auto max-h-64 overflow-y-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-gray-500 text-xs">
@@ -293,7 +293,7 @@ export function DecayDashboard() {
       {modelsData && modelsData.models.length > 0 && (
         <div>
           <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-2">Decay Models</h4>
-          <div className="overflow-auto max-h-48">
+          <div className="overflow-x-auto max-h-48 overflow-y-auto">
             <table className="w-full text-sm">
               <thead>
                 <tr className="text-gray-500 text-xs">
