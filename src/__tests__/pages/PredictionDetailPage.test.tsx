@@ -154,4 +154,106 @@ describe('PredictionDetailPage', () => {
     renderWithRoute('1')
     expect(screen.getByText(/plain string error/)).toBeInTheDocument()
   })
+
+  it('renders explain panel when explain data is available', () => {
+    vi.mocked(usePredictionDetail).mockReturnValue({
+      data: {
+        id: 1, symbol: 'BTC/USDT', direction: 'LONG', status: 'active', confidence: 0.85,
+        price_at_prediction: 65000, macro_score: 7, fear_greed: 45, expected_impact: 3.5,
+        expected_horizon: '1d', created_at: '2026-03-06T09:00:00Z', timestamp: '2026-03-06T09:00:00Z',
+        trigger_event: 'test', trigger_event_text: 'Whale spotted', trigger_pattern: 'whale',
+        reasoning: 'Based on accumulation', matched_events: [], reasoning_chain: [], confidence_factors: {},
+      },
+      error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionDetail>)
+    vi.mocked(usePredictionExplain).mockReturnValue({
+      data: {
+        prediction_id: 1,
+        summary: 'LONG BTC/USDT based on tariff_relief with 0.51 confidence',
+        reasoning_chain: {
+          trigger: { event: 'Tariff relief announced', source: 'auto_extracted', timestamp: '2026-03-07T10:00:00Z' },
+          classification: { pattern: 'tariff_relief', category: 'tariff_relief', confidence_score: 0.507 },
+          historical_matches: [],
+          decay_analysis: {},
+          direction_decision: { direction: 'LONG', confidence: 0.51 },
+          symbol_decision: { symbol: 'BTC/USDT' },
+        },
+        factors: [{ name: 'Pattern Match', weight: 0.5, contribution: 'Strong pattern' }],
+      },
+      error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionExplain>)
+    renderWithRoute('1')
+    expect(screen.getByText('AI Explanation')).toBeInTheDocument()
+    expect(screen.getByText(/LONG BTC\/USDT/)).toBeInTheDocument()
+    expect(screen.getByText('Tariff relief announced')).toBeInTheDocument()
+  })
+
+  it('shows "Explanation not available" when explain returns 404', () => {
+    vi.mocked(usePredictionDetail).mockReturnValue({
+      data: {
+        id: 1, symbol: 'BTC/USDT', direction: 'LONG', status: 'active', confidence: 0.85,
+        price_at_prediction: 65000, macro_score: 7, fear_greed: 45, expected_impact: 3.5,
+        expected_horizon: '1d', created_at: '2026-03-06T09:00:00Z', timestamp: '2026-03-06T09:00:00Z',
+        trigger_event: 'test', trigger_event_text: '', trigger_pattern: '', reasoning: '',
+        matched_events: [], reasoning_chain: [], confidence_factors: {},
+      },
+      error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionDetail>)
+    vi.mocked(usePredictionExplain).mockReturnValue({
+      data: undefined,
+      error: new Error('API error: 404 Not Found'),
+      isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionExplain>)
+    renderWithRoute('1')
+    expect(screen.getByText('Explanation not available')).toBeInTheDocument()
+  })
+
+  it('renders review panel when review data is available', () => {
+    vi.mocked(usePredictionDetail).mockReturnValue({
+      data: {
+        id: 1, symbol: 'BTC/USDT', direction: 'LONG', status: 'active', confidence: 0.85,
+        price_at_prediction: 65000, macro_score: 7, fear_greed: 45, expected_impact: 3.5,
+        expected_horizon: '1d', created_at: '2026-03-06T09:00:00Z', timestamp: '2026-03-06T09:00:00Z',
+        trigger_event: 'test', trigger_event_text: '', trigger_pattern: '', reasoning: '',
+        matched_events: [], reasoning_chain: [], confidence_factors: {},
+      },
+      error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionDetail>)
+    vi.mocked(usePredictionReview).mockReturnValue({
+      data: {
+        prediction_id: 1, status: 'validated',
+        prediction: { direction: 'LONG', confidence: 0.507, symbol: 'BTC/USDT', timestamp: '2026-03-07T10:00:00Z' },
+        validation: { horizon: '1d', is_correct: false, actual_price_change_pct: -1.07, validated_at: '2026-03-08T10:00:00Z' },
+        review: {
+          outcome_summary: 'Prediction was INCORRECT',
+          accuracy_context: 'This pattern has 46% accuracy',
+          review_text: JSON.stringify({ outcome: 'Incorrect', lessons: ['Lesson one'] }),
+        },
+      },
+      error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionReview>)
+    renderWithRoute('1')
+    expect(screen.getByText('Postmortem Review')).toBeInTheDocument()
+    expect(screen.getByText(/Prediction was INCORRECT/)).toBeInTheDocument()
+  })
+
+  it('hides review section when review returns 404 (not yet validated)', () => {
+    vi.mocked(usePredictionDetail).mockReturnValue({
+      data: {
+        id: 1, symbol: 'BTC/USDT', direction: 'LONG', status: 'active', confidence: 0.85,
+        price_at_prediction: 65000, macro_score: 7, fear_greed: 45, expected_impact: 3.5,
+        expected_horizon: '1d', created_at: '2026-03-06T09:00:00Z', timestamp: '2026-03-06T09:00:00Z',
+        trigger_event: 'test', trigger_event_text: '', trigger_pattern: '', reasoning: '',
+        matched_events: [], reasoning_chain: [], confidence_factors: {},
+      },
+      error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionDetail>)
+    vi.mocked(usePredictionReview).mockReturnValue({
+      data: undefined,
+      error: new Error('Not found'),
+      isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionReview>)
+    renderWithRoute('1')
+    expect(screen.queryByText('Postmortem Review')).not.toBeInTheDocument()
+  })
 })
