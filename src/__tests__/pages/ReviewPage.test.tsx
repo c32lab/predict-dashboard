@@ -137,6 +137,24 @@ describe('ReviewPage', () => {
     expect(screen.getAllByText('Correct').length).toBeGreaterThanOrEqual(1)
   })
 
+  it('renders explain data when review returns error (e.g. 404 not yet validated)', () => {
+    vi.mocked(usePredictionExplain).mockReturnValue({
+      data: mockExplain, error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionExplain>)
+    vi.mocked(usePredictionReview).mockReturnValue({
+      data: undefined, error: new Error('Not found'), isLoading: false, mutate: vi.fn(), isValidating: false,
+    } as ReturnType<typeof usePredictionReview>)
+    renderWithRoute('1')
+    // Explain sections should render
+    expect(screen.getByText('Summary')).toBeInTheDocument()
+    expect(screen.getByText('Reasoning Chain')).toBeInTheDocument()
+    expect(screen.getByText('Decision Factors')).toBeInTheDocument()
+    // Postmortem should NOT render
+    expect(screen.queryByText('Postmortem Review')).not.toBeInTheDocument()
+    // Error message should NOT appear
+    expect(screen.queryByText(/Failed to load/)).not.toBeInTheDocument()
+  })
+
   it('shows raw review_text when JSON parsing fails', () => {
     vi.mocked(usePredictionExplain).mockReturnValue({
       data: mockExplain, error: undefined, isLoading: false, mutate: vi.fn(), isValidating: false,

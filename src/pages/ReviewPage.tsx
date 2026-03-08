@@ -311,21 +311,18 @@ export default function ReviewPage() {
   const { id } = useParams<{ id: string }>()
   const numId = id ? Number(id) : null
   const { data: explain, error: explainError, isLoading: explainLoading } = usePredictionExplain(numId)
-  const { data: review, error: reviewError, isLoading: reviewLoading } = usePredictionReview(numId)
+  const { data: review } = usePredictionReview(numId)
 
-  const isLoading = explainLoading || reviewLoading
-  const error = explainError || reviewError
+  if (explainLoading) return <Skeleton />
 
-  if (isLoading) return <Skeleton />
-
-  if (error) {
+  if (explainError) {
     return (
       <div className="p-6">
         <Link to={`/predictions/${id}`} className="text-blue-400 hover:text-blue-300 text-sm mb-4 inline-block">
           &larr; Back to Detail
         </Link>
         <div className="text-red-400 text-sm mt-4">
-          Failed to load: {String((error as Error)?.message ?? error)}
+          Failed to load: {String((explainError as Error)?.message ?? explainError)}
         </div>
       </div>
     )
