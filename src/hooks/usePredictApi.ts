@@ -131,3 +131,15 @@ export function useDecayActive() {
     refreshInterval: REFRESH_INTERVAL,
   })
 }
+
+export function useDecayModels() {
+  return useSWR('predict/decay-models', () => predictApi.decayModels(), {
+    refreshInterval: REFRESH_INTERVAL,
+  })
+}
+
+export function useHealthDeep() {
+  return useSWR('predict/health-deep', () => predictApi.healthDeep(), {
+    refreshInterval: REFRESH_INTERVAL,
+  })
+}

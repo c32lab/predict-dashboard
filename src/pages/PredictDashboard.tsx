@@ -14,7 +14,8 @@ import {
   DerivativesOverviewSection,
   PredictHealthHeader,
 } from '../components/predict'
-import { DecayImpactPanel } from '../components/predict/DecayImpactPanel'
+import { DecayDashboard } from '../components/predict/DecayDashboard'
+import { DeepHealthPanel } from '../components/predict/DeepHealthPanel'
 import {
   MacroOverviewSection,
   ActivePredictionsSection,
@@ -103,8 +104,12 @@ export default function PredictDashboard() {
         <DerivativesOverviewSection />
       </SectionErrorBoundary>
 
-      <SectionErrorBoundary title="Decay Impact">
-        <DecayImpactPanel />
+      <SectionErrorBoundary title="Decay Dashboard">
+        <DecayDashboard />
+      </SectionErrorBoundary>
+
+      <SectionErrorBoundary title="Deep Health">
+        <DeepHealthPanel />
       </SectionErrorBoundary>
     </div>
   )

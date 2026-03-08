@@ -43,8 +43,12 @@ vi.mock('../../components/SectionErrorBoundary', () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
 
-vi.mock('../../components/predict/DecayImpactPanel', () => ({
-  DecayImpactPanel: () => <div>DecayImpactPanel</div>,
+vi.mock('../../components/predict/DecayDashboard', () => ({
+  DecayDashboard: () => <div>DecayDashboard</div>,
+}))
+
+vi.mock('../../components/predict/DeepHealthPanel', () => ({
+  DeepHealthPanel: () => <div>DeepHealthPanel</div>,
 }))
 
 vi.mock('../../components/predict/dashboard', () => ({

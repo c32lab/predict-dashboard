@@ -238,3 +238,25 @@ export interface DecayActiveResponse {
   active_count: number
   details: DecayDetail[]
 }
+
+export interface DecayModelsResponse {
+  models: Array<{
+    name: string
+    decay_type: string
+    initial_impact: number
+    description: string
+  }>
+  event_type_mapping: Record<string, string>
+}
+
+export interface DeepHealthResponse {
+  status: string
+  service: string
+  version: string
+  db: Record<string, unknown>
+  db_file: { readable: boolean; path: string; size_bytes: number }
+  db_tables: { tables_checked: string[]; missing_tables: string[]; ok: boolean }
+  predictions_24h: { count_24h: number }
+  memory: { rss_mb: number }
+  uptime_seconds: number
+}

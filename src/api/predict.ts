@@ -14,6 +14,8 @@ import type {
   QualityReport,
   AccuracyHistoryResponse,
   DecayActiveResponse,
+  DecayModelsResponse,
+  DeepHealthResponse,
 } from '../types/predict'
 
 const BASE = ''
@@ -95,4 +97,10 @@ export const predictApi = {
 
   decayActive: () =>
     fetcher<DecayActiveResponse>(`${BASE}/api/decay/active`),
+
+  decayModels: () =>
+    fetcher<DecayModelsResponse>(`${BASE}/api/decay/models`),
+
+  healthDeep: () =>
+    fetcher<DeepHealthResponse>(`${BASE}/api/health/deep`),
 }
