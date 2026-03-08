@@ -11,6 +11,7 @@ const links = [
   { to: '/decay', label: 'Decay' },
   { to: '/chain', label: 'Chain' },
   { to: '/backtest', label: 'Backtest' },
+  { to: '/review', label: 'Review' },
 ] as const
 
 export default function NavBar() {

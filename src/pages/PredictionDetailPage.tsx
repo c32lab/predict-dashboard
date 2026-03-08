@@ -49,6 +49,15 @@ export default function PredictionDetailPage() {
         &larr; Back
       </Link>
 
+      <div className="flex justify-end">
+        <Link
+          to={`/review/${id}`}
+          className="text-blue-300 hover:text-blue-200 underline underline-offset-2 text-sm"
+        >
+          View Review / Postmortem &rarr;
+        </Link>
+      </div>
+
       <SectionErrorBoundary title="Prediction Header">
         <DetailHeaderCard data={data} />
       </SectionErrorBoundary>

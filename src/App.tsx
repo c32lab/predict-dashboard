@@ -10,6 +10,8 @@ const ChainPage = lazy(() => import('./pages/ChainPage'))
 const BacktestPage = lazy(() => import('./pages/BacktestPage'))
 const QualityPage = lazy(() => import('./pages/QualityPage'))
 const DecayPage = lazy(() => import('./pages/DecayPage'))
+const ReviewPage = lazy(() => import('./pages/ReviewPage'))
+const ReviewOverviewPage = lazy(() => import('./pages/ReviewOverviewPage'))
 
 function Loading() {
   return (
@@ -39,6 +41,8 @@ function App() {
               <Route path="/backtest" element={<BacktestPage />} />
               <Route path="/quality" element={<QualityPage />} />
               <Route path="/decay" element={<DecayPage />} />
+              <Route path="/review" element={<ReviewOverviewPage />} />
+              <Route path="/review/:id" element={<ReviewPage />} />
             </Routes>
           </Suspense>
         </div>

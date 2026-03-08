@@ -143,3 +143,19 @@ export function useHealthDeep() {
     refreshInterval: REFRESH_INTERVAL,
   })
 }
+
+export function usePredictionExplain(id: number | null) {
+  return useSWR(
+    id != null ? `predict/predictions/${id}/explain` : null,
+    () => predictApi.predictionExplain(id!),
+    { revalidateOnFocus: false }
+  )
+}
+
+export function usePredictionReview(id: number | null) {
+  return useSWR(
+    id != null ? `predict/predictions/${id}/review` : null,
+    () => predictApi.predictionReview(id!),
+    { revalidateOnFocus: false }
+  )
+}

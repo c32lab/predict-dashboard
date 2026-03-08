@@ -16,6 +16,8 @@ import type {
   DecayActiveResponse,
   DecayModelsResponse,
   DeepHealthResponse,
+  PredictionExplainResponse,
+  PredictionReviewResponse,
 } from '../types/predict'
 
 const BASE = ''
@@ -103,4 +105,10 @@ export const predictApi = {
 
   healthDeep: () =>
     fetcher<DeepHealthResponse>(`${BASE}/api/health/deep`),
+
+  predictionExplain: (id: number) =>
+    fetcher<PredictionExplainResponse>(`${BASE}/api/predictions/${id}/explain`),
+
+  predictionReview: (id: number) =>
+    fetcher<PredictionReviewResponse>(`${BASE}/api/predictions/${id}/review`),
 }

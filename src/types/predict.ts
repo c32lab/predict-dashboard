@@ -249,6 +249,93 @@ export interface DecayModelsResponse {
   event_type_mapping: Record<string, string>
 }
 
+// --- Explain & Review API types ---
+
+export interface ExplainTrigger {
+  event: string
+  source: string
+  timestamp: string
+}
+
+export interface ExplainClassification {
+  pattern: string
+  category: string
+  confidence_score: number
+}
+
+export interface ExplainHistoricalMatch {
+  event: string
+  date: string
+  similarity: number
+  outcome: {
+    direction: string
+    price_change_pct: number
+  }
+}
+
+export interface ExplainDecayAnalysis {
+  [key: string]: unknown
+}
+
+export interface ExplainDirectionDecision {
+  direction: string
+  confidence: number
+  [key: string]: unknown
+}
+
+export interface ExplainSymbolDecision {
+  symbol: string
+  [key: string]: unknown
+}
+
+export interface ExplainReasoningChain {
+  trigger: ExplainTrigger
+  classification: ExplainClassification
+  historical_matches: ExplainHistoricalMatch[]
+  decay_analysis: ExplainDecayAnalysis
+  direction_decision: ExplainDirectionDecision
+  symbol_decision: ExplainSymbolDecision
+}
+
+export interface ExplainFactor {
+  name: string
+  weight: number
+  contribution: string
+}
+
+export interface PredictionExplainResponse {
+  prediction_id: number
+  summary: string
+  reasoning_chain: ExplainReasoningChain
+  factors: ExplainFactor[]
+}
+
+export interface PredictionReviewValidation {
+  horizon: string
+  is_correct: boolean
+  actual_price_change_pct: number
+  validated_at: string
+}
+
+export interface PredictionReviewDetail {
+  outcome_summary: string
+  accuracy_context: string
+  review_text: string  // JSON string to parse
+}
+
+export interface PredictionReviewResponse {
+  prediction_id: number
+  status: string
+  prediction: {
+    direction: string
+    confidence: number
+    symbol: string
+    timestamp: string
+  }
+  validation: PredictionReviewValidation
+  review: PredictionReviewDetail
+}
+
 export interface DeepHealthResponse {
   status: string
   service: string
