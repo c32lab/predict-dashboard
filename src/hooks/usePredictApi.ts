@@ -111,3 +111,23 @@ export function useReasoningGraph(id: number | null) {
     { revalidateOnFocus: false }
   )
 }
+
+export function useQualityReport() {
+  return useSWR('predict/quality-report', () => predictApi.qualityReport(), {
+    refreshInterval: REFRESH_INTERVAL,
+  })
+}
+
+export function useAccuracyHistory(window = 100) {
+  return useSWR(
+    ['predict/accuracy-history', window],
+    () => predictApi.accuracyHistory(window),
+    { refreshInterval: REFRESH_INTERVAL }
+  )
+}
+
+export function useDecayActive() {
+  return useSWR('predict/decay-active', () => predictApi.decayActive(), {
+    refreshInterval: REFRESH_INTERVAL,
+  })
+}

@@ -11,6 +11,9 @@ import type {
   TakerVolumePoint,
   PredictAccuracyResponse,
   ReasoningGraph,
+  QualityReport,
+  AccuracyHistoryResponse,
+  DecayActiveResponse,
 } from '../types/predict'
 
 const BASE = ''
@@ -83,4 +86,13 @@ export const predictApi = {
 
   takerVolume: (symbol = 'BTC/USDT', limit = 24) =>
     fetcher<TakerVolumePoint[]>(`/data-api/api/taker-volume?symbol=${encodeURIComponent(symbol)}&limit=${limit}`),
+
+  qualityReport: () =>
+    fetcher<QualityReport>(`${BASE}/api/predictions/quality-report`),
+
+  accuracyHistory: (window = 100) =>
+    fetcher<AccuracyHistoryResponse>(`${BASE}/api/accuracy-history?window=${window}`),
+
+  decayActive: () =>
+    fetcher<DecayActiveResponse>(`${BASE}/api/decay/active`),
 }

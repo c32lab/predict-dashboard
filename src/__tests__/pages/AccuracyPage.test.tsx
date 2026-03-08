@@ -13,6 +13,14 @@ vi.mock('../../components/predict/AccuracyAndValidationsSection', () => ({
   ),
 }))
 
+vi.mock('../../components/accuracy/QualityReportPanel', () => ({
+  QualityReportPanel: () => <div data-testid="quality-report">QualityReport</div>,
+}))
+
+vi.mock('../../components/accuracy/AccuracyHistoryChart', () => ({
+  AccuracyHistoryChart: () => <div data-testid="accuracy-history">AccuracyHistory</div>,
+}))
+
 import { useAccuracyDetail } from '../../hooks/usePredictApi'
 import AccuracyPage from '../../pages/AccuracyPage'
 

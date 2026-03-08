@@ -17,6 +17,9 @@ vi.mock('../../api/predict', () => ({
     takerVolume: vi.fn().mockResolvedValue([]),
     predictionDetail: vi.fn().mockResolvedValue({ id: 1 }),
     reasoningGraph: vi.fn().mockResolvedValue({ nodes: [], edges: [] }),
+    qualityReport: vi.fn().mockResolvedValue({ total_predictions: 0 }),
+    accuracyHistory: vi.fn().mockResolvedValue({ accuracy_history: [] }),
+    decayActive: vi.fn().mockResolvedValue({ net_impact_pct: 0, details: [] }),
   },
 }))
 
@@ -46,6 +49,9 @@ import {
   useTakerVolume,
   usePredictionDetail,
   useReasoningGraph,
+  useQualityReport,
+  useAccuracyHistory,
+  useDecayActive,
 } from '../../hooks/usePredictApi'
 
 describe('usePredictApi hooks', () => {
@@ -147,6 +153,26 @@ describe('usePredictApi hooks', () => {
 
   it('useReasoningGraph returns loading when id is provided', () => {
     const { result } = renderHook(() => useReasoningGraph(5))
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
+  it('useQualityReport returns SWR result', () => {
+    const { result } = renderHook(() => useQualityReport())
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
+  it('useAccuracyHistory returns SWR result', () => {
+    const { result } = renderHook(() => useAccuracyHistory())
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
+  it('useAccuracyHistory accepts custom window', () => {
+    const { result } = renderHook(() => useAccuracyHistory(50))
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
+  it('useDecayActive returns SWR result', () => {
+    const { result } = renderHook(() => useDecayActive())
     expect(result.current).toHaveProperty('isLoading')
   })
 })

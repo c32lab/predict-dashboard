@@ -43,6 +43,10 @@ vi.mock('../../components/SectionErrorBoundary', () => ({
   default: ({ children }: { children: React.ReactNode }) => <div>{children}</div>,
 }))
 
+vi.mock('../../components/predict/DecayImpactPanel', () => ({
+  DecayImpactPanel: () => <div>DecayImpactPanel</div>,
+}))
+
 vi.mock('../../components/predict/dashboard', () => ({
   MacroOverviewSection: ({ macro }: { macro: unknown }) => <div>Macro Overview {macro ? 'loaded' : ''}</div>,
   ActivePredictionsSection: () => <div>Active Predictions</div>,

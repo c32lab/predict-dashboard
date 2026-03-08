@@ -207,3 +207,34 @@ export interface ReasoningGraph {
   nodes: ReasoningGraphNode[]
   edges: ReasoningGraphEdge[]
 }
+
+export interface QualityReport {
+  total_predictions: number
+  confidence_distribution: Record<string, { count: number; accuracy: number }>
+  category_distribution: Record<string, number>
+  overall_accuracy: Record<string, number>
+}
+
+export interface AccuracyHistoryResponse {
+  accuracy_history: Array<{ date: string; total: number; correct: number; accuracy: number }>
+  by_direction: Record<string, { total: number; correct: number; accuracy: number }>
+  by_pattern: Record<string, { total: number; correct: number; accuracy: number }>
+  overall: { total: number; correct: number; accuracy: number }
+  window: number
+}
+
+export interface DecayDetail {
+  type: string
+  model: string
+  elapsed_days: number
+  decay_coefficient: number
+  current_impact_pct: number
+}
+
+export interface DecayActiveResponse {
+  net_impact_pct: number
+  net_strength: number
+  direction: string
+  active_count: number
+  details: DecayDetail[]
+}

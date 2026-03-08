@@ -3,6 +3,8 @@ import { AccuracyAndValidationsSection } from '../components/predict/AccuracyAnd
 import { AccuracyTrendChart } from '../components/accuracy/AccuracyTrendChart'
 import { SymbolAccuracyBreakdown } from '../components/accuracy/SymbolAccuracyBreakdown'
 import { ConfidenceAccuracyScatter } from '../components/accuracy/ConfidenceAccuracyScatter'
+import { QualityReportPanel } from '../components/accuracy/QualityReportPanel'
+import { AccuracyHistoryChart } from '../components/accuracy/AccuracyHistoryChart'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 
 export default function AccuracyPage() {
@@ -59,6 +61,14 @@ export default function AccuracyPage() {
         <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
           <ConfidenceAccuracyScatter validations={validations} />
         </div>
+      </SectionErrorBoundary>
+
+      <SectionErrorBoundary title="Quality Report">
+        <QualityReportPanel />
+      </SectionErrorBoundary>
+
+      <SectionErrorBoundary title="Accuracy History">
+        <AccuracyHistoryChart />
       </SectionErrorBoundary>
     </div>
   )
