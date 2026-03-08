@@ -6,6 +6,7 @@ import {
   YAxis,
   Tooltip,
   ResponsiveContainer,
+  Legend,
 } from 'recharts'
 import type { Validation } from '../../types/predict'
 
@@ -15,15 +16,25 @@ interface Props {
 
 interface ScatterPoint {
   confidence: number
-  is_correct: number
+  actual_change: number
 }
 
 export function ConfidenceAccuracyScatter({ validations }: Props) {
-  const { points, summary } = useMemo(() => {
-    const pts: ScatterPoint[] = validations.map((v) => ({
-      confidence: v.confidence * 100,
-      is_correct: v.is_correct,
-    }))
+  const { correctPoints, incorrectPoints, summary } = useMemo(() => {
+    const correct: ScatterPoint[] = []
+    const incorrect: ScatterPoint[] = []
+
+    for (const v of validations) {
+      const pt: ScatterPoint = {
+        confidence: v.confidence * 100,
+        actual_change: v.actual_change,
+      }
+      if (v.is_correct) {
+        correct.push(pt)
+      } else {
+        incorrect.push(pt)
+      }
+    }
 
     const high = validations.filter((v) => v.confidence > 0.7)
     const low = validations.filter((v) => v.confidence < 0.5)
@@ -36,12 +47,13 @@ export function ConfidenceAccuracyScatter({ validations }: Props) {
       : null
 
     return {
-      points: pts,
+      correctPoints: correct,
+      incorrectPoints: incorrect,
       summary: { highAcc, lowAcc, highCount: high.length, lowCount: low.length },
     }
   }, [validations])
 
-  if (points.length === 0) {
+  if (correctPoints.length === 0 && incorrectPoints.length === 0) {
     return (
       <div className="text-sm text-gray-500 text-center py-8">
         No validation data available for confidence analysis.
@@ -66,26 +78,25 @@ export function ConfidenceAccuracyScatter({ validations }: Props) {
               unit="%"
             />
             <YAxis
-              dataKey="is_correct"
+              dataKey="actual_change"
               type="number"
-              domain={[0, 1]}
-              ticks={[0, 1]}
               tick={{ fill: '#6b7280', fontSize: 11 }}
               tickLine={false}
               axisLine={false}
-              width={36}
-              tickFormatter={(v) => (v === 1 ? 'Yes' : 'No')}
-              name="Correct"
+              width={48}
+              tickFormatter={(v) => `${v}%`}
+              name="Change"
             />
             <Tooltip
               contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
               formatter={(value: number | undefined, name?: string) => {
                 const v = Number(value ?? 0)
-                if (name === 'Correct') return [v === 1 ? 'Yes' : 'No', name]
                 return [`${v.toFixed(1)}%`, name ?? '']
               }}
             />
-            <Scatter data={points} fill="#60a5fa" opacity={0.6} />
+            <Legend wrapperStyle={{ fontSize: 12, color: '#9ca3af' }} />
+            <Scatter name="Correct" data={correctPoints} fill="#22c55e" opacity={0.7} />
+            <Scatter name="Incorrect" data={incorrectPoints} fill="#ef4444" opacity={0.7} />
           </ScatterChart>
         </ResponsiveContainer>
       </div>

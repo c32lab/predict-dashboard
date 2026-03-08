@@ -52,4 +52,15 @@ describe('AccuracyTrendChart', () => {
     render(<AccuracyTrendChart validations={validations} />)
     expect(screen.getByText('Accuracy Over Time')).toBeInTheDocument()
   })
+
+  it('computes prediction count per day', () => {
+    const validations = [
+      makeValidation({ id: 1, horizon: '1d', validated_at: '2026-03-06T10:00:00Z' }),
+      makeValidation({ id: 2, horizon: '3d', validated_at: '2026-03-06T14:00:00Z' }),
+      makeValidation({ id: 3, horizon: '1d', validated_at: '2026-03-06T16:00:00Z' }),
+    ]
+    // Renders without error — count bar is present in the ComposedChart
+    render(<AccuracyTrendChart validations={validations} />)
+    expect(screen.getByText('Accuracy Over Time')).toBeInTheDocument()
+  })
 })

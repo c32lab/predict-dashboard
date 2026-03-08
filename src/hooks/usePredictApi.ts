@@ -25,6 +25,23 @@ export function usePredictAccuracy() {
   })
 }
 
+export function useAccuracyDetail() {
+  const accuracy = useSWR('predict/accuracy', () => predictApi.predictAccuracy(), {
+    refreshInterval: REFRESH_INTERVAL,
+  })
+  const predictions = useSWR(
+    ['predict/predictions', 'active', 200],
+    () => predictApi.predictions({ limit: 200 }),
+    { refreshInterval: REFRESH_INTERVAL }
+  )
+  return {
+    accuracy: accuracy.data,
+    predictions: predictions.data,
+    error: accuracy.error || predictions.error,
+    isLoading: accuracy.isLoading || predictions.isLoading,
+  }
+}
+
 export function usePredictEvents(limit = 50, pattern?: string) {
   return useSWR(
     ['predict/events', limit, pattern],

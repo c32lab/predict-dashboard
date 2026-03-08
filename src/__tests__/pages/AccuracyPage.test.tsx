@@ -3,7 +3,7 @@ import { render, screen } from '@testing-library/react'
 
 // Mock the hook
 vi.mock('../../hooks/usePredictApi', () => ({
-  usePredictAccuracy: vi.fn(),
+  useAccuracyDetail: vi.fn(),
 }))
 
 // Mock the child component
@@ -13,86 +13,66 @@ vi.mock('../../components/predict/AccuracyAndValidationsSection', () => ({
   ),
 }))
 
-import { usePredictAccuracy } from '../../hooks/usePredictApi'
+import { useAccuracyDetail } from '../../hooks/usePredictApi'
 import AccuracyPage from '../../pages/AccuracyPage'
+
+type AccuracyDetailReturn = ReturnType<typeof useAccuracyDetail>
+
+function mockReturn(overrides: Partial<AccuracyDetailReturn>) {
+  vi.mocked(useAccuracyDetail).mockReturnValue({
+    accuracy: undefined,
+    predictions: undefined,
+    error: undefined,
+    isLoading: false,
+    ...overrides,
+  } as AccuracyDetailReturn)
+}
 
 describe('AccuracyPage', () => {
   it('shows loading state', () => {
-    vi.mocked(usePredictAccuracy).mockReturnValue({
-      data: undefined,
-      error: undefined,
-      isLoading: true,
-      mutate: vi.fn(),
-      isValidating: false,
-    } as ReturnType<typeof usePredictAccuracy>)
+    mockReturn({ isLoading: true })
     render(<AccuracyPage />)
     expect(screen.getByText('Loading accuracy data...')).toBeInTheDocument()
   })
 
   it('shows error state', () => {
-    vi.mocked(usePredictAccuracy).mockReturnValue({
-      data: undefined,
-      error: new Error('Network error'),
-      isLoading: false,
-      mutate: vi.fn(),
-      isValidating: false,
-    } as ReturnType<typeof usePredictAccuracy>)
+    mockReturn({ error: new Error('Network error') })
     render(<AccuracyPage />)
     expect(screen.getByText(/Failed to load/)).toBeInTheDocument()
     expect(screen.getByText(/Network error/)).toBeInTheDocument()
   })
 
   it('returns null when no data', () => {
-    vi.mocked(usePredictAccuracy).mockReturnValue({
-      data: undefined,
-      error: undefined,
-      isLoading: false,
-      mutate: vi.fn(),
-      isValidating: false,
-    } as ReturnType<typeof usePredictAccuracy>)
+    mockReturn({})
     const { container } = render(<AccuracyPage />)
     expect(container.innerHTML).toBe('')
   })
 
   it('renders accuracy section with data', () => {
-    vi.mocked(usePredictAccuracy).mockReturnValue({
-      data: {
+    mockReturn({
+      accuracy: {
         accuracy: { '1d': { total: 10, correct: 6, accuracy: 60 } },
         recent_validations: [{ id: 1 }],
-      },
-      error: undefined,
-      isLoading: false,
-      mutate: vi.fn(),
-      isValidating: false,
-    } as unknown as ReturnType<typeof usePredictAccuracy>)
+      } as unknown as AccuracyDetailReturn['accuracy'],
+    })
     render(<AccuracyPage />)
     expect(screen.getByText('Prediction Accuracy')).toBeInTheDocument()
     expect(screen.getByTestId('accuracy-section')).toBeInTheDocument()
   })
 
   it('renders with null accuracy and validations (fallback to defaults)', () => {
-    vi.mocked(usePredictAccuracy).mockReturnValue({
-      data: {
-        accuracy: null as unknown as Record<string, unknown>,
-        recent_validations: null as unknown as unknown[],
-      },
-      error: undefined,
-      isLoading: false,
-      mutate: vi.fn(),
-      isValidating: false,
-    } as unknown as ReturnType<typeof usePredictAccuracy>)
+    mockReturn({
+      accuracy: {
+        accuracy: null,
+        recent_validations: null,
+      } as unknown as AccuracyDetailReturn['accuracy'],
+    })
     render(<AccuracyPage />)
     expect(screen.getByTestId('accuracy-section')).toBeInTheDocument()
   })
 
   it('shows error without .message property', () => {
-    vi.mocked(usePredictAccuracy).mockReturnValue({
-      data: undefined,
-      error: 'raw string error',
-      isLoading: false,
-      mutate: vi.fn(),
-      isValidating: false,
-    } as unknown as ReturnType<typeof usePredictAccuracy>)
+    mockReturn({ error: 'raw string error' as unknown as Error })
     render(<AccuracyPage />)
     expect(screen.getByText(/raw string error/)).toBeInTheDocument()
   })

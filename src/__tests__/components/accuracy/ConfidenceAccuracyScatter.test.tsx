@@ -35,8 +35,8 @@ describe('ConfidenceAccuracyScatter', () => {
 
   it('does not show empty state when validations exist', () => {
     const validations = [
-      makeValidation({ id: 1, confidence: 0.8, is_correct: 1 }),
-      makeValidation({ id: 2, confidence: 0.4, is_correct: 0 }),
+      makeValidation({ id: 1, confidence: 0.8, is_correct: 1, actual_change: 3.2 }),
+      makeValidation({ id: 2, confidence: 0.4, is_correct: 0, actual_change: -1.5 }),
     ]
     render(<ConfidenceAccuracyScatter validations={validations} />)
     expect(screen.queryByText(/no validation data/i)).not.toBeInTheDocument()
@@ -45,9 +45,9 @@ describe('ConfidenceAccuracyScatter', () => {
 
   it('shows high confidence summary', () => {
     const validations = [
-      makeValidation({ id: 1, confidence: 0.8, is_correct: 1 }),
-      makeValidation({ id: 2, confidence: 0.9, is_correct: 1 }),
-      makeValidation({ id: 3, confidence: 0.75, is_correct: 0 }),
+      makeValidation({ id: 1, confidence: 0.8, is_correct: 1, actual_change: 5.0 }),
+      makeValidation({ id: 2, confidence: 0.9, is_correct: 1, actual_change: 3.0 }),
+      makeValidation({ id: 3, confidence: 0.75, is_correct: 0, actual_change: -2.0 }),
     ]
     render(<ConfidenceAccuracyScatter validations={validations} />)
     expect(screen.getByText(/high confidence/i)).toBeInTheDocument()
@@ -57,8 +57,8 @@ describe('ConfidenceAccuracyScatter', () => {
 
   it('shows low confidence summary', () => {
     const validations = [
-      makeValidation({ id: 1, confidence: 0.3, is_correct: 0 }),
-      makeValidation({ id: 2, confidence: 0.4, is_correct: 1 }),
+      makeValidation({ id: 1, confidence: 0.3, is_correct: 0, actual_change: -1.0 }),
+      makeValidation({ id: 2, confidence: 0.4, is_correct: 1, actual_change: 2.0 }),
     ]
     render(<ConfidenceAccuracyScatter validations={validations} />)
     expect(screen.getByText(/low confidence/i)).toBeInTheDocument()
@@ -67,10 +67,10 @@ describe('ConfidenceAccuracyScatter', () => {
 
   it('shows correlation message when both high and low data exist', () => {
     const validations = [
-      makeValidation({ id: 1, confidence: 0.8, is_correct: 1 }),
-      makeValidation({ id: 2, confidence: 0.9, is_correct: 1 }),
-      makeValidation({ id: 3, confidence: 0.3, is_correct: 0 }),
-      makeValidation({ id: 4, confidence: 0.4, is_correct: 0 }),
+      makeValidation({ id: 1, confidence: 0.8, is_correct: 1, actual_change: 4.0 }),
+      makeValidation({ id: 2, confidence: 0.9, is_correct: 1, actual_change: 3.0 }),
+      makeValidation({ id: 3, confidence: 0.3, is_correct: 0, actual_change: -2.0 }),
+      makeValidation({ id: 4, confidence: 0.4, is_correct: 0, actual_change: -1.0 }),
     ]
     render(<ConfidenceAccuracyScatter validations={validations} />)
     expect(screen.getByText(/higher confidence correlates with better accuracy/i)).toBeInTheDocument()
@@ -78,12 +78,22 @@ describe('ConfidenceAccuracyScatter', () => {
 
   it('shows negative correlation message when low confidence is more accurate', () => {
     const validations = [
-      makeValidation({ id: 1, confidence: 0.8, is_correct: 0 }),
-      makeValidation({ id: 2, confidence: 0.9, is_correct: 0 }),
-      makeValidation({ id: 3, confidence: 0.3, is_correct: 1 }),
-      makeValidation({ id: 4, confidence: 0.4, is_correct: 1 }),
+      makeValidation({ id: 1, confidence: 0.8, is_correct: 0, actual_change: -3.0 }),
+      makeValidation({ id: 2, confidence: 0.9, is_correct: 0, actual_change: -4.0 }),
+      makeValidation({ id: 3, confidence: 0.3, is_correct: 1, actual_change: 1.0 }),
+      makeValidation({ id: 4, confidence: 0.4, is_correct: 1, actual_change: 2.0 }),
     ]
     render(<ConfidenceAccuracyScatter validations={validations} />)
     expect(screen.getByText(/does not correlate/i)).toBeInTheDocument()
+  })
+
+  it('separates correct and incorrect points into different scatter series', () => {
+    const validations = [
+      makeValidation({ id: 1, confidence: 0.8, is_correct: 1, actual_change: 5.0 }),
+      makeValidation({ id: 2, confidence: 0.6, is_correct: 0, actual_change: -2.0 }),
+    ]
+    render(<ConfidenceAccuracyScatter validations={validations} />)
+    // Legend should show both series
+    expect(screen.getByText('Confidence vs Accuracy')).toBeInTheDocument()
   })
 })

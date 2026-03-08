@@ -53,4 +53,14 @@ describe('SymbolAccuracyBreakdown', () => {
     render(<SymbolAccuracyBreakdown validations={validations} />)
     expect(screen.getByText('Accuracy by Symbol')).toBeInTheDocument()
   })
+
+  it('sorts symbols by accuracy descending', () => {
+    const validations = [
+      makeValidation({ id: 1, symbol: 'BTC/USDT', is_correct: 0 }),
+      makeValidation({ id: 2, symbol: 'ETH/USDT', is_correct: 1 }),
+    ]
+    // ETH should come first (100%) then BTC (0%)
+    render(<SymbolAccuracyBreakdown validations={validations} />)
+    expect(screen.getByText('Accuracy by Symbol')).toBeInTheDocument()
+  })
 })

@@ -9,7 +9,6 @@ import {
   Cell,
 } from 'recharts'
 import type { Validation } from '../../types/predict'
-import { getSymbolColor } from './constants'
 
 interface Props {
   validations: Validation[]
@@ -19,6 +18,12 @@ interface SymbolEntry {
   symbol: string
   accuracy: number
   total: number
+}
+
+function getAccuracyColor(accuracy: number): string {
+  if (accuracy > 60) return '#22c55e'
+  if (accuracy >= 40) return '#eab308'
+  return '#ef4444'
 }
 
 export function SymbolAccuracyBreakdown({ validations }: Props) {
@@ -54,34 +59,36 @@ export function SymbolAccuracyBreakdown({ validations }: Props) {
   return (
     <div>
       <h3 className="text-xs text-gray-500 uppercase tracking-wider mb-2">Accuracy by Symbol</h3>
-      <div className="h-[180px] sm:h-[220px]">
+      <div style={{ height: Math.max(180, data.length * 36) }}>
         <ResponsiveContainer width="100%" height="100%">
-          <BarChart data={data} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
+          <BarChart data={data} layout="vertical" margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
             <XAxis
-              dataKey="symbol"
-              tick={{ fill: '#6b7280', fontSize: 11 }}
-              tickLine={false}
-              axisLine={false}
-            />
-            <YAxis
+              type="number"
               domain={[0, 100]}
               tick={{ fill: '#6b7280', fontSize: 11 }}
               tickLine={false}
               axisLine={false}
-              width={36}
               tickFormatter={(v) => `${v}%`}
+            />
+            <YAxis
+              type="category"
+              dataKey="symbol"
+              tick={{ fill: '#6b7280', fontSize: 11 }}
+              tickLine={false}
+              axisLine={false}
+              width={80}
             />
             <Tooltip
               contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
               labelStyle={{ color: '#9ca3af' }}
-              formatter={(value: number | undefined) => [
-                `${Number(value ?? 0).toFixed(1)}%`,
+              formatter={(value: number | undefined, _name?: string, props?: { payload?: SymbolEntry }) => [
+                `${Number(value ?? 0).toFixed(1)}% (${props?.payload?.total ?? 0} predictions)`,
                 'Accuracy',
               ]}
             />
-            <Bar dataKey="accuracy" radius={[4, 4, 0, 0]}>
+            <Bar dataKey="accuracy" radius={[0, 4, 4, 0]}>
               {data.map((entry, index) => (
-                <Cell key={entry.symbol ?? index} fill={getSymbolColor(entry.symbol ?? '')} />
+                <Cell key={entry.symbol ?? index} fill={getAccuracyColor(entry.accuracy)} />
               ))}
             </Bar>
           </BarChart>

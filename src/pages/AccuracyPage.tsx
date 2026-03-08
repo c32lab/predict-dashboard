@@ -1,4 +1,4 @@
-import { usePredictAccuracy } from '../hooks/usePredictApi'
+import { useAccuracyDetail } from '../hooks/usePredictApi'
 import { AccuracyAndValidationsSection } from '../components/predict/AccuracyAndValidationsSection'
 import { AccuracyTrendChart } from '../components/accuracy/AccuracyTrendChart'
 import { SymbolAccuracyBreakdown } from '../components/accuracy/SymbolAccuracyBreakdown'
@@ -6,7 +6,7 @@ import { ConfidenceAccuracyScatter } from '../components/accuracy/ConfidenceAccu
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 
 export default function AccuracyPage() {
-  const { data, error, isLoading } = usePredictAccuracy()
+  const { accuracy: data, error, isLoading } = useAccuracyDetail()
 
   if (isLoading) {
     return (
