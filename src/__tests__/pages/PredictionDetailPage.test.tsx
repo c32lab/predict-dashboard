@@ -6,6 +6,8 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 vi.mock('../../hooks/usePredictApi', () => ({
   usePredictionDetail: vi.fn(),
   useReasoningGraph: vi.fn(() => ({ data: null, isLoading: false })),
+  usePredictionExplain: vi.fn(() => ({ data: undefined, error: undefined, isLoading: false })),
+  usePredictionReview: vi.fn(() => ({ data: undefined, error: undefined, isLoading: false })),
 }))
 
 // Mock ReasoningFlowGraph
@@ -13,7 +15,7 @@ vi.mock('../../components/predict/ReasoningFlowGraph', () => ({
   default: () => <div data-testid="reasoning-graph">Graph</div>,
 }))
 
-import { usePredictionDetail } from '../../hooks/usePredictApi'
+import { usePredictionDetail, usePredictionExplain, usePredictionReview } from '../../hooks/usePredictApi'
 import PredictionDetailPage from '../../pages/PredictionDetailPage'
 
 const renderWithRoute = (id: string) =>

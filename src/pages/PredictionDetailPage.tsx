@@ -1,11 +1,13 @@
 import { Link, useParams } from 'react-router-dom'
-import { usePredictionDetail, useReasoningGraph } from '../hooks/usePredictApi'
+import { usePredictionDetail, useReasoningGraph, usePredictionExplain, usePredictionReview } from '../hooks/usePredictApi'
 import {
   DetailHeaderCard,
   MatchedEventsSection,
   ReasoningChainSection,
   ConfidenceFactorsSection,
   ReasoningGraphSection,
+  ExplainPanel,
+  ReviewPanel,
 } from '../components/predict/detail'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 
@@ -25,6 +27,8 @@ export default function PredictionDetailPage() {
   const numId = id ? Number(id) : null
   const { data, error, isLoading } = usePredictionDetail(numId)
   const { data: graphData, isLoading: graphLoading } = useReasoningGraph(numId)
+  const { data: explainData, error: explainError } = usePredictionExplain(numId)
+  const { data: reviewData } = usePredictionReview(numId)
 
   if (isLoading) return <Skeleton />
 
@@ -73,6 +77,25 @@ export default function PredictionDetailPage() {
       <SectionErrorBoundary title="Reasoning Graph">
         <ReasoningGraphSection graphData={graphData} isLoading={graphLoading} />
       </SectionErrorBoundary>
+
+      {/* AI Explanation — show "not available" on 404, render panel on success */}
+      <SectionErrorBoundary title="AI Explanation">
+        {explainData ? (
+          <ExplainPanel data={explainData} />
+        ) : explainError ? (
+          <section className="bg-gray-900 rounded-xl border border-gray-800 p-4">
+            <h2 className="text-lg font-semibold mb-2">AI Explanation</h2>
+            <p className="text-gray-500 text-sm">Explanation not available</p>
+          </section>
+        ) : null}
+      </SectionErrorBoundary>
+
+      {/* Review — hide section when 404 (not yet validated), same pattern as #121 */}
+      {reviewData && (
+        <SectionErrorBoundary title="Postmortem Review">
+          <ReviewPanel data={reviewData} />
+        </SectionErrorBoundary>
+      )}
     </div>
   )
 }
