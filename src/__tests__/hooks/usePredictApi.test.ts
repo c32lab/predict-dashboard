@@ -20,6 +20,10 @@ vi.mock('../../api/predict', () => ({
     qualityReport: vi.fn().mockResolvedValue({ total_predictions: 0 }),
     accuracyHistory: vi.fn().mockResolvedValue({ accuracy_history: [] }),
     decayActive: vi.fn().mockResolvedValue({ net_impact_pct: 0, details: [] }),
+    decayModels: vi.fn().mockResolvedValue({ models: [], event_type_mapping: {} }),
+    healthDeep: vi.fn().mockResolvedValue({ status: 'ok' }),
+    predictionExplain: vi.fn().mockResolvedValue({ prediction_id: 1, summary: '', reasoning_chain: {}, factors: [] }),
+    predictionReview: vi.fn().mockResolvedValue({ prediction_id: 1, status: 'validated' }),
   },
 }))
 
@@ -52,6 +56,10 @@ import {
   useQualityReport,
   useAccuracyHistory,
   useDecayActive,
+  useDecayModels,
+  useHealthDeep,
+  usePredictionExplain,
+  usePredictionReview,
 } from '../../hooks/usePredictApi'
 
 describe('usePredictApi hooks', () => {
@@ -173,6 +181,36 @@ describe('usePredictApi hooks', () => {
 
   it('useDecayActive returns SWR result', () => {
     const { result } = renderHook(() => useDecayActive())
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
+  it('useDecayModels returns SWR result', () => {
+    const { result } = renderHook(() => useDecayModels())
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
+  it('useHealthDeep returns SWR result', () => {
+    const { result } = renderHook(() => useHealthDeep())
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
+  it('usePredictionExplain returns null key when id is null', () => {
+    const { result } = renderHook(() => usePredictionExplain(null))
+    expect(result.current.isLoading).toBe(false)
+  })
+
+  it('usePredictionExplain returns loading when id is provided', () => {
+    const { result } = renderHook(() => usePredictionExplain(42))
+    expect(result.current).toHaveProperty('isLoading')
+  })
+
+  it('usePredictionReview returns null key when id is null', () => {
+    const { result } = renderHook(() => usePredictionReview(null))
+    expect(result.current.isLoading).toBe(false)
+  })
+
+  it('usePredictionReview returns loading when id is provided', () => {
+    const { result } = renderHook(() => usePredictionReview(7))
     expect(result.current).toHaveProperty('isLoading')
   })
 })
