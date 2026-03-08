@@ -24,6 +24,12 @@ vi.mock('../../pages/ChainPage', () => ({
 vi.mock('../../pages/BacktestPage', () => ({
   default: () => <div data-testid="backtest">BacktestPage</div>,
 }))
+vi.mock('../../pages/QualityPage', () => ({
+  default: () => <div data-testid="quality">QualityPage</div>,
+}))
+vi.mock('../../pages/DecayPage', () => ({
+  default: () => <div data-testid="decay">DecayPage</div>,
+}))
 
 // Need to import App fresh - but App uses BrowserRouter internally and lazy()
 // We test App's rendered output by rendering its internal structure
@@ -32,6 +38,8 @@ import { Routes, Route, NavLink } from 'react-router-dom'
 const MockPredictDashboard = () => <div data-testid="dashboard">DashboardPage</div>
 const MockAccuracyPage = () => <div data-testid="accuracy">AccuracyPage</div>
 const MockChainPage = () => <div data-testid="chain">ChainPage</div>
+const MockQualityPage = () => <div data-testid="quality">QualityPage</div>
+const MockDecayPage = () => <div data-testid="decay">DecayPage</div>
 
 describe('App routing', () => {
   // Test the routing logic by recreating the structure since App wraps its own BrowserRouter
@@ -41,12 +49,16 @@ describe('App routing', () => {
         <nav className="flex gap-4 px-6 py-3 bg-gray-900 border-b border-gray-800">
           <NavLink to="/" end className={() => 'text-blue-400'}>Dashboard</NavLink>
           <NavLink to="/accuracy" className={() => 'text-gray-400'}>Accuracy</NavLink>
+          <NavLink to="/quality" className={() => 'text-gray-400'}>Quality</NavLink>
+          <NavLink to="/decay" className={() => 'text-gray-400'}>Decay</NavLink>
           <NavLink to="/chain" className={() => 'text-gray-400'}>Chain</NavLink>
           <NavLink to="/backtest" className={() => 'text-gray-400'}>Backtest</NavLink>
         </nav>
         <Routes>
           <Route path="/" element={<MockPredictDashboard />} />
           <Route path="/accuracy" element={<MockAccuracyPage />} />
+          <Route path="/quality" element={<MockQualityPage />} />
+          <Route path="/decay" element={<MockDecayPage />} />
           <Route path="/chain" element={<MockChainPage />} />
         </Routes>
       </div>
@@ -61,6 +73,8 @@ describe('App routing', () => {
     )
     expect(screen.getByText('Dashboard')).toBeInTheDocument()
     expect(screen.getByText('Accuracy')).toBeInTheDocument()
+    expect(screen.getByText('Quality')).toBeInTheDocument()
+    expect(screen.getByText('Decay')).toBeInTheDocument()
     expect(screen.getByText('Chain')).toBeInTheDocument()
     expect(screen.getByText('Backtest')).toBeInTheDocument()
   })
@@ -92,6 +106,24 @@ describe('App routing', () => {
     expect(screen.getByTestId('chain')).toBeInTheDocument()
   })
 
+  it('renders quality page at /quality', () => {
+    render(
+      <MemoryRouter initialEntries={['/quality']}>
+        <TestApp />
+      </MemoryRouter>
+    )
+    expect(screen.getByTestId('quality')).toBeInTheDocument()
+  })
+
+  it('renders decay page at /decay', () => {
+    render(
+      <MemoryRouter initialEntries={['/decay']}>
+        <TestApp />
+      </MemoryRouter>
+    )
+    expect(screen.getByTestId('decay')).toBeInTheDocument()
+  })
+
   it('has correct nav structure', () => {
     const { container } = render(
       <MemoryRouter initialEntries={['/']}>
@@ -101,6 +133,6 @@ describe('App routing', () => {
     const nav = container.querySelector('nav')
     expect(nav).toBeTruthy()
     const links = nav!.querySelectorAll('a')
-    expect(links.length).toBe(4)
+    expect(links.length).toBe(6)
   })
 })

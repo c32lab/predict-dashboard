@@ -8,6 +8,8 @@ const PredictionDetailPage = lazy(() => import('./pages/PredictionDetailPage'))
 const AccuracyPage = lazy(() => import('./pages/AccuracyPage'))
 const ChainPage = lazy(() => import('./pages/ChainPage'))
 const BacktestPage = lazy(() => import('./pages/BacktestPage'))
+const QualityPage = lazy(() => import('./pages/QualityPage'))
+const DecayPage = lazy(() => import('./pages/DecayPage'))
 
 function Loading() {
   return (
@@ -35,6 +37,8 @@ function App() {
               <Route path="/accuracy" element={<AccuracyPage />} />
               <Route path="/chain" element={<ChainPage />} />
               <Route path="/backtest" element={<BacktestPage />} />
+              <Route path="/quality" element={<QualityPage />} />
+              <Route path="/decay" element={<DecayPage />} />
             </Routes>
           </Suspense>
         </div>

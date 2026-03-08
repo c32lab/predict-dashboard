@@ -7,6 +7,8 @@ const navLinkClass = ({ isActive }: { isActive: boolean }) =>
 const links = [
   { to: '/', label: 'Dashboard', end: true },
   { to: '/accuracy', label: 'Accuracy' },
+  { to: '/quality', label: 'Quality' },
+  { to: '/decay', label: 'Decay' },
   { to: '/chain', label: 'Chain' },
   { to: '/backtest', label: 'Backtest' },
 ] as const
