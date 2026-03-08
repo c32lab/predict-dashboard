@@ -2,6 +2,7 @@ import { Link, useParams } from 'react-router-dom'
 import { usePredictionExplain, usePredictionReview } from '../hooks/usePredictApi'
 import { DirectionBadge } from '../components/predict/badges'
 import { formatDateTime } from '../utils/format'
+import SectionErrorBoundary from '../components/SectionErrorBoundary'
 import type {
   PredictionExplainResponse,
   PredictionReviewResponse,
@@ -336,11 +337,23 @@ export default function ReviewPage() {
         &larr; Back to Detail
       </Link>
 
-      <SummaryCard explain={explain} review={review} />
-      <ReasoningChainViz chain={explain.reasoning_chain} />
-      <HistoricalMatchesTable matches={explain.reasoning_chain.historical_matches} />
-      <FactorsSection factors={explain.factors} />
-      {review && <ReviewSection review={review} />}
+      <SectionErrorBoundary title="Summary">
+        <SummaryCard explain={explain} review={review} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Reasoning Chain">
+        <ReasoningChainViz chain={explain.reasoning_chain} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Historical Matches">
+        <HistoricalMatchesTable matches={explain.reasoning_chain.historical_matches} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Decision Factors">
+        <FactorsSection factors={explain.factors} />
+      </SectionErrorBoundary>
+      {review && (
+        <SectionErrorBoundary title="Postmortem Review">
+          <ReviewSection review={review} />
+        </SectionErrorBoundary>
+      )}
     </div>
   )
 }
