@@ -84,9 +84,12 @@ describe('DecayDashboard', () => {
     render(<DecayDashboard />)
     expect(screen.getByText('Decay Dashboard')).toBeInTheDocument()
     expect(screen.getByText('Net Impact')).toBeInTheDocument()
-    expect(screen.getByText('-1.25%')).toBeInTheDocument()
+    expect(screen.getAllByText('-1.25%')).toHaveLength(2) // KPI card + gauge
     expect(screen.getByText('SHORT')).toBeInTheDocument()
     expect(screen.getByText('2')).toBeInTheDocument()
+    expect(screen.getByText('Impact Gauge')).toBeInTheDocument()
+    expect(screen.getByTestId('impact-gauge-fill')).toBeInTheDocument()
+    expect(screen.getByText('Decay Curves')).toBeInTheDocument()
     expect(screen.getByText('Active Decay Events')).toBeInTheDocument()
     expect(screen.getByText('etf_flow')).toBeInTheDocument()
     expect(screen.getByText('Decay Coefficients')).toBeInTheDocument()
@@ -106,6 +109,6 @@ describe('DecayDashboard', () => {
     })
     mockModels({})
     render(<DecayDashboard />)
-    expect(screen.getByText('+2.50%')).toBeInTheDocument()
+    expect(screen.getAllByText('+2.50%')).toHaveLength(2) // KPI card + gauge
   })
 })

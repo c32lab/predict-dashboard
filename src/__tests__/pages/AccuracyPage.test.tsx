@@ -21,6 +21,14 @@ vi.mock('../../components/accuracy/AccuracyHistoryChart', () => ({
   AccuracyHistoryChart: () => <div data-testid="accuracy-history">AccuracyHistory</div>,
 }))
 
+vi.mock('../../components/accuracy/DirectionRadarChart', () => ({
+  DirectionRadarChart: () => <div data-testid="direction-radar">DirectionRadar</div>,
+}))
+
+vi.mock('../../components/accuracy/RollingAccuracyChart', () => ({
+  RollingAccuracyChart: () => <div data-testid="rolling-accuracy">RollingAccuracy</div>,
+}))
+
 import { useAccuracyDetail } from '../../hooks/usePredictApi'
 import AccuracyPage from '../../pages/AccuracyPage'
 

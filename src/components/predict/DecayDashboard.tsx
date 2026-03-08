@@ -7,8 +7,39 @@ import {
   Tooltip,
   ResponsiveContainer,
   Cell,
+  LineChart,
+  Line,
+  Legend,
 } from 'recharts'
 import { useDecayActive, useDecayModels } from '../../hooks/usePredictApi'
+
+const CURVE_COLORS = ['#60a5fa', '#a78bfa', '#34d399', '#fbbf24', '#f87171', '#fb923c']
+
+function generateDecayCurve(model: string, coefficient: number, impactPct: number, elapsedDays: number) {
+  // Estimate initial impact from current state
+  let initialImpact: number
+  if (model === 'exponential') {
+    initialImpact = elapsedDays > 0 ? impactPct / Math.pow(coefficient, elapsedDays) : impactPct
+  } else {
+    // linear: impact = initial * (1 - elapsed/total), coefficient ~ (1 - 1/total_days)
+    const rate = 1 - coefficient
+    initialImpact = rate > 0 && elapsedDays > 0 ? impactPct / Math.max(0.01, 1 - rate * elapsedDays) : impactPct
+  }
+
+  const totalDays = Math.max(Math.ceil(elapsedDays) + 10, 14)
+  const points: Array<{ day: number; [key: string]: number }> = []
+  for (let d = 0; d <= totalDays; d++) {
+    let value: number
+    if (model === 'exponential') {
+      value = initialImpact * Math.pow(coefficient, d)
+    } else {
+      const rate = 1 - coefficient
+      value = initialImpact * Math.max(0, 1 - rate * d)
+    }
+    points.push({ day: d, value: Math.round(value * 1000) / 1000 })
+  }
+  return points
+}
 
 export function DecayDashboard() {
   const { data: activeData, isLoading: activeLoading, error: activeError } = useDecayActive()
@@ -28,6 +59,30 @@ export function DecayDashboard() {
       coefficient: d.decay_coefficient,
       impact: d.current_impact_pct,
     }))
+  }, [activeData])
+
+  // Generate decay curves for each active event
+  const decayCurves = useMemo(() => {
+    if (!activeData?.details?.length) return { data: [] as Array<Record<string, number>>, keys: [] as string[] }
+    const details = activeData.details
+    const keys = details.map((d) => `${d.type} (${d.model})`)
+
+    // Generate individual curves
+    const curves = details.map((d) =>
+      generateDecayCurve(d.model, d.decay_coefficient, d.current_impact_pct, d.elapsed_days)
+    )
+
+    // Merge into single dataset keyed by day
+    const maxDays = Math.max(...curves.map((c) => c.length))
+    const merged: Array<Record<string, number>> = []
+    for (let i = 0; i < maxDays; i++) {
+      const point: Record<string, number> = { day: i }
+      curves.forEach((curve, idx) => {
+        point[keys[idx]] = curve[i]?.value ?? 0
+      })
+      merged.push(point)
+    }
+    return { data: merged, keys }
   }, [activeData])
 
   const isLoading = activeLoading || modelsLoading
@@ -74,6 +129,92 @@ export function DecayDashboard() {
           <div className="text-lg font-semibold text-gray-200">{activeData.active_count}</div>
         </div>
       </div>
+
+      {/* Net Impact Gauge */}
+      <div>
+        <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-2">Impact Gauge</h4>
+        <div className="bg-gray-800 rounded-lg p-3">
+          {(() => {
+            const impact = activeData.net_impact_pct
+            const maxRange = 10
+            const clampedImpact = Math.max(-maxRange, Math.min(maxRange, impact))
+            const pct = ((clampedImpact + maxRange) / (2 * maxRange)) * 100
+            return (
+              <div>
+                <div className="flex justify-between text-xs text-gray-500 mb-1">
+                  <span>-{maxRange}%</span>
+                  <span>0%</span>
+                  <span>+{maxRange}%</span>
+                </div>
+                <div className="relative h-4 bg-gray-700 rounded-full overflow-hidden">
+                  <div
+                    className="absolute top-0 left-1/2 w-px h-full bg-gray-500"
+                    aria-hidden="true"
+                  />
+                  <div
+                    className="absolute top-0 h-full rounded-full transition-all"
+                    data-testid="impact-gauge-fill"
+                    style={{
+                      left: impact >= 0 ? '50%' : `${pct}%`,
+                      width: `${Math.abs(pct - 50)}%`,
+                      backgroundColor: impact >= 0 ? '#22c55e' : '#ef4444',
+                    }}
+                  />
+                </div>
+                <div className="text-center mt-1">
+                  <span className={`text-sm font-medium ${impactColor}`}>
+                    {impact >= 0 ? '+' : ''}{impact.toFixed(2)}%
+                  </span>
+                </div>
+              </div>
+            )
+          })()}
+        </div>
+      </div>
+
+      {/* Decay Curves */}
+      {decayCurves.data.length > 0 && (
+        <div>
+          <h4 className="text-xs text-gray-500 uppercase tracking-wider mb-2">Decay Curves</h4>
+          <div className="h-[220px]">
+            <ResponsiveContainer width="100%" height="100%">
+              <LineChart data={decayCurves.data} margin={{ top: 8, right: 16, bottom: 0, left: 0 }}>
+                <XAxis
+                  dataKey="day"
+                  tick={{ fill: '#6b7280', fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                  label={{ value: 'Days', position: 'insideBottomRight', offset: -5, style: { fill: '#6b7280', fontSize: 10 } }}
+                />
+                <YAxis
+                  tick={{ fill: '#6b7280', fontSize: 11 }}
+                  tickLine={false}
+                  axisLine={false}
+                  width={50}
+                  tickFormatter={(v) => `${v}%`}
+                />
+                <Tooltip
+                  contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
+                  formatter={(value: number | undefined) => [`${(value ?? 0).toFixed(3)}%`, '']}
+                  labelFormatter={(v) => `Day ${v}`}
+                />
+                <Legend wrapperStyle={{ fontSize: 11, color: '#9ca3af' }} />
+                {decayCurves.keys.map((key, i) => (
+                  <Line
+                    key={key}
+                    type="monotone"
+                    dataKey={key}
+                    stroke={CURVE_COLORS[i % CURVE_COLORS.length]}
+                    strokeWidth={2}
+                    dot={false}
+                    connectNulls
+                  />
+                ))}
+              </LineChart>
+            </ResponsiveContainer>
+          </div>
+        </div>
+      )}
 
       {/* Active Decay Events Table */}
       {sortedDetails.length > 0 && (

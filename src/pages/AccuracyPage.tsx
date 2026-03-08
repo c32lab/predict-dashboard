@@ -5,6 +5,8 @@ import { SymbolAccuracyBreakdown } from '../components/accuracy/SymbolAccuracyBr
 import { ConfidenceAccuracyScatter } from '../components/accuracy/ConfidenceAccuracyScatter'
 import { QualityReportPanel } from '../components/accuracy/QualityReportPanel'
 import { AccuracyHistoryChart } from '../components/accuracy/AccuracyHistoryChart'
+import { DirectionRadarChart } from '../components/accuracy/DirectionRadarChart'
+import { RollingAccuracyChart } from '../components/accuracy/RollingAccuracyChart'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 
 export default function AccuracyPage() {
@@ -62,6 +64,20 @@ export default function AccuracyPage() {
           <ConfidenceAccuracyScatter validations={validations} />
         </div>
       </SectionErrorBoundary>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <SectionErrorBoundary title="Direction Radar">
+          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+            <DirectionRadarChart validations={validations} />
+          </div>
+        </SectionErrorBoundary>
+
+        <SectionErrorBoundary title="Rolling Accuracy">
+          <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+            <RollingAccuracyChart validations={validations} />
+          </div>
+        </SectionErrorBoundary>
+      </div>
 
       <SectionErrorBoundary title="Quality Report">
         <QualityReportPanel />
