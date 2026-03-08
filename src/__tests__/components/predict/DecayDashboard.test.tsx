@@ -36,14 +36,14 @@ describe('DecayDashboard', () => {
     mockActive({ isLoading: true })
     mockModels({})
     render(<DecayDashboard />)
-    expect(screen.getByText('Loading decay dashboard...')).toBeInTheDocument()
+    expect(document.querySelector('.animate-pulse')).toBeInTheDocument()
   })
 
   it('shows loading state when models is loading', () => {
     mockActive({})
     mockModels({ isLoading: true })
     render(<DecayDashboard />)
-    expect(screen.getByText('Loading decay dashboard...')).toBeInTheDocument()
+    expect(document.querySelector('.animate-pulse')).toBeInTheDocument()
   })
 
   it('shows error state', () => {
@@ -53,11 +53,11 @@ describe('DecayDashboard', () => {
     expect(screen.getByText(/Failed to load decay data/)).toBeInTheDocument()
   })
 
-  it('returns null when no data', () => {
+  it('shows empty state when no data', () => {
     mockActive({})
     mockModels({})
-    const { container } = render(<DecayDashboard />)
-    expect(container.innerHTML).toBe('')
+    render(<DecayDashboard />)
+    expect(screen.getByText('No active decay data available')).toBeInTheDocument()
   })
 
   it('renders KPI cards, table, and chart with data', () => {

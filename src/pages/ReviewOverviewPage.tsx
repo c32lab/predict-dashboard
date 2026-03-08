@@ -3,6 +3,7 @@ import {
   BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, Cell,
 } from 'recharts'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
+import { PageSkeleton } from '../components/PageSkeleton'
 import { usePredictions, usePredictionExplain } from '../hooks/usePredictApi'
 import type { Prediction, ExplainReasoningChain } from '../types/predict'
 
@@ -255,12 +256,30 @@ function LessonsLearnedCards() {
 
 export default function ReviewOverviewPage() {
   const [selectedId, setSelectedId] = useState<number | null>(null)
-  const { data: predictionsData, isLoading } = usePredictions('validated', 20)
+  const { data: predictionsData, isLoading, error } = usePredictions('validated', 20)
 
   const predictions = useMemo(
     () => predictionsData?.predictions ?? [],
     [predictionsData]
   )
+
+  if (isLoading) return <PageSkeleton />
+
+  if (error) {
+    return (
+      <div className="p-2 sm:p-4 lg:p-6 space-y-6 max-w-6xl mx-auto">
+        <div>
+          <h1 className="text-lg font-semibold text-gray-100">Prediction Review / Postmortem</h1>
+          <p className="text-sm text-gray-500 mt-1">
+            Review past predictions, inspect reasoning chains, and learn from outcomes.
+          </p>
+        </div>
+        <div className="flex items-center justify-center h-64 text-red-400 text-sm">
+          Failed to load predictions: {String(error?.message ?? error)}
+        </div>
+      </div>
+    )
+  }
 
   return (
     <div className="p-2 sm:p-4 lg:p-6 space-y-6 max-w-6xl mx-auto">

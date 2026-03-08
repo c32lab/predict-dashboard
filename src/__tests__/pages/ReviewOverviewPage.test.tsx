@@ -79,7 +79,7 @@ describe('ReviewOverviewPage', () => {
       mutate: vi.fn(),
     } as ReturnType<typeof usePredictions>)
     render(<ReviewOverviewPage />)
-    expect(screen.getByText('Loading predictions...')).toBeInTheDocument()
+    expect(document.querySelector('.animate-pulse')).toBeInTheDocument()
   })
 
   it('shows reasoning chain placeholder before selection', () => {

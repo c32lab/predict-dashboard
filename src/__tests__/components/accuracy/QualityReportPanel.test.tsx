@@ -31,7 +31,7 @@ describe('QualityReportPanel', () => {
   it('shows loading state', () => {
     mockReturn({ isLoading: true })
     render(<QualityReportPanel />)
-    expect(screen.getByText('Loading quality report...')).toBeInTheDocument()
+    expect(document.querySelector('.animate-pulse')).toBeInTheDocument()
   })
 
   it('shows error state', () => {
@@ -40,10 +40,10 @@ describe('QualityReportPanel', () => {
     expect(screen.getByText(/Failed to load quality report/)).toBeInTheDocument()
   })
 
-  it('returns null when no data', () => {
+  it('shows empty state when no data', () => {
     mockReturn({})
-    const { container } = render(<QualityReportPanel />)
-    expect(container.innerHTML).toBe('')
+    render(<QualityReportPanel />)
+    expect(screen.getByText('No quality report data available')).toBeInTheDocument()
   })
 
   it('renders with data', () => {

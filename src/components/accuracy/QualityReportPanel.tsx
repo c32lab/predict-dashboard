@@ -84,8 +84,10 @@ export function QualityReportPanel() {
 
   if (isLoading) {
     return (
-      <div className="text-sm text-gray-500 text-center py-8">
-        Loading quality report...
+      <div className="space-y-4 animate-pulse py-4">
+        <div className="h-6 bg-gray-800 rounded w-48" />
+        <div className="h-32 bg-gray-800 rounded" />
+        <div className="h-48 bg-gray-800 rounded" />
       </div>
     )
   }
@@ -98,7 +100,13 @@ export function QualityReportPanel() {
     )
   }
 
-  if (!data) return null
+  if (!data) {
+    return (
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+        <p className="text-gray-500 text-sm text-center py-8">No quality report data available</p>
+      </div>
+    )
+  }
 
   const PIE_COLORS = ['#60a5fa', '#a78bfa', '#34d399', '#fbbf24', '#f87171', '#fb923c', '#818cf8', '#2dd4bf']
 

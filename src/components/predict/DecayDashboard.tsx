@@ -90,8 +90,10 @@ export function DecayDashboard() {
 
   if (isLoading) {
     return (
-      <div className="text-sm text-gray-500 text-center py-8">
-        Loading decay dashboard...
+      <div className="space-y-4 animate-pulse py-4">
+        <div className="h-6 bg-gray-800 rounded w-48" />
+        <div className="h-32 bg-gray-800 rounded" />
+        <div className="h-48 bg-gray-800 rounded" />
       </div>
     )
   }
@@ -104,7 +106,13 @@ export function DecayDashboard() {
     )
   }
 
-  if (!activeData) return null
+  if (!activeData) {
+    return (
+      <div className="bg-gray-900 border border-gray-800 rounded-xl p-4">
+        <p className="text-gray-500 text-sm text-center py-8">No active decay data available</p>
+      </div>
+    )
+  }
 
   const impactColor = activeData.net_impact_pct >= 0 ? 'text-green-400' : 'text-red-400'
 
@@ -171,6 +179,11 @@ export function DecayDashboard() {
           })()}
         </div>
       </div>
+
+      {/* No active events message */}
+      {sortedDetails.length === 0 && (
+        <p className="text-gray-500 text-sm text-center py-4">No active decay events</p>
+      )}
 
       {/* Decay Curves */}
       {decayCurves.data.length > 0 && (
