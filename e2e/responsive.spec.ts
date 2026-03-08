@@ -22,6 +22,8 @@ test.describe('Responsive Layout - Mobile (375x667)', () => {
     await expect(mobileMenu.getByText('Accuracy')).toBeVisible()
     await expect(mobileMenu.getByText('Chain')).toBeVisible()
     await expect(mobileMenu.getByText('Backtest')).toBeVisible()
+    await expect(mobileMenu.getByText('Quality')).toBeVisible()
+    await expect(mobileMenu.getByText('Decay')).toBeVisible()
   })
 
   test('mobile menu closes on link click', async ({ page }) => {
@@ -35,7 +37,7 @@ test.describe('Responsive Layout - Mobile (375x667)', () => {
   })
 
   test('pages render without horizontal overflow', async ({ page }) => {
-    for (const path of ['/', '/accuracy', '/chain']) {
+    for (const path of ['/', '/accuracy', '/chain', '/quality', '/decay']) {
       await page.goto(path)
       await page.waitForLoadState('networkidle')
       const bodyWidth = await page.evaluate(() => document.body.scrollWidth)
@@ -75,6 +77,8 @@ test.describe('Responsive Layout - Desktop (1280x720)', () => {
     await expect(nav.getByText('Accuracy')).toBeVisible()
     await expect(nav.getByText('Chain')).toBeVisible()
     await expect(nav.getByText('Backtest')).toBeVisible()
+    await expect(nav.getByText('Quality')).toBeVisible()
+    await expect(nav.getByText('Decay')).toBeVisible()
   })
 
   test('hamburger is not visible', async ({ page }) => {
