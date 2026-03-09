@@ -51,7 +51,7 @@ describe('IndustryChainSection', () => {
     render(<IndustryChainSection nodes={mockNodes} edges={mockEdges} />)
     expect(screen.getByText('Node types')).toBeInTheDocument()
     expect(screen.getByText('Edge relations')).toBeInTheDocument()
-    expect(screen.getByText('Edge thickness')).toBeInTheDocument()
+    expect(screen.getByText('Edge strength')).toBeInTheDocument()
   })
 
   it('keeps all nodes visible when searching (highlight mode)', async () => {

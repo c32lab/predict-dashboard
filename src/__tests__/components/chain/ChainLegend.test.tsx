@@ -13,14 +13,15 @@ describe('ChainLegend', () => {
     expect(screen.getByText('Edge relations')).toBeInTheDocument()
   })
 
-  it('renders edge strength section', () => {
+  it('renders edge strength section with thresholds', () => {
     render(<ChainLegend />)
     expect(screen.getByText('Edge strength')).toBeInTheDocument()
     expect(screen.getByText('< 0.3')).toBeInTheDocument()
+    expect(screen.getByText('0.3–0.7')).toBeInTheDocument()
     expect(screen.getByText('> 0.7')).toBeInTheDocument()
   })
 
-  it('renders all known node types', () => {
+  it('renders new node types (asset, theme, sector, macro)', () => {
     render(<ChainLegend />)
     expect(screen.getByText('asset')).toBeInTheDocument()
     expect(screen.getByText('theme')).toBeInTheDocument()
@@ -28,7 +29,7 @@ describe('ChainLegend', () => {
     expect(screen.getByText('macro')).toBeInTheDocument()
   })
 
-  it('renders all known edge relations', () => {
+  it('renders edge relation labels', () => {
     render(<ChainLegend />)
     expect(screen.getByText('chain_member')).toBeInTheDocument()
     expect(screen.getByText('affects_ticker')).toBeInTheDocument()

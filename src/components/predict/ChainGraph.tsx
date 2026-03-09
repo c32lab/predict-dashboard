@@ -3,7 +3,7 @@ import { ReactFlow, Background, Controls, MiniMap, BackgroundVariant } from '@xy
 import type { Node, Edge, NodeMouseHandler } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
 import type { ChainNode, ChainEdge } from '../../types/predict'
-import { NODE_COLORS, EDGE_COLORS, TYPE_ORDER, COL_WIDTH, ROW_HEIGHT } from './chainConstants'
+import { NODE_COLORS, EDGE_COLORS, TYPE_ORDER, COL_WIDTH, ROW_HEIGHT, edgeWidth } from './chainConstants'
 
 const HIGHLIGHT_BORDER = '#facc15'
 
@@ -89,7 +89,7 @@ export function ChainGraph({
       target: e.to_node,
       style: {
         stroke: EDGE_COLORS[e.relation] ?? '#6b7280',
-        strokeWidth: Math.max(1, Math.round(e.strength * 3)),
+        strokeWidth: edgeWidth(e.strength),
         opacity: 0.6,
       },
     })), [edges, filteredNodeIds])
