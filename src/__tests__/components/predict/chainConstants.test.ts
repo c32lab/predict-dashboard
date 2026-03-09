@@ -15,8 +15,8 @@ describe('chainConstants', () => {
       expect(NODE_COLORS.theme.border).toBe('#a855f7')
     })
 
-    it('maps upstream to orange', () => {
-      expect(NODE_COLORS.upstream.border).toBe('#f97316')
+    it('maps upstream to teal', () => {
+      expect(NODE_COLORS.upstream.border).toBe('#14b8a6')
     })
 
     it('maps downstream to cyan', () => {
@@ -27,8 +27,8 @@ describe('chainConstants', () => {
       expect(NODE_COLORS.demand_driver.border).toBe('#eab308')
     })
 
-    it('maps event to red', () => {
-      expect(NODE_COLORS.event.border).toBe('#ef4444')
+    it('maps event to orange', () => {
+      expect(NODE_COLORS.event.border).toBe('#f97316')
     })
   })
 
@@ -37,8 +37,8 @@ describe('chainConstants', () => {
       expect(edgeWidth(0)).toBe(1)
     })
 
-    it('returns 5 for strength 1', () => {
-      expect(edgeWidth(1)).toBe(5)
+    it('returns 4 for strength 1', () => {
+      expect(edgeWidth(1)).toBe(4)
     })
 
     it('returns 3 for strength 0.5', () => {
@@ -49,8 +49,8 @@ describe('chainConstants', () => {
       expect(edgeWidth(-0.5)).toBe(1)
     })
 
-    it('clamps strength > 1 to 5', () => {
-      expect(edgeWidth(1.5)).toBe(5)
+    it('clamps strength > 1 to 4', () => {
+      expect(edgeWidth(1.5)).toBe(4)
     })
   })
 })
