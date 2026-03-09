@@ -42,7 +42,7 @@ export function ChainLegend() {
             medium
           </span>
           <span className="flex items-center gap-1">
-            <span className="inline-block w-4 bg-gray-400" style={{ height: '4px' }} />
+            <span className="inline-block w-4 bg-gray-400" style={{ height: '5px' }} />
             strong
           </span>
         </div>

@@ -37,8 +37,8 @@ describe('chainConstants', () => {
       expect(edgeWidth(0)).toBe(1)
     })
 
-    it('returns 4 for strength 1', () => {
-      expect(edgeWidth(1)).toBe(4)
+    it('returns 5 for strength 1', () => {
+      expect(edgeWidth(1)).toBe(5)
     })
 
     it('returns 3 for strength 0.5', () => {
@@ -49,8 +49,8 @@ describe('chainConstants', () => {
       expect(edgeWidth(-0.5)).toBe(1)
     })
 
-    it('clamps strength > 1 to 4', () => {
-      expect(edgeWidth(1.5)).toBe(4)
+    it('clamps strength > 1 to 5', () => {
+      expect(edgeWidth(1.5)).toBe(5)
     })
   })
 })

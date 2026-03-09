@@ -38,7 +38,7 @@ export const TYPE_ORDER = ['asset', 'theme', 'sector', 'macro', 'demand_driver',
 export const COL_WIDTH = 260
 export const ROW_HEIGHT = 70
 
-/** Map edge strength (0-1) to pixel width (1-4px) */
+/** Map edge strength (0-1) to pixel width (1-5px) */
 export function edgeWidth(strength: number): number {
-  return 1 + Math.round(Math.min(Math.max(strength, 0), 1) * 3)
+  return 1 + Math.round(Math.min(Math.max(strength, 0), 1) * 4)
 }
