@@ -336,6 +336,18 @@ export interface PredictionReviewResponse {
   review: PredictionReviewDetail
 }
 
+export interface ChainLinkedEvent {
+  date: string
+  category: string
+  event: string
+  price_change: number
+}
+
+export interface EventChainLinksResponse {
+  chain_node: string
+  events: ChainLinkedEvent[]
+}
+
 export interface DeepHealthResponse {
   status: string
   service: string

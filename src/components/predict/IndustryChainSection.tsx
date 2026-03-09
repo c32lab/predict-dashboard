@@ -2,19 +2,30 @@ import { useState, useMemo } from 'react'
 import type { ChainNode, ChainEdge } from '../../types/predict'
 import { NODE_TYPE_COLORS } from './chainConstants'
 import { ChainGraph } from './ChainGraph'
+import { ChainLegend } from './ChainLegend'
+import { EventChainPanel } from './EventChainPanel'
 
 export function IndustryChainSection({ nodes, edges }: { nodes: ChainNode[]; edges: ChainEdge[] }) {
   const [search, setSearch] = useState('')
   const [typeFilter, setTypeFilter] = useState('all')
+  const [selectedNode, setSelectedNode] = useState<{ id: string; name: string } | null>(null)
 
   const types = useMemo(() => Array.from(new Set(nodes.map((n) => n.type))).sort(), [nodes])
 
   const filteredNodes = useMemo(() => nodes.filter((n) => {
-    const q = search.toLowerCase()
-    const matchSearch = q === '' || n.name.toLowerCase().includes(q) || n.id.toLowerCase().includes(q)
     const matchType = typeFilter === 'all' || n.type === typeFilter
-    return matchSearch && matchType
-  }), [nodes, search, typeFilter])
+    return matchType
+  }), [nodes, typeFilter])
+
+  const highlightedIds = useMemo(() => {
+    const q = search.toLowerCase().trim()
+    if (!q) return new Set<string>()
+    return new Set(
+      filteredNodes
+        .filter((n) => n.name.toLowerCase().includes(q) || n.id.toLowerCase().includes(q))
+        .map((n) => n.id)
+    )
+  }, [filteredNodes, search])
 
   return (
     <div className="space-y-4">
@@ -54,9 +65,24 @@ export function IndustryChainSection({ nodes, edges }: { nodes: ChainNode[]; edg
         </div>
       </div>
 
-      {/* ReactFlow Graph */}
-      <div className="h-[400px] md:h-[600px] bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
-        <ChainGraph filteredNodes={filteredNodes} edges={edges} />
+      {/* Legend */}
+      <ChainLegend />
+
+      {/* ReactFlow Graph + Event Panel */}
+      <div className="relative h-[400px] md:h-[600px] bg-gray-950 rounded-lg border border-gray-800 overflow-hidden">
+        <ChainGraph
+          filteredNodes={filteredNodes}
+          edges={edges}
+          highlightedIds={highlightedIds}
+          onNodeClick={(id, name) => setSelectedNode({ id, name })}
+        />
+        {selectedNode && (
+          <EventChainPanel
+            nodeId={selectedNode.id}
+            nodeName={selectedNode.name}
+            onClose={() => setSelectedNode(null)}
+          />
+        )}
       </div>
     </div>
   )

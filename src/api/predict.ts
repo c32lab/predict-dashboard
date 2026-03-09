@@ -5,6 +5,7 @@ import type {
   Event,
   Trend,
   IndustryChain,
+  EventChainLinksResponse,
   MacroSnapshot,
   OpenInterestPoint,
   LongShortRatioPoint,
@@ -71,6 +72,9 @@ export const predictApi = {
 
   eventChainLinks: (event_id: number) =>
     fetcher<unknown>(`${BASE}/api/event-chain-links?event_id=${event_id}`),
+
+  eventChainLinksByNode: (chainNode: string) =>
+    fetcher<EventChainLinksResponse>(`${BASE}/api/event-chain-links?chain_node=${encodeURIComponent(chainNode)}`),
 
   predictAccuracy: () =>
     fetcher<PredictAccuracyResponse>(`${BASE}/api/predict-accuracy`),

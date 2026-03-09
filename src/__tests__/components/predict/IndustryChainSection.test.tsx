@@ -28,25 +28,9 @@ describe('IndustryChainSection', () => {
 
   it('renders type filter buttons', () => {
     render(<IndustryChainSection nodes={mockNodes} edges={mockEdges} />)
-    expect(screen.getByText(/core/)).toBeInTheDocument()
-    expect(screen.getByText(/upstream/)).toBeInTheDocument()
-    expect(screen.getByText(/downstream/)).toBeInTheDocument()
-  })
-
-  it('filters nodes by search text', async () => {
-    const user = userEvent.setup()
-    render(<IndustryChainSection nodes={mockNodes} edges={mockEdges} />)
-    const searchInput = screen.getByPlaceholderText('Search nodes…')
-    await user.type(searchInput, 'nonexistent')
-    expect(screen.getByText('No nodes match the filter')).toBeInTheDocument()
-  })
-
-  it('shows empty state when no nodes match', async () => {
-    const user = userEvent.setup()
-    render(<IndustryChainSection nodes={mockNodes} edges={mockEdges} />)
-    const searchInput = screen.getByPlaceholderText('Search nodes…')
-    await user.type(searchInput, 'zzzzz')
-    expect(screen.getByText('No nodes match the filter')).toBeInTheDocument()
+    expect(screen.getByText('core (1)')).toBeInTheDocument()
+    expect(screen.getByText('upstream (1)')).toBeInTheDocument()
+    expect(screen.getByText('downstream (1)')).toBeInTheDocument()
   })
 
   it('renders with empty nodes', () => {
@@ -58,19 +42,24 @@ describe('IndustryChainSection', () => {
   it('filters nodes by type when clicking type button', async () => {
     const user = userEvent.setup()
     render(<IndustryChainSection nodes={mockNodes} edges={mockEdges} />)
-    const coreButton = screen.getByText(/^core/)
+    const coreButton = screen.getByText('core (1)')
     await user.click(coreButton)
-    // Only core nodes should be visible - Mining and DeFi should be filtered out
-    // The All button should not have the active style
     expect(screen.queryByText('No nodes match the filter')).not.toBeInTheDocument()
   })
 
-  it('filters by search matching node id', async () => {
+  it('renders legend panel', () => {
+    render(<IndustryChainSection nodes={mockNodes} edges={mockEdges} />)
+    expect(screen.getByText('Node types')).toBeInTheDocument()
+    expect(screen.getByText('Edge relations')).toBeInTheDocument()
+    expect(screen.getByText('Edge thickness')).toBeInTheDocument()
+  })
+
+  it('keeps all nodes visible when searching (highlight mode)', async () => {
     const user = userEvent.setup()
     render(<IndustryChainSection nodes={mockNodes} edges={mockEdges} />)
     const searchInput = screen.getByPlaceholderText('Search nodes…')
-    await user.type(searchInput, 'n1')
-    // Only Bitcoin (id: n1) matches
+    await user.type(searchInput, 'Bitcoin')
+    // All nodes remain visible (not filtered out)
     expect(screen.queryByText('No nodes match the filter')).not.toBeInTheDocument()
   })
 })

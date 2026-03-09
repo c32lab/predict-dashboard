@@ -1,11 +1,21 @@
 import { describe, it, expect, vi } from 'vitest'
-import { render, screen } from '@testing-library/react'
+import { render, screen, fireEvent } from '@testing-library/react'
 import type { ChainNode, ChainEdge } from '../../../types/predict'
 
 // Mock @xyflow/react — return simple divs for ReactFlow and its sub-components
 vi.mock('@xyflow/react', () => ({
-  ReactFlow: ({ nodes, edges, children }: { nodes: unknown[]; edges: unknown[]; children?: React.ReactNode }) => (
+  ReactFlow: ({ nodes, edges, children, onNodeClick }: { nodes: Array<{ id: string; data: { label: string }; style?: Record<string, unknown> }>; edges: unknown[]; children?: React.ReactNode; onNodeClick?: (event: unknown, node: { id: string }) => void }) => (
     <div data-testid="react-flow" data-node-count={nodes.length} data-edge-count={edges.length}>
+      {nodes.map((n) => (
+        <div
+          key={n.id}
+          data-testid={`rf-node-${n.id}`}
+          style={n.style as React.CSSProperties}
+          onClick={() => onNodeClick?.({}, n)}
+        >
+          {String(n.data.label)}
+        </div>
+      ))}
       {children}
     </div>
   ),
@@ -68,12 +78,11 @@ describe('ChainGraph', () => {
       makeNode('n2', 'Mining', 'upstream'),
     ]
     const edges = [
-      makeEdge('n1', 'n2'),                    // both nodes present — included
-      makeEdge('n1', 'n_missing'),              // target not in nodes — excluded
-      makeEdge('n_other', 'n2'),                // source not in nodes — excluded
+      makeEdge('n1', 'n2'),
+      makeEdge('n1', 'n_missing'),
+      makeEdge('n_other', 'n2'),
     ]
     render(<ChainGraph filteredNodes={nodes} edges={edges} />)
-    // Only 1 edge should pass the filter
     expect(screen.getByTestId('react-flow')).toHaveAttribute('data-edge-count', '1')
   })
 
@@ -86,9 +95,7 @@ describe('ChainGraph', () => {
   })
 
   it('handles nodes with unknown types gracefully', () => {
-    const nodes = [
-      makeNode('n1', 'CustomNode', 'unknown_type'),
-    ]
+    const nodes = [makeNode('n1', 'CustomNode', 'unknown_type')]
     render(<ChainGraph filteredNodes={nodes} edges={[]} />)
     expect(screen.getByTestId('react-flow')).toHaveAttribute('data-node-count', '1')
   })
@@ -122,5 +129,26 @@ describe('ChainGraph', () => {
     ]
     render(<ChainGraph filteredNodes={nodes} edges={edges} />)
     expect(screen.getByTestId('react-flow')).toHaveAttribute('data-edge-count', '3')
+  })
+
+  it('dims non-highlighted nodes when highlightedIds is provided', () => {
+    const nodes = [
+      makeNode('n1', 'Bitcoin', 'core'),
+      makeNode('n2', 'Mining', 'upstream'),
+    ]
+    const highlighted = new Set(['n1'])
+    render(<ChainGraph filteredNodes={nodes} edges={[]} highlightedIds={highlighted} />)
+    const n1 = screen.getByTestId('rf-node-n1')
+    const n2 = screen.getByTestId('rf-node-n2')
+    expect(n1.style.opacity).toBe('1')
+    expect(n2.style.opacity).toBe('0.3')
+  })
+
+  it('calls onNodeClick when a node is clicked', () => {
+    const nodes = [makeNode('n1', 'Bitcoin', 'core')]
+    const onClick = vi.fn()
+    render(<ChainGraph filteredNodes={nodes} edges={[]} onNodeClick={onClick} />)
+    fireEvent.click(screen.getByTestId('rf-node-n1'))
+    expect(onClick).toHaveBeenCalledWith('n1', 'Bitcoin')
   })
 })

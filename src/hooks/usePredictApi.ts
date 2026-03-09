@@ -159,3 +159,11 @@ export function usePredictionReview(id: number | null) {
     { revalidateOnFocus: false }
   )
 }
+
+export function useEventChainLinks(chainNode: string | null) {
+  return useSWR(
+    chainNode ? ['predict/event-chain-links', chainNode] : null,
+    () => predictApi.eventChainLinksByNode(chainNode!),
+    { revalidateOnFocus: false }
+  )
+}

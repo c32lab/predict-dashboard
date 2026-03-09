@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom/vitest'
 import { vi } from 'vitest'
+import { createElement } from 'react'
 
 // Mock ResizeObserver for jsdom (needed by recharts ResponsiveContainer)
 class ResizeObserverMock {
@@ -20,7 +21,21 @@ vi.mock('recharts', async () => {
 
 // Mock @xyflow/react (ReactFlow requires DOM measurements)
 vi.mock('@xyflow/react', () => ({
-  ReactFlow: ({ children }: { children?: React.ReactNode }) => children ?? null,
+  ReactFlow: ({ children, onNodeClick, nodes }: {
+    children?: React.ReactNode
+    onNodeClick?: (event: unknown, node: { id: string }) => void
+    nodes?: Array<{ id: string; data: { label: string }; style?: Record<string, unknown> }>
+  }) => createElement('div', { 'data-testid': 'reactflow' },
+    ...(nodes ?? []).map((n) =>
+      createElement('div', {
+        key: n.id,
+        'data-testid': `rf-node-${n.id}`,
+        style: n.style,
+        onClick: () => onNodeClick?.({}, n),
+      }, String(n.data.label))
+    ),
+    children,
+  ),
   Background: () => null,
   BackgroundVariant: { Dots: 'dots' },
   Controls: () => null,
