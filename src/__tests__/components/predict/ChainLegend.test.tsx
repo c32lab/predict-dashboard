@@ -16,8 +16,8 @@ describe('ChainLegend', () => {
   it('renders edge strength section', () => {
     render(<ChainLegend />)
     expect(screen.getByText('Edge strength')).toBeInTheDocument()
-    expect(screen.getByText('< 0.3')).toBeInTheDocument()
-    expect(screen.getByText('> 0.7')).toBeInTheDocument()
+    expect(screen.getByText('weak')).toBeInTheDocument()
+    expect(screen.getByText('strong')).toBeInTheDocument()
   })
 
   it('renders all known node types', () => {

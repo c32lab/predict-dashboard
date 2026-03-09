@@ -13,12 +13,12 @@ describe('ChainLegend', () => {
     expect(screen.getByText('Edge relations')).toBeInTheDocument()
   })
 
-  it('renders edge strength section with thresholds', () => {
+  it('renders edge strength section with labels', () => {
     render(<ChainLegend />)
     expect(screen.getByText('Edge strength')).toBeInTheDocument()
-    expect(screen.getByText('< 0.3')).toBeInTheDocument()
-    expect(screen.getByText('0.3–0.7')).toBeInTheDocument()
-    expect(screen.getByText('> 0.7')).toBeInTheDocument()
+    expect(screen.getByText('weak')).toBeInTheDocument()
+    expect(screen.getByText('medium')).toBeInTheDocument()
+    expect(screen.getByText('strong')).toBeInTheDocument()
   })
 
   it('renders new node types (asset, theme, sector, macro)', () => {

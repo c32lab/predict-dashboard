@@ -35,15 +35,15 @@ export function ChainLegend() {
         <div className="flex items-center gap-2">
           <span className="flex items-center gap-1">
             <span className="inline-block w-4 h-px bg-gray-400" />
-            {'< 0.3'}
+            weak
           </span>
           <span className="flex items-center gap-1">
             <span className="inline-block w-4 bg-gray-400" style={{ height: '2px' }} />
-            0.3–0.7
+            medium
           </span>
           <span className="flex items-center gap-1">
-            <span className="inline-block w-4 bg-gray-400" style={{ height: '3px' }} />
-            {'> 0.7'}
+            <span className="inline-block w-4 bg-gray-400" style={{ height: '4px' }} />
+            strong
           </span>
         </div>
       </div>
