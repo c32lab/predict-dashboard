@@ -54,10 +54,15 @@ const mockFullResults = {
     matched_events: 150,
     skipped_no_model: 30,
     skipped_no_price: 20,
-    decay_models_used: ['exponential'],
+    decay_models_used: ['exponential', 'fed_hawkish', 'tariff_shock'],
     overall_accuracy: {},
-    by_model: {},
-    by_year: {},
+    by_model: {
+      exponential: { count: 10, horizons: { '1d': { correct: 7, total: 10, accuracy_pct: 70 }, '3d': { correct: 5, total: 10, accuracy_pct: 50 }, '7d': { correct: 4, total: 10, accuracy_pct: 40 } } },
+    },
+    by_year: {
+      '2023': { count: 15, horizons: { '1d': { correct: 5, total: 13, accuracy_pct: 38.5 }, '3d': { correct: 4, total: 14, accuracy_pct: 28.6 }, '7d': { correct: 6, total: 12, accuracy_pct: 50 } } },
+      '2024': { count: 25, horizons: { '1d': { correct: 13, total: 16, accuracy_pct: 81.2 }, '3d': { correct: 12, total: 19, accuracy_pct: 63.2 }, '7d': { correct: 12, total: 19, accuracy_pct: 63.2 } } },
+    },
     by_regime: {
       bull: { count: 50, horizons: { '1d': { correct: 30, total: 40, accuracy_pct: 75 } } },
       bear: { count: 50, horizons: { '1d': { correct: 15, total: 40, accuracy_pct: 37.5 } } },
@@ -139,7 +144,7 @@ describe('BacktestPage', () => {
     render(<BacktestPage />)
     expect(screen.getByText('Backtest Results')).toBeInTheDocument()
     expect(screen.getByText('Total Predictions')).toBeInTheDocument()
-    expect(screen.getByText('Overall Accuracy')).toBeInTheDocument()
+    expect(screen.getAllByText('Overall Accuracy').length).toBeGreaterThanOrEqual(1)
     expect(screen.getByText('A/B Strategy Comparison')).toBeInTheDocument()
     expect(screen.getByText(/Regime Analysis/)).toBeInTheDocument()
     expect(screen.getByText(/Parameter Sweep/)).toBeInTheDocument()
@@ -150,6 +155,12 @@ describe('BacktestPage', () => {
     expect(screen.getByText('Confidence Bucket Analysis')).toBeInTheDocument()
     expect(screen.getByText('Multi-Symbol Comparison')).toBeInTheDocument()
     expect(screen.getByText('Before / After Comparison')).toBeInTheDocument()
+    // New sections
+    expect(screen.getByText(/Summary Statistics/)).toBeInTheDocument()
+    expect(screen.getByText(/Cycle Comparison/)).toBeInTheDocument()
+    expect(screen.getByText('Enhanced Metrics')).toBeInTheDocument()
+    expect(screen.getByText('Year Filter:')).toBeInTheDocument()
+    expect(screen.getByText('All Years')).toBeInTheDocument()
   })
 
   it('renders KPI cards with correct values', () => {
@@ -157,8 +168,8 @@ describe('BacktestPage', () => {
     render(<BacktestPage />)
     // Check total predictions KPI
     expect(screen.getByText('Total Predictions')).toBeInTheDocument()
-    // Overall accuracy
-    expect(screen.getByText('Overall Accuracy')).toBeInTheDocument()
+    // Overall accuracy (appears in both KPI and Summary sections)
+    expect(screen.getAllByText('Overall Accuracy').length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders findings and suggestions', () => {
@@ -271,5 +282,37 @@ describe('BacktestPage', () => {
     render(<BacktestPage />)
     expect(screen.getByText(/7d 66.7%/)).toBeInTheDocument()
     expect(screen.getByText(/1d 36%/)).toBeInTheDocument()
+  })
+
+  it('renders year filter buttons from by_year data', () => {
+    setupDataMock()
+    render(<BacktestPage />)
+    expect(screen.getByText('All Years')).toBeInTheDocument()
+    // Year buttons rendered from mock data (may appear in multiple sections)
+    expect(screen.getAllByText(/2023/).length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText(/2024/).length).toBeGreaterThanOrEqual(1)
+  })
+
+  it('renders summary statistics section', () => {
+    setupDataMock()
+    render(<BacktestPage />)
+    expect(screen.getByText('Total Events Backtested')).toBeInTheDocument()
+    expect(screen.getByText('Best Pattern')).toBeInTheDocument()
+    expect(screen.getByText('Worst Pattern')).toBeInTheDocument()
+  })
+
+  it('renders cycle comparison section', () => {
+    setupDataMock()
+    render(<BacktestPage />)
+    expect(screen.getByText('Accuracy Trend by Year')).toBeInTheDocument()
+    expect(screen.getByText('Bull vs Bear vs Sideways')).toBeInTheDocument()
+  })
+
+  it('renders enhanced metrics section with tabs', () => {
+    setupDataMock()
+    render(<BacktestPage />)
+    expect(screen.getByText('Per-Symbol Accuracy')).toBeInTheDocument()
+    expect(screen.getByText('Per-Pattern Trends')).toBeInTheDocument()
+    expect(screen.getByText('Confidence Calibration')).toBeInTheDocument()
   })
 })
