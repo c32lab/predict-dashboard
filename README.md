@@ -1,3 +1,5 @@
+![CI](https://github.com/c32lab/predict-dashboard/actions/workflows/ci.yml/badge.svg)
+
 # Predict Dashboard
 
 Real-time monitoring dashboard for the Amani prediction system. Displays macro analysis, event-driven predictions, accuracy tracking, industry chain visualization, decay analysis, and backtest results.
