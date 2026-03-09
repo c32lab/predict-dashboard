@@ -3,32 +3,32 @@ import { NODE_COLORS, edgeWidth } from '../../../components/predict/chainConstan
 
 describe('chainConstants', () => {
   describe('NODE_COLORS', () => {
-    it('maps core to blue', () => {
-      expect(NODE_COLORS.core.border).toBe('#3b82f6')
-    })
-
-    it('maps ticker to green', () => {
-      expect(NODE_COLORS.ticker.border).toBe('#22c55e')
+    it('maps ticker to blue', () => {
+      expect(NODE_COLORS.ticker.border).toBe('#3b82f6')
     })
 
     it('maps theme to purple', () => {
-      expect(NODE_COLORS.theme.border).toBe('#a855f7')
+      expect(NODE_COLORS.theme.border).toBe('#8b5cf6')
     })
 
-    it('maps upstream to teal', () => {
-      expect(NODE_COLORS.upstream.border).toBe('#14b8a6')
+    it('maps core to green', () => {
+      expect(NODE_COLORS.core.border).toBe('#10b981')
+    })
+
+    it('maps upstream to orange', () => {
+      expect(NODE_COLORS.upstream.border).toBe('#f59e0b')
     })
 
     it('maps downstream to cyan', () => {
       expect(NODE_COLORS.downstream.border).toBe('#06b6d4')
     })
 
-    it('maps demand_driver to yellow', () => {
-      expect(NODE_COLORS.demand_driver.border).toBe('#eab308')
+    it('maps event to red', () => {
+      expect(NODE_COLORS.event.border).toBe('#ef4444')
     })
 
-    it('maps event to orange', () => {
-      expect(NODE_COLORS.event.border).toBe('#f97316')
+    it('maps demand_driver to pink', () => {
+      expect(NODE_COLORS.demand_driver.border).toBe('#ec4899')
     })
   })
 
@@ -37,8 +37,8 @@ describe('chainConstants', () => {
       expect(edgeWidth(0)).toBe(1)
     })
 
-    it('returns 5 for strength 1', () => {
-      expect(edgeWidth(1)).toBe(5)
+    it('returns 4 for strength 1', () => {
+      expect(edgeWidth(1)).toBe(4)
     })
 
     it('returns 3 for strength 0.5', () => {
@@ -49,8 +49,8 @@ describe('chainConstants', () => {
       expect(edgeWidth(-0.5)).toBe(1)
     })
 
-    it('clamps strength > 1 to 5', () => {
-      expect(edgeWidth(1.5)).toBe(5)
+    it('clamps strength > 1 to 4', () => {
+      expect(edgeWidth(1.5)).toBe(4)
     })
   })
 })

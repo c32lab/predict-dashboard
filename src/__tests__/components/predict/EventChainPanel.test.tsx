@@ -44,8 +44,8 @@ describe('EventChainPanel', () => {
       data: {
         chain_node: 'n1',
         events: [
-          { date: '2026-03-01', category: 'macro', event: 'Fed rate cut', price_change: 2.5 },
-          { date: '2026-03-02', category: 'news', event: 'ETF approved', price_change: -1.3 },
+          { date: '2026-03-01', symbol: 'BTC', category: 'macro', event: 'Fed rate cut', price_change: 2.5 },
+          { date: '2026-03-02', symbol: 'ETH', category: 'news', event: 'ETF approved', price_change: -1.3 },
         ],
       },
       error: undefined,
@@ -76,7 +76,7 @@ describe('EventChainPanel', () => {
     mockUseEventChainLinks.mockReturnValue({
       data: {
         chain_node: 'n1',
-        events: [{ date: '2026-03-01', category: 'macro', event: 'Pump', price_change: 5.0 }],
+        events: [{ date: '2026-03-01', symbol: 'BTC', category: 'macro', event: 'Pump', price_change: 5.0 }],
       },
       error: undefined,
       isLoading: false,
@@ -90,7 +90,7 @@ describe('EventChainPanel', () => {
     mockUseEventChainLinks.mockReturnValue({
       data: {
         chain_node: 'n1',
-        events: [{ date: '2026-03-01', category: 'macro', event: 'Dump', price_change: -3.0 }],
+        events: [{ date: '2026-03-01', symbol: 'BTC', category: 'macro', event: 'Dump', price_change: -3.0 }],
       },
       error: undefined,
       isLoading: false,

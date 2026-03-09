@@ -39,13 +39,13 @@ describe('ChainNodeDetail', () => {
     expect(screen.getByText('No linked events found')).toBeInTheDocument()
   })
 
-  it('renders events with date, description, and price change', () => {
+  it('renders events with date, symbol, description, and price change', () => {
     mockUseEventChainLinks.mockReturnValue({
       data: {
         chain_node: 'n1',
         events: [
-          { date: '2026-03-01', category: 'macro', event: 'Fed rate cut', price_change: 2.5 },
-          { date: '2026-03-02', category: 'news', event: 'ETF approved', price_change: -1.3 },
+          { date: '2026-03-01', symbol: 'BTC', category: 'macro', event: 'Fed rate cut', price_change: 2.5 },
+          { date: '2026-03-02', symbol: 'ETH', category: 'news', event: 'ETF approved', price_change: -1.3 },
         ],
       },
       error: undefined,
@@ -54,6 +54,8 @@ describe('ChainNodeDetail', () => {
     render(<ChainNodeDetail {...defaultProps} />)
     expect(screen.getByText('Fed rate cut')).toBeInTheDocument()
     expect(screen.getByText('ETF approved')).toBeInTheDocument()
+    expect(screen.getByText('BTC')).toBeInTheDocument()
+    expect(screen.getByText('ETH')).toBeInTheDocument()
     expect(screen.getByText('+2.50%')).toBeInTheDocument()
     expect(screen.getByText('-1.30%')).toBeInTheDocument()
   })
@@ -76,7 +78,7 @@ describe('ChainNodeDetail', () => {
     mockUseEventChainLinks.mockReturnValue({
       data: {
         chain_node: 'n1',
-        events: [{ date: '2026-03-01', category: 'macro', event: 'Pump', price_change: 5.0 }],
+        events: [{ date: '2026-03-01', symbol: 'BTC', category: 'macro', event: 'Pump', price_change: 5.0 }],
       },
       error: undefined,
       isLoading: false,
@@ -90,7 +92,7 @@ describe('ChainNodeDetail', () => {
     mockUseEventChainLinks.mockReturnValue({
       data: {
         chain_node: 'n1',
-        events: [{ date: '2026-03-01', category: 'macro', event: 'Dump', price_change: -3.0 }],
+        events: [{ date: '2026-03-01', symbol: 'BTC', category: 'macro', event: 'Dump', price_change: -3.0 }],
       },
       error: undefined,
       isLoading: false,

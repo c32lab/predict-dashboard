@@ -45,6 +45,9 @@ export function EventChainPanel({
               <span className="text-gray-400">{ev.date}</span>
               <span className="text-gray-500">{ev.category}</span>
             </div>
+            {ev.symbol && (
+              <div className="text-blue-400 font-medium">{ev.symbol}</div>
+            )}
             <p className="text-gray-200 leading-relaxed">{ev.event}</p>
             <div className="text-right">
               <span

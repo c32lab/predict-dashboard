@@ -338,6 +338,7 @@ export interface PredictionReviewResponse {
 
 export interface ChainLinkedEvent {
   date: string
+  symbol: string
   category: string
   event: string
   price_change: number
