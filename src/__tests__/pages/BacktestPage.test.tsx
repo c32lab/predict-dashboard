@@ -157,7 +157,7 @@ describe('BacktestPage', () => {
     expect(screen.getByText('Before / After Comparison')).toBeInTheDocument()
     // New sections
     expect(screen.getByText(/Summary Statistics/)).toBeInTheDocument()
-    expect(screen.getByText(/Cycle Comparison/)).toBeInTheDocument()
+    expect(screen.getByText(/Cycle Comparison — Year/)).toBeInTheDocument()
     expect(screen.getByText('Enhanced Metrics')).toBeInTheDocument()
     expect(screen.getByText('Year Filter:')).toBeInTheDocument()
     expect(screen.getByText('All Years')).toBeInTheDocument()
@@ -175,9 +175,10 @@ describe('BacktestPage', () => {
   it('renders findings and suggestions', () => {
     setupDataMock()
     render(<BacktestPage />)
-    expect(screen.getByText('Finding 1')).toBeInTheDocument()
-    expect(screen.getByText('Finding 2')).toBeInTheDocument()
-    expect(screen.getByText('Suggestion 1')).toBeInTheDocument()
+    // Findings and suggestions appear in both FindingsSection and FindingsCards
+    expect(screen.getAllByText('Finding 1').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('Finding 2').length).toBeGreaterThanOrEqual(1)
+    expect(screen.getAllByText('Suggestion 1').length).toBeGreaterThanOrEqual(1)
   })
 
   it('renders confusion matrix values', () => {

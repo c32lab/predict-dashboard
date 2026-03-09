@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import useSWR from 'swr'
 import type { FullResults, ABResults } from '../types/backtest'
+import type { MarketCycle } from '../components/backtest/TimeRangeSelector'
 import {
   KpiCard,
   ABSection,
@@ -17,6 +18,10 @@ import {
   EnhancedMetricsSection,
   TimeRangeSelector,
   YearDetailCard,
+  MarketCycleSelector,
+  BullBearCycleView,
+  MultiSymbolHeatmap,
+  FindingsCards,
 } from '../components/backtest'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 import { PageSkeleton } from '../components/PageSkeleton'
@@ -27,6 +32,7 @@ export default function BacktestPage() {
   const { data: baseline, error: e1 } = useSWR<FullResults>('/backtest-full-results.json', fetcher)
   const { data: ab, error: e2 } = useSWR<ABResults>('/backtest-ab-results.json', fetcher)
   const [selectedYear, setSelectedYear] = useState<string | null>(null)
+  const [selectedCycle, setSelectedCycle] = useState<MarketCycle>('all')
 
   if (e1 || e2) return <div className="p-8 text-red-400">Failed to load backtest data.</div>
   if (!baseline || !ab) return <PageSkeleton />
@@ -114,6 +120,20 @@ export default function BacktestPage() {
       </SectionErrorBoundary>
       <SectionErrorBoundary title="Before/After Comparison">
         <BeforeAfterSection data={baseline.before_after_comparison ?? {}} />
+      </SectionErrorBoundary>
+
+      {/* --- Expanded Backtest Visualizations (issue #193) --- */}
+      <SectionErrorBoundary title="Bull/Bear Cycle View">
+        <BullBearCycleView data={baseline.before_after_comparison ?? {}} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Multi-Symbol Heatmap">
+        <MultiSymbolHeatmap symbols={baseline.multi_symbol_conduction?.by_symbol ?? {}} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Market Cycle Filter">
+        <MarketCycleSelector selected={selectedCycle} onSelect={setSelectedCycle} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Findings & Action Items">
+        <FindingsCards findings={baseline.findings} suggestions={baseline.suggestions} />
       </SectionErrorBoundary>
     </div>
   )
