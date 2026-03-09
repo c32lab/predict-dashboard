@@ -8,6 +8,7 @@ import { AccuracyHistoryChart } from '../components/accuracy/AccuracyHistoryChar
 import { DirectionRadarChart } from '../components/accuracy/DirectionRadarChart'
 import { RollingAccuracyChart } from '../components/accuracy/RollingAccuracyChart'
 import { HorizonComparisonCard } from '../components/accuracy/HorizonComparisonCard'
+import { HorizonCompareCards } from '../components/accuracy/HorizonCompareCards'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 import { PageSkeleton } from '../components/PageSkeleton'
 import { EmptyState } from '../components/EmptyState'
@@ -53,6 +54,9 @@ export default function AccuracyPage() {
       </div>
       <SectionErrorBoundary title="Horizon Comparison">
         <HorizonComparisonCard accuracy={data.accuracy ?? {}} />
+      </SectionErrorBoundary>
+      <SectionErrorBoundary title="Horizon Compare Cards">
+        <HorizonCompareCards accuracy={data.accuracy ?? {}} validations={validations} />
       </SectionErrorBoundary>
       <SectionErrorBoundary title="Accuracy & Validations">
         <AccuracyAndValidationsSection
