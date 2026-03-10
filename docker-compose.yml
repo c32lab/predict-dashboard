@@ -3,6 +3,8 @@ services:
     build: .
     ports:
       - "18828:18828"
+    environment:
+      - PREDICT_API_UPSTREAM=${PREDICT_API_UPSTREAM:-host.docker.internal:18801}
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
