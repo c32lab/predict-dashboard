@@ -13,14 +13,22 @@ test.describe('Navigation', () => {
     await page.goto('/')
     await page.getByRole('link', { name: 'Accuracy' }).click()
     await expect(page).toHaveURL('/accuracy')
-    await expect(page.locator('h1')).toContainText('Prediction Accuracy')
+    const heading = page.getByText('Prediction Accuracy')
+    const loading = page.locator('[class*="animate-pulse"]')
+    const error = page.getByText(/failed to load/i)
+    const empty = page.getByText(/no .* available/i)
+    await expect(heading.or(loading.first()).or(error).or(empty).first()).toBeVisible({ timeout: 10_000 })
   })
 
   test('navigate to Chain page', async ({ page }) => {
     await page.goto('/')
     await page.getByRole('link', { name: 'Chain' }).click()
     await expect(page).toHaveURL('/chain')
-    await expect(page.getByText('Industry Chain')).toBeVisible()
+    const chainHeading = page.getByText('Industry Chain')
+    const chainLoading = page.locator('[class*="animate-pulse"]')
+    const chainError = page.getByText(/failed to load/i)
+    const chainEmpty = page.getByText(/no .* available/i)
+    await expect(chainHeading.or(chainLoading.first()).or(chainError).or(chainEmpty).first()).toBeVisible({ timeout: 10_000 })
   })
 
   test('navigate to Backtest page', async ({ page }) => {

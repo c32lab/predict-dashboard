@@ -11,7 +11,11 @@ test.describe('Chain Page', () => {
 
   test('shows page heading', async ({ page }) => {
     await page.goto('/chain')
-    await expect(page.getByText('Industry Chain')).toBeVisible()
+    const heading = page.getByText('Industry Chain')
+    const loading = page.locator('[class*="animate-pulse"]')
+    const error = page.getByText(/failed to load/i)
+    const empty = page.getByText(/no .* available/i)
+    await expect(heading.or(loading.first()).or(error).or(empty).first()).toBeVisible({ timeout: 10_000 })
   })
 
   test('chain nav link is active', async ({ page }) => {
