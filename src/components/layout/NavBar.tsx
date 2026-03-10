@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { NavLink } from 'react-router-dom'
+import { ApiStatusIndicator } from './ApiStatusIndicator'
 
 const navLinkClass = ({ isActive }: { isActive: boolean }) =>
   isActive ? 'text-blue-400 font-bold' : 'text-gray-400 hover:text-gray-200'
@@ -27,6 +28,11 @@ export default function NavBar() {
               {label}
             </NavLink>
           ))}
+        </div>
+
+        {/* API status — desktop only */}
+        <div className="hidden md:block">
+          <ApiStatusIndicator />
         </div>
 
         {/* Mobile hamburger */}

@@ -3,6 +3,7 @@ import { IndustryChainSection } from '../components/predict/IndustryChainSection
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 import { PageSkeleton } from '../components/PageSkeleton'
 import { EmptyState } from '../components/EmptyState'
+import { ApiError } from '../components/ui/ApiError'
 
 export default function ChainPage() {
   const { data, error, isLoading } = useIndustryChain()
@@ -12,11 +13,7 @@ export default function ChainPage() {
   }
 
   if (error) {
-    return (
-      <div className="flex items-center justify-center h-64 text-red-400 text-sm">
-        Failed to load: {String(error?.message ?? error)}
-      </div>
-    )
+    return <ApiError message={`Failed to load: ${String(error?.message ?? error)}`} />
   }
 
   if (!data) return <EmptyState message="No industry chain data available" />

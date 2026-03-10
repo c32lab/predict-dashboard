@@ -10,6 +10,7 @@ import { predictApi } from '../api/predict'
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 import { PageSkeleton } from '../components/PageSkeleton'
 import { EmptyState } from '../components/EmptyState'
+import { ApiError } from '../components/ui/ApiError'
 import type { Trend } from '../types/predict'
 import {
   AccuracyAndValidationsSection,
@@ -48,11 +49,7 @@ export default function PredictDashboard() {
   }
 
   if (error) {
-    return (
-      <div className="flex items-center justify-center h-64 text-red-400 text-sm">
-        Failed to load: {error.message}
-      </div>
-    )
+    return <ApiError message={`Failed to load: ${error.message}`} />
   }
 
   if (!data) return <EmptyState message="No prediction data available" />
