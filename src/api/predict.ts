@@ -21,7 +21,7 @@ import type {
   PredictionReviewResponse,
 } from '../types/predict'
 
-const BASE = ''
+const BASE = import.meta.env.VITE_PREDICT_API_URL || ''
 
 async function fetcher<T>(url: string): Promise<T> {
   const res = await fetch(url)
