@@ -1,4 +1,5 @@
 import { useHealthDeep } from '../../hooks/usePredictApi'
+import AnomalyBadge from '../ui/AnomalyBadge'
 
 function formatBytes(bytes: number): string {
   if (bytes < 1024) return `${bytes} B`
@@ -82,6 +83,11 @@ export function DeepHealthPanel() {
         <div className="bg-gray-800 rounded-lg p-3">
           <div className="text-xs text-gray-500 mb-1">Predictions (24h)</div>
           <div className="text-sm font-medium text-gray-200">{data.predictions_24h.count_24h}</div>
+          {data.predictions_24h.count_24h === 0 && (
+            <div className="mt-1">
+              <AnomalyBadge level="critical" message="No predictions in 24h" />
+            </div>
+          )}
         </div>
       </div>
 

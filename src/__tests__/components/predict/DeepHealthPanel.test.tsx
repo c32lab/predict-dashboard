@@ -89,4 +89,21 @@ describe('DeepHealthPanel', () => {
     render(<DeepHealthPanel />)
     expect(screen.getByText('512 B')).toBeInTheDocument()
   })
+
+  it('shows critical anomaly when predictions count is zero', () => {
+    mockReturn({
+      data: {
+        ...sampleData,
+        predictions_24h: { count_24h: 0 },
+      },
+    })
+    render(<DeepHealthPanel />)
+    expect(screen.getByText('No predictions in 24h')).toBeInTheDocument()
+  })
+
+  it('does not show anomaly badge when predictions count is positive', () => {
+    mockReturn({ data: sampleData })
+    render(<DeepHealthPanel />)
+    expect(screen.queryByText('No predictions in 24h')).not.toBeInTheDocument()
+  })
 })
