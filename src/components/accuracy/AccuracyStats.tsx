@@ -1,11 +1,16 @@
+import DeltaBadge from '../ui/DeltaBadge'
+import AnomalyBadge from '../ui/AnomalyBadge'
+
 export function AccuracyStats({
   total,
   correct,
   accuracyPct,
+  previousAccuracy,
 }: {
   total: number
   correct: number
   accuracyPct: number
+  previousAccuracy?: number
 }) {
   const colorClass =
     accuracyPct > 50 ? 'text-green-400' : accuracyPct >= 40 ? 'text-yellow-400' : 'text-red-400'
@@ -32,10 +37,20 @@ export function AccuracyStats({
       </div>
       <div className="flex flex-col items-center gap-1 min-w-[100px] sm:min-w-[120px]">
         <span className="text-xs text-gray-500 uppercase tracking-wider">Accuracy</span>
-        <span className={`text-3xl sm:text-4xl font-bold font-mono ${colorClass}`}>
-          {accuracyPct.toFixed(1)}%
-        </span>
+        <div className="flex items-center gap-2">
+          <span className={`text-3xl sm:text-4xl font-bold font-mono ${colorClass}`}>
+            {accuracyPct.toFixed(1)}%
+          </span>
+          {previousAccuracy !== undefined && (
+            <DeltaBadge current={accuracyPct} previous={previousAccuracy} format="percent" />
+          )}
+        </div>
         <span className="text-sm text-gray-400">from validations</span>
+        {accuracyPct < 50 && (
+          <div className="mt-1">
+            <AnomalyBadge level="critical" message="Accuracy below 50%" />
+          </div>
+        )}
       </div>
     </div>
   )
