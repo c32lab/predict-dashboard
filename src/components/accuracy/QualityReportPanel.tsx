@@ -29,7 +29,7 @@ export function QualityReportPanel() {
     if (!historyData?.by_direction) return []
     return Object.entries(historyData.by_direction).map(([dir, v]) => ({
       direction: dir,
-      accuracy: v.accuracy,
+      accuracy: v.accuracy ?? 0,
       total: v.total,
       correct: v.correct,
     }))
@@ -41,7 +41,7 @@ export function QualityReportPanel() {
       .map(([bucket, v]) => ({
         bucket,
         count: v.count,
-        accuracy: v.accuracy,
+        accuracy: v.accuracy ?? 0,
       }))
       .sort((a, b) => a.bucket.localeCompare(b.bucket))
   }, [data])
@@ -53,7 +53,7 @@ export function QualityReportPanel() {
       .map(([bucket, v]) => {
         const parts = bucket.split('-').map(Number)
         const midpoint = parts.length === 2 ? ((parts[0] + parts[1]) / 2) * 100 : parts[0] * 100
-        return { expected: Math.round(midpoint), actual: v.accuracy, bucket }
+        return { expected: Math.round(midpoint), actual: v.accuracy ?? 0, bucket }
       })
       .sort((a, b) => a.expected - b.expected)
   }, [data])
@@ -78,7 +78,7 @@ export function QualityReportPanel() {
     if (!data?.overall_accuracy) return []
     return Object.entries(data.overall_accuracy).map(([horizon, accuracy]) => ({
       horizon,
-      accuracy,
+      accuracy: accuracy ?? 0,
     }))
   }, [data])
 
