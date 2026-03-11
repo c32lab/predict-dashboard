@@ -349,6 +349,19 @@ export interface EventChainLinksResponse {
   events: ChainLinkedEvent[]
 }
 
+export interface ValidationModelStats {
+  count: number
+  '1d_accuracy': number
+  '1d_mae': number
+  '3d_accuracy': number
+  '7d_accuracy': number
+  [key: string]: number
+}
+
+export interface ValidationReport {
+  summary_by_model: Record<string, ValidationModelStats>
+}
+
 export interface DeepHealthResponse {
   status: string
   service: string

@@ -13,6 +13,7 @@ const links = [
   { to: '/chain', label: 'Chain' },
   { to: '/backtest', label: 'Backtest' },
   { to: '/review', label: 'Review' },
+  { to: '/patterns', label: 'Patterns' },
 ] as const
 
 export default function NavBar() {

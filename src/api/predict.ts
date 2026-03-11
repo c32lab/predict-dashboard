@@ -19,6 +19,7 @@ import type {
   DeepHealthResponse,
   PredictionExplainResponse,
   PredictionReviewResponse,
+  ValidationReport,
 } from '../types/predict'
 
 const BASE = import.meta.env.VITE_PREDICT_API_URL || ''
@@ -115,4 +116,7 @@ export const predictApi = {
 
   predictionReview: (id: number) =>
     fetcher<PredictionReviewResponse>(`${BASE}/api/predictions/${id}/review`),
+
+  validationReport: () =>
+    fetcher<ValidationReport>(`${BASE}/api/validation/report`),
 }

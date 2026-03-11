@@ -12,6 +12,7 @@ const QualityPage = lazy(() => import('./pages/QualityPage'))
 const DecayPage = lazy(() => import('./pages/DecayPage'))
 const ReviewPage = lazy(() => import('./pages/ReviewPage'))
 const ReviewOverviewPage = lazy(() => import('./pages/ReviewOverviewPage'))
+const PatternPerformancePage = lazy(() => import('./pages/PatternPerformancePage'))
 
 function Loading() {
   return (
@@ -43,6 +44,7 @@ function App() {
               <Route path="/decay" element={<DecayPage />} />
               <Route path="/review" element={<ReviewOverviewPage />} />
               <Route path="/review/:id" element={<ReviewPage />} />
+              <Route path="/patterns" element={<PatternPerformancePage />} />
             </Routes>
           </Suspense>
         </div>

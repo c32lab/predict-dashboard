@@ -167,3 +167,9 @@ export function useEventChainLinks(chainNode: string | null) {
     { revalidateOnFocus: false }
   )
 }
+
+export function useValidationReport() {
+  return useSWR('predict/validation-report', () => predictApi.validationReport(), {
+    refreshInterval: REFRESH_INTERVAL,
+  })
+}
