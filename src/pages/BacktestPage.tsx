@@ -33,7 +33,18 @@ export default function BacktestPage() {
   const [selectedYear, setSelectedYear] = useState<string | null>(null)
   const [selectedCycle, setSelectedCycle] = useState<MarketCycle>('all')
 
-  if (e1 || e2) return <div className="p-8 text-red-400">Failed to load backtest data.</div>
+  const is404 = (e: Error) => e?.message?.includes('404')
+  if (e1 || e2) {
+    if ((e1 && is404(e1)) || (e2 && is404(e2))) {
+      return (
+        <div className="p-8 text-center">
+          <h2 className="text-xl font-semibold text-gray-400 mb-2">No Backtest Data</h2>
+          <p className="text-gray-500">Backtest results will appear here after a backtest run completes.</p>
+        </div>
+      )
+    }
+    return <div className="p-8 text-red-400">Failed to load backtest data.</div>
+  }
   if (!baseline || !ab) return <PageSkeleton />
 
   const pb = baseline.prediction_backtest

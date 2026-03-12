@@ -99,9 +99,12 @@ export function DecayDashboard() {
   }
 
   if (error) {
+    const is404 = error?.message?.includes('404')
     return (
-      <div className="text-sm text-red-400 text-center py-8">
-        Failed to load decay data: {String(error?.message ?? error)}
+      <div className={`text-sm ${is404 ? 'text-gray-400' : 'text-red-400'} text-center py-8`}>
+        {is404
+          ? 'No decay data available yet.'
+          : `Failed to load decay data: ${String(error?.message ?? error)}`}
       </div>
     )
   }
