@@ -11,12 +11,12 @@ const upstream = raw.startsWith("http") ? raw : `http://${raw}`;
 
 const app = express();
 
-// Proxy /api/ to predict backend
+// Proxy /api/ to predict backend — pathFilter preserves /api prefix
 app.use(
-  "/api",
   createProxyMiddleware({
     target: upstream,
     changeOrigin: true,
+    pathFilter: "/api",
   }),
 );
 
