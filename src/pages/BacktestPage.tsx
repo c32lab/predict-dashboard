@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import useSWR from 'swr'
 import type { FullResults, ABResults } from '../types/backtest'
+import { predictApi } from '../api/predict'
 import type { MarketCycle } from '../components/backtest/TimeRangeSelector'
 import {
   KpiCard,
@@ -26,11 +27,9 @@ import {
 import SectionErrorBoundary from '../components/SectionErrorBoundary'
 import { PageSkeleton } from '../components/PageSkeleton'
 
-const fetcher = (url: string) => fetch(url).then(r => r.json())
-
 export default function BacktestPage() {
-  const { data: baseline, error: e1 } = useSWR<FullResults>('/backtest-full-results.json', fetcher)
-  const { data: ab, error: e2 } = useSWR<ABResults>('/backtest-ab-results.json', fetcher)
+  const { data: baseline, error: e1 } = useSWR<FullResults>('backtest-results', () => predictApi.backtestResults())
+  const { data: ab, error: e2 } = useSWR<ABResults>('backtest-ab', () => predictApi.backtestAB())
   const [selectedYear, setSelectedYear] = useState<string | null>(null)
   const [selectedCycle, setSelectedCycle] = useState<MarketCycle>('all')
 

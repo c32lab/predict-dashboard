@@ -21,6 +21,7 @@ import type {
   PredictionReviewResponse,
   ValidationReport,
 } from '../types/predict'
+import type { FullResults, ABResults } from '../types/backtest'
 
 const BASE = import.meta.env.VITE_PREDICT_API_URL || ''
 
@@ -119,4 +120,10 @@ export const predictApi = {
 
   validationReport: () =>
     fetcher<ValidationReport>(`${BASE}/api/validation/report`),
+
+  backtestResults: () =>
+    fetcher<FullResults>(`${BASE}/api/backtest/results`),
+
+  backtestAB: () =>
+    fetcher<ABResults>(`${BASE}/api/backtest/ab`),
 }
