@@ -73,7 +73,7 @@ export default function PredictDashboard() {
       </SectionErrorBoundary>
 
       <MacroOverviewSection macro={macro} />
-      <ActivePredictionsSection predictions={activeList} />
+      <ActivePredictionsSection predictions={activeList} validatedPredictions={recent_validations ?? []} />
       <EventLibrarySection events={events} />
       <PatternsAndChartSection patterns={patterns} macroHistory={macro_history} />
 
