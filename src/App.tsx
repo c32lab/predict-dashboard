@@ -14,6 +14,18 @@ const ReviewPage = lazy(() => import('./pages/ReviewPage'))
 const ReviewOverviewPage = lazy(() => import('./pages/ReviewOverviewPage'))
 const PatternPerformancePage = lazy(() => import('./pages/PatternPerformancePage'))
 
+// Derive BrowserRouter basename from <base href> (set by Vite's `base: './'`).
+// "/predict/" → "/predict", "/" → ""
+function getBasename(): string {
+  try {
+    return new URL(document.baseURI).pathname.replace(/\/+$/, '')
+  } catch {
+    return ''
+  }
+}
+
+const APP_BASENAME = getBasename()
+
 function Loading() {
   return (
     <div className="flex items-center justify-center h-64 text-gray-500 text-sm">
@@ -24,7 +36,7 @@ function Loading() {
 
 function App() {
   return (
-    <BrowserRouter>
+    <BrowserRouter basename={APP_BASENAME}>
       <SWRConfig value={{
         onError: (error, key) => { console.error(`[SWR Error] ${key}:`, error.message) },
         shouldRetryOnError: true,
