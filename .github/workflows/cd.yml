@@ -28,7 +28,7 @@ jobs:
           PORT=""
           case "${{ github.event.repository.name }}" in
             signal-dashboard) PORT=3080 ;;
-            predict-dashboard) PORT=18828 ;;
+            predict-dashboard) PORT=8082 ;;
             dashboard-portal) PORT=8080 ;;
           esac
           STATUS=$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 http://localhost:$PORT/)

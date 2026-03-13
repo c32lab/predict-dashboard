@@ -5,7 +5,7 @@ export default defineConfig({
   timeout: 30_000,
   retries: 0,
   use: {
-    baseURL: 'http://localhost:18828',
+    baseURL: 'http://localhost:8082',
     headless: true,
   },
   projects: [
@@ -13,7 +13,7 @@ export default defineConfig({
   ],
   webServer: {
     command: 'npm run dev',
-    port: 18828,
+    port: 8082,
     reuseExistingServer: true,
     timeout: 30_000,
   },

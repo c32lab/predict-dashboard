@@ -5,13 +5,13 @@ import tailwindcss from '@tailwindcss/vite'
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    port: 18828,
+    port: 8082,
     proxy: {
-      '/api': 'http://localhost:18801',
+      '/api': 'http://localhost:8092',
     },
   },
   preview: {
-    port: 18828,
+    port: 8082,
   },
   build: {
     rollupOptions: {

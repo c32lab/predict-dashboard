@@ -2,16 +2,16 @@ services:
   predict-dashboard:
     build: .
     ports:
-      - "18828:18828"
+      - "8082:8082"
     environment:
-      - PREDICT_API_UPSTREAM=${PREDICT_API_UPSTREAM:-host.docker.internal:18801}
+      - PREDICT_API_UPSTREAM=${PREDICT_API_UPSTREAM:-host.docker.internal:8092}
     restart: unless-stopped
     extra_hosts:
       - "host.docker.internal:host-gateway"
     mem_limit: 256m
     memswap_limit: 256m
     healthcheck:
-      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:18828/"]
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8082/"]
       interval: 30s
       timeout: 5s
       retries: 3

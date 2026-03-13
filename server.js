@@ -4,9 +4,9 @@ import { fileURLToPath } from "url";
 import path from "path";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
-const PORT = 18828;
+const PORT = 8082;
 
-const raw = process.env.PREDICT_API_UPSTREAM || "localhost:18801";
+const raw = process.env.PREDICT_API_UPSTREAM || "localhost:8092";
 const upstream = raw.startsWith("http") ? raw : `http://${raw}`;
 
 const app = express();
