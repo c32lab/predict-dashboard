@@ -29,7 +29,7 @@ describe('predictApi', () => {
       mockOkResponse({ status: 'ok' })
       const result = await predictApi.health()
       expect(result).toEqual({ status: 'ok' })
-      expect(mockFetch).toHaveBeenCalledWith('/api/health')
+      expect(mockFetch).toHaveBeenCalledWith('./api/health')
     })
 
     it('throws on non-ok response', async () => {
@@ -42,7 +42,7 @@ describe('predictApi', () => {
     it('calls /api/prediction', async () => {
       mockOkResponse({ macro: {}, predictions: {} })
       await predictApi.prediction()
-      expect(mockFetch).toHaveBeenCalledWith('/api/prediction')
+      expect(mockFetch).toHaveBeenCalledWith('./api/prediction')
     })
   })
 
@@ -60,7 +60,7 @@ describe('predictApi', () => {
       mockOkResponse({ predictions: [], total: 0 })
       await predictApi.predictions()
       const url = mockFetch.mock.calls[0][0] as string
-      expect(url).toContain('/api/predictions?')
+      expect(url).toContain('./api/predictions?')
     })
 
     it('omits undefined params', async () => {
@@ -148,7 +148,7 @@ describe('predictApi', () => {
     it('calls /api/industry-chain', async () => {
       mockOkResponse({ nodes: [], edges: [] })
       await predictApi.industryChain()
-      expect(mockFetch).toHaveBeenCalledWith('/api/industry-chain')
+      expect(mockFetch).toHaveBeenCalledWith('./api/industry-chain')
     })
   })
 
@@ -176,7 +176,7 @@ describe('predictApi', () => {
     it('calls /api/predict-accuracy', async () => {
       mockOkResponse({ accuracy: {}, recent_validations: [] })
       await predictApi.predictAccuracy()
-      expect(mockFetch).toHaveBeenCalledWith('/api/predict-accuracy')
+      expect(mockFetch).toHaveBeenCalledWith('./api/predict-accuracy')
     })
   })
 
@@ -184,7 +184,7 @@ describe('predictApi', () => {
     it('calls /api/predictions/:id', async () => {
       mockOkResponse({ id: 1 })
       await predictApi.predictionDetail(1)
-      expect(mockFetch).toHaveBeenCalledWith('/api/predictions/1')
+      expect(mockFetch).toHaveBeenCalledWith('./api/predictions/1')
     })
   })
 
@@ -192,7 +192,7 @@ describe('predictApi', () => {
     it('calls /api/predictions/:id/reasoning-graph', async () => {
       mockOkResponse({ nodes: [], edges: [] })
       await predictApi.reasoningGraph(5)
-      expect(mockFetch).toHaveBeenCalledWith('/api/predictions/5/reasoning-graph')
+      expect(mockFetch).toHaveBeenCalledWith('./api/predictions/5/reasoning-graph')
     })
   })
 

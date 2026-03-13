@@ -23,7 +23,7 @@ import type {
 } from '../types/predict'
 import type { FullResults, ABResults } from '../types/backtest'
 
-const BASE = import.meta.env.VITE_PREDICT_API_URL || ''
+const BASE = import.meta.env.VITE_PREDICT_API_URL || '.'
 
 async function fetcher<T>(url: string): Promise<T> {
   const res = await fetch(url)
