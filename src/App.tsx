@@ -14,14 +14,18 @@ const ReviewPage = lazy(() => import('./pages/ReviewPage'))
 const ReviewOverviewPage = lazy(() => import('./pages/ReviewOverviewPage'))
 const PatternPerformancePage = lazy(() => import('./pages/PatternPerformancePage'))
 
-// Derive BrowserRouter basename from <base href> (set by Vite's `base: './'`).
-// "/predict/" → "/predict", "/" → ""
+// Derive the app's base path from production script URLs.
+// In production, Vite emits <script src="./assets/index-xxx.js"> which the browser
+// resolves relative to the served path. Under /predict/ this becomes
+// /predict/assets/index-xxx.js, so we extract "/predict".
+// In dev mode (no /assets/ path), returns "" (root).
 function getBasename(): string {
-  try {
-    return new URL(document.baseURI).pathname.replace(/\/+$/, '')
-  } catch {
-    return ''
+  const scripts = document.querySelectorAll<HTMLScriptElement>('script[type="module"][src]')
+  for (const s of scripts) {
+    const match = s.src.match(/^https?:\/\/[^/]+(\/.*?)\/assets\//)
+    if (match) return match[1] || ''
   }
+  return ''
 }
 
 const APP_BASENAME = getBasename()
