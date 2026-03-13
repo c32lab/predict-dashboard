@@ -30,7 +30,7 @@ export function SweepSection({ sweep }: { sweep: BaselineResults['parameter_swee
           <ZAxis type="number" dataKey="z" name="Composite" range={[40, 400]} />
           <Tooltip
             contentStyle={tooltipStyle}
-            formatter={(value: unknown, name?: string) => [`${Number(value) || 0}${name?.includes('Composite') ? '' : '%'}`, name ?? '']}
+            formatter={(value, name) => [`${Number(value) || 0}${String(name ?? '').includes('Composite') ? '' : '%'}`, name ?? '']}
             labelFormatter={() => ''}
           />
           <Scatter data={scatterData}>

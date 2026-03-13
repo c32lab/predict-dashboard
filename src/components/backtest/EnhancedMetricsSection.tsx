@@ -156,7 +156,7 @@ function ConfidenceCalibrationView({ buckets }: { buckets: Record<string, Accura
           <YAxis stroke="#9ca3af" domain={[0, 100]} tickFormatter={v => `${v}%`} />
           <Tooltip
             contentStyle={tooltipStyle}
-            formatter={(value: unknown, name?: string) => [fmt(value), name === 'ideal' ? 'Expected' : 'Actual']}
+            formatter={(value, name) => [fmt(value), name === 'ideal' ? 'Expected' : 'Actual']}
             labelFormatter={(label: unknown) => `Confidence: ${String(label ?? '')}`}
           />
           <Legend />

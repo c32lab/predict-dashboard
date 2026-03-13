@@ -89,7 +89,7 @@ export function ConfidenceAccuracyScatter({ validations }: Props) {
             />
             <Tooltip
               contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
-              formatter={(value: number | undefined, name?: string) => {
+              formatter={(value, name) => {
                 const v = Number(value ?? 0)
                 return [`${v.toFixed(1)}%`, name ?? '']
               }}

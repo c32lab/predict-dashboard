@@ -81,8 +81,8 @@ export function SymbolAccuracyBreakdown({ validations }: Props) {
             <Tooltip
               contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
               labelStyle={{ color: '#9ca3af' }}
-              formatter={(value: number | undefined, _name?: string, props?: { payload?: SymbolEntry }) => [
-                `${Number(value ?? 0).toFixed(1)}% (${props?.payload?.total ?? 0} predictions)`,
+              formatter={(value, _name, props) => [
+                `${Number(value ?? 0).toFixed(1)}% (${(props as { payload?: SymbolEntry })?.payload?.total ?? 0} predictions)`,
                 'Accuracy',
               ]}
             />

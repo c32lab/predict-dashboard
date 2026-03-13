@@ -39,7 +39,7 @@ export function OIChart({ data, isLoading }: { data: OpenInterestPoint[] | undef
             </defs>
             <XAxis dataKey="time" tick={{ fill: '#6b7280', fontSize: 11 }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
             <YAxis tick={{ fill: '#6b7280', fontSize: 11 }} tickLine={false} axisLine={false} width={52} tickFormatter={fmtOIValue} />
-            <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={{ color: '#9ca3af' }} itemStyle={{ color: '#e5e7eb' }} formatter={(v: number | undefined) => [fmtOIValue(v ?? 0), 'OI Value']} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={{ color: '#9ca3af' }} itemStyle={{ color: '#e5e7eb' }} formatter={(v) => [fmtOIValue(Number(v ?? 0)), 'OI Value']} />
             <Area type="monotone" dataKey="value" stroke="#60a5fa" strokeWidth={2} fill="url(#oiGrad)" dot={false} />
           </AreaChart>
         </ResponsiveContainer>

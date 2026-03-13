@@ -104,8 +104,8 @@ export function RollingAccuracyChart({ validations, windowDays = 7 }: Props) {
             <ReferenceLine y={50} stroke="#374151" strokeDasharray="4 4" />
             <Tooltip
               contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
-              formatter={(value: number | undefined, _name: string | undefined, item: { payload?: { total: number } }) => [
-                `${(value ?? 0).toFixed(1)}% (n=${item.payload?.total ?? 0})`,
+              formatter={(value, _name, item) => [
+                `${Number(value ?? 0).toFixed(1)}% (n=${(item as any).payload?.total ?? 0})`,
                 'Accuracy',
               ]}
             />

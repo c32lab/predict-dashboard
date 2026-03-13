@@ -131,7 +131,7 @@ export function QualityReportPanel() {
                   <YAxis domain={[0, 100]} tick={{ fill: '#6b7280', fontSize: 11 }} tickLine={false} axisLine={false} width={36} tickFormatter={(v) => `${v}%`} />
                   <Tooltip
                     contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
-                    formatter={(value: number | undefined) => [`${(value ?? 0).toFixed(1)}%`, 'Accuracy']}
+                    formatter={(value) => [`${Number(value ?? 0).toFixed(1)}%`, 'Accuracy']}
                   />
                   <Bar dataKey="accuracy" radius={[4, 4, 0, 0]}>
                     {confidenceBars.map((entry, i) => (
@@ -212,7 +212,7 @@ export function QualityReportPanel() {
                 />
                 <Tooltip
                   contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
-                  formatter={(value: number | undefined) => [`${(value ?? 0).toFixed(1)}%`, 'Actual Accuracy']}
+                  formatter={(value) => [`${Number(value ?? 0).toFixed(1)}%`, 'Actual Accuracy']}
                   labelFormatter={(v) => `Expected: ${v}%`}
                 />
                 <Line type="monotone" dataKey="actual" stroke="#60a5fa" strokeWidth={2} dot={{ fill: '#60a5fa', r: 4 }} />
@@ -249,7 +249,7 @@ export function QualityReportPanel() {
                 />
                 <Tooltip
                   contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
-                  formatter={(value: number | undefined) => [value ?? 0, 'Predictions']}
+                  formatter={(value) => [value ?? 0, 'Predictions']}
                 />
                 <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                   {categoryBars.map((_, i) => (

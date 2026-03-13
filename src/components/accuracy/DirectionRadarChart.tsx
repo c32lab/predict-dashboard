@@ -70,7 +70,7 @@ export function DirectionRadarChart({ validations }: Props) {
             <PolarRadiusAxis domain={[0, 100]} tick={{ fill: '#6b7280', fontSize: 10 }} tickFormatter={(v) => `${v}%`} />
             <Tooltip
               contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
-              formatter={(value: number | undefined) => [`${value ?? 0}%`, '']}
+              formatter={(value) => [`${value ?? 0}%`, '']}
             />
             <Legend wrapperStyle={{ fontSize: 12, color: '#9ca3af' }} />
             <Radar name="LONG" dataKey="LONG" stroke="#22c55e" fill="#22c55e" fillOpacity={0.2} />

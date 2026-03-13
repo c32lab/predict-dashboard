@@ -86,7 +86,7 @@ export function AccuracyHistoryChart() {
                 />
                 <Tooltip
                   contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
-                  formatter={(value: number | undefined) => [`${(value ?? 0).toFixed(1)}%`, 'Accuracy']}
+                  formatter={(value) => [`${Number(value ?? 0).toFixed(1)}%`, 'Accuracy']}
                 />
                 <Line type="monotone" dataKey="accuracy" stroke="#60a5fa" strokeWidth={2} dot={false} connectNulls />
               </LineChart>
@@ -108,7 +108,7 @@ export function AccuracyHistoryChart() {
                 <YAxis type="category" dataKey="direction" tick={{ fill: '#9ca3af', fontSize: 12 }} tickLine={false} axisLine={false} width={50} />
                 <Tooltip
                   contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
-                  formatter={(value: number | undefined, _name: string | undefined, item: { payload?: { total: number } }) => [`${(value ?? 0).toFixed(1)}% (n=${item.payload?.total ?? 0})`, 'Accuracy']}
+                  formatter={(value, _name, item) => [`${Number(value ?? 0).toFixed(1)}% (n=${(item as { payload?: { total: number } }).payload?.total ?? 0})`, 'Accuracy']}
                 />
                 <Bar dataKey="accuracy" radius={[0, 4, 4, 0]}>
                   {directionBars.map((entry, i) => (

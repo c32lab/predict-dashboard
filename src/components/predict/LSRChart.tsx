@@ -32,7 +32,7 @@ export function LSRChart({ data, isLoading }: { data: LongShortRatioPoint[] | un
           <BarChart data={chartData} margin={{ top: 4, right: 8, bottom: 0, left: 0 }}>
             <XAxis dataKey="time" tick={{ fill: '#6b7280', fontSize: 11 }} tickLine={false} axisLine={false} interval="preserveStartEnd" />
             <YAxis domain={[0, 100]} tick={{ fill: '#6b7280', fontSize: 11 }} tickLine={false} axisLine={false} width={36} tickFormatter={(v: number) => `${v}%`} />
-            <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={{ color: '#9ca3af' }} itemStyle={{ color: '#e5e7eb' }} formatter={(v: number | undefined, name: string | undefined) => [`${(v ?? 0).toFixed(1)}%`, name ?? '']} />
+            <Tooltip contentStyle={TOOLTIP_STYLE} labelStyle={{ color: '#9ca3af' }} itemStyle={{ color: '#e5e7eb' }} formatter={(v, name) => [`${Number(v ?? 0).toFixed(1)}%`, name ?? '']} />
             <Bar dataKey="long" stackId="a" fill="#22c55e" name="Long %" />
             <Bar dataKey="short" stackId="a" fill="#ef4444" name="Short %" />
           </BarChart>

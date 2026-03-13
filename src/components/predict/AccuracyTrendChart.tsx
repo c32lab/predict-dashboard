@@ -55,7 +55,7 @@ export function AccuracyTrendChart({
               contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
               labelStyle={{ color: '#9ca3af' }}
               itemStyle={{ color: '#e5e7eb' }}
-              formatter={(value: number | undefined, name?: string) => [`${Number(value ?? 0).toFixed(1)}%`, name ?? '']}
+              formatter={(value, name) => [`${Number(value ?? 0).toFixed(1)}%`, name ?? '']}
             />
             {chartSymbols.length > 1 && (
               <Legend wrapperStyle={{ fontSize: 12, color: '#9ca3af' }} />

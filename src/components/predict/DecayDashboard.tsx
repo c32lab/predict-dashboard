@@ -211,7 +211,7 @@ export function DecayDashboard() {
                 />
                 <Tooltip
                   contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
-                  formatter={(value: number | undefined) => [`${(value ?? 0).toFixed(3)}%`, '']}
+                  formatter={(value) => [`${Number(value ?? 0).toFixed(3)}%`, '']}
                   labelFormatter={(v) => `Day ${v}`}
                 />
                 <Legend wrapperStyle={{ fontSize: 11, color: '#9ca3af' }} />
@@ -292,7 +292,7 @@ export function DecayDashboard() {
                 />
                 <Tooltip
                   contentStyle={{ background: '#111827', border: '1px solid #374151', borderRadius: 6, fontSize: 12 }}
-                  formatter={(value: number | undefined) => [(value ?? 0).toFixed(4), 'Coefficient']}
+                  formatter={(value) => [Number(value ?? 0).toFixed(4), 'Coefficient']}
                 />
                 <Bar dataKey="coefficient" radius={[4, 4, 0, 0]}>
                   {coefficientBars.map((entry, i) => (
